@@ -22,7 +22,7 @@ steps:
 
 - task: ArchiveFiles@1
   inputs:
-    rootFolder: '$(System.DefaultWorkingDirectory)'
+    rootFolder: '$(System.DefaultWorkingDirectory)/dist'
     includeRootFolder: false
   displayName: 'Archive files '
 
