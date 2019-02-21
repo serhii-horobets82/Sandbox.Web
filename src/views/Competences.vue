@@ -1,13 +1,14 @@
 <template>
   <div class="main">
     <section class="error" v-if="errored">
-      <p>We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+      <p>We're sorry, we're not able to retrieve this information at the moment,
+        please try back later</p>
       {{ errorMessage }}
     </section>
     <section v-else>
       <div v-if="loading">Loading...</div>
       <section v-else>
-        <h3>Total {{ list.length }} competences</h3>
+        <h2>Total {{ list.length }} competences</h2>
         <table class="main-table">
           <tr v-for="data in list" :key="data.id">
             <td>{{ data.id }}</td>
@@ -38,38 +39,42 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   name: 'Standard',
-  data () {
+  data() {
     return {
       list: [],
       loading: true,
       errored: false,
-      errorMessage: null
-    }
+      errorMessage: null,
+    };
   },
-  mounted () {
+  mounted() {
     axios
       .get('https://evoflareapi.azurewebsites.net/api/competences')
-      .then(response => {
-        let data = response.data
-        data.map(r => {
-          const levels = {}
-          r.competenceLevel.map((l) => { levels[l.level] = l.description })
-          r.competenceLevels = levels
-        })
-        this.list = data
+      .then((response) => {
+        const { data } = response;
+        data.forEach((r) => {
+          const elem = r;
+          const levels = {};
+          elem.competenceLevel.forEach((l) => {
+            levels[l.level] = l.description;
+          });
+          elem.competenceLevels = levels;
+        });
+        this.list = data;
       })
-      .catch(error => {
-        console.log(error)
-        this.errorMessage = error
-        this.errored = true
+      .catch((error) => {
+        this.errorMessage = error;
+        this.errored = true;
       })
-      .finally(() => (this.loading = false))
-  }
-}
+      .finally(() => {
+        this.loading = false;
+      });
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -82,15 +87,19 @@ export default {
     width: 800px;
     margin: 0 auto;
   }
+
   .main-table {
     width: 100%;
     text-align: left;
   }
+
   .levels {
     width: 230px;
+
     td {
       height: 18px;
     }
+
     .yes {
       background-color: #42b983;
     }
