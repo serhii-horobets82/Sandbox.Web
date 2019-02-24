@@ -1,6 +1,6 @@
 {
-  "name": "vue-cli-3.4.1-packagejson",
-  "short_name": "vue-cli-3.4.1-packagejson",
+  "name": "Evoflare application",
+  "short_name": "Evoflare",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
