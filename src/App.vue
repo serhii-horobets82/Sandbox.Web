@@ -1,27 +1,44 @@
 <template>
-  <div>
-    <Nav />
-    <router-view />
-  </div>
+  <v-app>
+    <v-toolbar app>
+      <v-toolbar-side-icon>
+        <v-icon x-large>rocket</v-icon>
+      </v-toolbar-side-icon>
+      <v-toolbar-title class="headline">
+        <span>EvoFlare</span>
+        <!-- <span class="font-weight-light">MATERIAL DESIGN</span> -->
+      </v-toolbar-title>
+      
+      <v-spacer></v-spacer>
+
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn flat to="/">Home</v-btn>
+        <v-btn flat to="/evaluation">Evaluation</v-btn>
+        <v-btn flat to="/okr">OKR</v-btn>
+        <!-- <v-btn flat>Link Two</v-btn>
+        <v-btn flat>Link Three</v-btn> -->
+      </v-toolbar-items>
+      
+    </v-toolbar>
+
+    <v-content>
+      <router-view />
+    </v-content>
+  </v-app>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import Nav from '@/components/Nav.vue'; // @ is an alias to /src
+<script>
+// import HelloWorld from './components/HelloWorld'
 
-@Component({
+export default {
+  name: 'App',
   components: {
-    Nav,
+    // HelloWorld
   },
-})
-export default class App extends Vue {}
-</script>
-
-<style lang="scss">
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  data () {
+    return {
+      //
+    }
+  }
 }
-</style>
+</script>
