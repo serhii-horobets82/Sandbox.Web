@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
 import Home from './views/Home.vue'
 import EvaluationRoutes from './components/evaluation/router'
+import OrganizationRoutes from './components/organization/router'
 
 Vue.use(Router)
 
@@ -24,5 +25,7 @@ const routes: RouteConfig[] = [
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: routes.concat(EvaluationRoutes)
+  routes: routes
+    .concat(EvaluationRoutes)
+    .concat(OrganizationRoutes)
 })
