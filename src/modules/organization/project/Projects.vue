@@ -57,7 +57,7 @@ export default {
 
   async created() {
     try {
-    const response = await axios.get('https://localhost:5001/api/projects')
+    const response = await axios.get(this.$backendUrl + 'api/projects')
     console.log(response)
     this.projects = response.data;
     }
