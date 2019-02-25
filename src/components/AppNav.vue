@@ -11,6 +11,7 @@
 
     <v-toolbar-items class="hidden-sm-and-down">
       <v-btn flat to="/">Home</v-btn>
+      <v-btn flat to="/organization">Organization</v-btn>
       <v-btn flat to="/evaluation">Evaluation</v-btn>
       <v-btn flat to="/okr">OKR</v-btn>
       <v-btn flat to="/about">About</v-btn>
@@ -27,4 +28,8 @@
 </script>
 
 <style scoped>
+  /* button img {
+    width: 36px;
+    height: 36px;
+  } */
 </style>
