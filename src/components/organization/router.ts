@@ -2,6 +2,7 @@ import { RouteConfig } from 'vue-router';
 import Projects from './project/Projects.vue'
 import ProjectEdit from './project/Project.edit.vue'
 import Positions from './position/Positions.vue'
+import PositionEdit from './position/Position.edit.vue'
 
 const routes: RouteConfig[] = [{
   path: '/organization',
@@ -25,8 +26,13 @@ const routes: RouteConfig[] = [{
     },
     {
       path: 'position',
-      name: 'position',
+      name: 'positions',
       component: Positions
+    },
+    {
+      path: 'position/:id',
+      name: 'positionEdit',
+      component: PositionEdit
     },
   ]
 }]

@@ -2,7 +2,7 @@
   <v-container>
   <v-layout>
     <v-flex>
-      <h1 v-if="$route.params.id == 0">Create project</h1>
+      <h1 v-if="$route.params.id == 0">Create Position</h1>
       <h1 v-else>Edit project (ID: {{$route.params.id}})</h1>
     </v-flex>
 
@@ -51,7 +51,7 @@
       Create
     </v-btn>
 
-    <v-btn :to="{name: 'projects'}">
+    <v-btn :to="{name: 'positions'}">
       Cancel
     </v-btn>
 
