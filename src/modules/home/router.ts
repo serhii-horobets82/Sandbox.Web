@@ -1,5 +1,5 @@
 import {RouteConfig} from 'vue-router';
-import Home from "@/views/Home.vue";
+import Home from "./Index.vue";
 
 const routes: RouteConfig[] = [
   {
