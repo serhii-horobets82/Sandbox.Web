@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app>
     <v-toolbar-side-icon>
-      <v-img src="img/icons/favicon-32x32.png"></v-img>
+      <!-- <v-img src="img/icons/favicon-32x32.png"></v-img> -->
     </v-toolbar-side-icon>
     <v-toolbar-title class="headline">
       <span>EvoFlare</span>
