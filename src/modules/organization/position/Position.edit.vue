@@ -121,7 +121,9 @@
       </v-card-actions>
       </v-card>
     </v-dialog>
-{{valid}}
+
+    <v-divider></v-divider>
+
     <v-btn
       :disabled="!valid || !position.name || !position.roles.length"
       color="success"
@@ -160,7 +162,8 @@ export default {
 
   computed: {
     rolesFiltered(){
-      return this.roles.filter(r => r.name.toLowerCase().includes(this.rolesFilter))
+      const filter = this.rolesFIlter.toLowerCase()
+      return this.roles.filter(r => r.name.toLowerCase().includes(filter))
     }
   },
 

@@ -15,11 +15,11 @@
         <v-layout row wrap>
           <v-flex xs12 v-for="project in projects" :key="project.id">
             <v-card>
-              <v-card-title primary-title>
-                <div>
-                  <div class="headline">{{ project.name }}</div>
-                  <span>ID: {{ project.id }}</span>
-                </div>
+              <v-card-title primary-title  class="headline">
+                {{ project.name }}
+                <span>(Project ID: {{ project.id }})</span>
+                <v-spacer></v-spacer>
+                <v-btn :to="{name: 'teamEdit', params: {id:0}}">Add Team</v-btn>
               </v-card-title>
 
               <v-layout row wrap>
