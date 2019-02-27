@@ -8,6 +8,7 @@
 
   </v-layout>
   <!-- <v-layout> -->
+
     <v-form
       ref="form"
       v-model="valid"
@@ -16,9 +17,32 @@
     <v-text-field
       v-model="position.name"
       :counter="150"
-      label="Name"
+      label="Position title"
       required
     ></v-text-field>
+
+    <h2>Roles:</h2>
+      <v-card v-for="(role, i) in position.roles" :key="role.id">
+        <v-card-title class="headline">
+          {{role.name}}
+
+          <v-spacer></v-spacer>
+
+          <v-btn icon @click="removeRole(i)">
+            <v-icon color="red">clear</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text>
+          {{ role.summary }}
+        </v-card-text>
+
+        <v-card-text>
+          {{ role.description }}
+        </v-card-text>
+
+
+      </v-card>
 
     <v-btn @click="dialog = true">Add Role</v-btn>
 <!--
@@ -81,7 +105,7 @@
           <v-btn
             color="green darken-1"
             flat="flat"
-            @click="dialog = false"
+            @click="addRole(role)"
           >
             Add
           </v-btn>
@@ -98,8 +122,10 @@
       </v-card>
     </v-dialog>
 
+    <v-divider></v-divider>
+
     <v-btn
-      :disabled="!valid"
+      :disabled="!valid || !position.name || !position.roles.length"
       color="success"
       @click="create"
     >
@@ -107,7 +133,7 @@
     </v-btn>
 
     <v-btn :to="{name: 'positions'}">
-      Cancel
+      Back
     </v-btn>
 
   </v-form>
@@ -121,28 +147,53 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      valid: {},
+      valid: false,
       dialog: false,
-      position: {},
+      position: {name:'', roles: []},
       roles: [],
       rolesFilter: ''
     }
   },
 
   async created(){
-    const rolesResponse = await axios.get('https://localhost:5001/api/ecfroles');
+    const rolesResponse = await axios.get(this.$backendUrl + 'api/ecfroles');
     this.roles = rolesResponse.data;
   },
 
   computed: {
     rolesFiltered(){
-      return this.roles.filter(r => r.name.toLowerCase().includes(this.rolesFilter))
+      const filter = this.rolesFIlter.toLowerCase()
+      return this.roles.filter(r => r.name.toLowerCase().includes(filter))
     }
   },
 
   methods: {
-    create(){
-
+    async create(){
+      if (!this.position.roles.length){
+        alert('Please add at least one role!')
+        return;
+      }
+      const data = {...this.position};
+      data.positionRole = data.roles.map(r => ({roleId: r.id}));
+      // const response = await axios.post(this.$backendUrl + 'api/positions', data)
+      // this.$router.push({name: 'positions'})
+    },
+    addRole(role){
+      // console.log('aaaaaaaaaad', role, this, this.position)
+      // if (this.position.roles === undefined) {
+      //   this.$set(this.position, 'roles', [])
+      // }
+      const exists = this.position.roles.some(r => r.id === role.id)
+      if (!exists)
+        this.position.roles.push(role)
+    },
+    removeRole(i){
+      // var index = this.position.roles.indexOf(role);
+      // if (index > -1) {
+      //   this.position.roles.splice(index, 1);
+      // }
+      // console.log(i, this.position.roles);
+      this.position.roles.splice(i, 1)
     }
   }
 
