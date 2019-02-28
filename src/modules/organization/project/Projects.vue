@@ -19,7 +19,7 @@
                 {{ project.name }}
                 <span>(Project ID: {{ project.id }})</span>
                 <v-spacer></v-spacer>
-                <v-btn :to="{name: 'teamEdit', params: {id:0}}">Add Team</v-btn>
+                <v-btn :to="{name: 'teamEdit', params: {projectId: project.id, id:0}}">Add Team</v-btn>
               </v-card-title>
 
               <v-layout row wrap>
@@ -29,7 +29,7 @@
                             {{ team.name }}
 
                             <v-spacer></v-spacer>
-                            <v-btn :to="{name: 'teamEdit', params: {id: team.id}}">Edit</v-btn>
+                            <v-btn :to="{name: 'teamEdit', params: {projectId: project.id, id: team.id}}">Edit</v-btn>
                       </v-card-title>
                       <v-card-text>ID: {{ team.id}}</v-card-text>
                     </v-card>

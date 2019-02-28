@@ -40,7 +40,7 @@ const routes: RouteConfig[] = [{
     },
 
     {
-      path: 'team/:id',
+      path: 'team/:projectId/:id',
       name: 'teamEdit',
       component: TeamEdit
     },

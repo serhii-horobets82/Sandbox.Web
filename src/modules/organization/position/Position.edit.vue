@@ -76,7 +76,7 @@
       <v-card>
         <v-card-title class="headline">
           <v-layout row align-center class="dialog-header">
-            <v-flex xs6>Roles</v-flex>
+            <v-flex xs6>Roles ({{rolesFiltered.length}}/{{roles.length}})</v-flex>
             <v-flex xs6>
               <v-text-field flat
                 hide-details
@@ -162,7 +162,7 @@ export default {
 
   computed: {
     rolesFiltered(){
-      const filter = this.rolesFIlter.toLowerCase()
+      const filter = this.rolesFilter.toLowerCase()
       return this.roles.filter(r => r.name.toLowerCase().includes(filter))
     }
   },
