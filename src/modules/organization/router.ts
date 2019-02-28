@@ -4,6 +4,8 @@ import ProjectEdit from './project/Project.edit.vue'
 import Positions from './position/Positions.vue'
 import PositionEdit from './position/Position.edit.vue'
 import TeamEdit from './project/Team.edit.vue'
+import Employees from './employee/Employees.vue'
+import EmployeeEdit from './employee/Employee.edit.vue'
 
 const routes: RouteConfig[] = [{
   path: '/organization',
@@ -25,6 +27,7 @@ const routes: RouteConfig[] = [{
       name: 'projectEdit',
       component: ProjectEdit
     },
+
     {
       path: 'position',
       name: 'positions',
@@ -35,10 +38,22 @@ const routes: RouteConfig[] = [{
       name: 'positionEdit',
       component: PositionEdit
     },
+
     {
       path: 'team/:id',
       name: 'teamEdit',
       component: TeamEdit
+    },
+
+    {
+      path: 'employee',
+      name: 'employees',
+      component: Employees
+    },
+    {
+      path: 'employee/:id',
+      name: 'employeeEdit',
+      component: EmployeeEdit
     },
   ]
 }]

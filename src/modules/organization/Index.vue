@@ -4,6 +4,7 @@
     <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat to="/organization/project">Projects</v-btn>
         <v-btn flat to="/organization/position">Positions</v-btn>
+        <v-btn flat to="/organization/employee">Employees</v-btn>
         <!-- <v-btn flat to="/okr">OKR</v-btn>
         <v-btn flat to="/evaluation">Evaluation</v-btn> -->
       </v-toolbar-items>
