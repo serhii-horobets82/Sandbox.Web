@@ -1,0 +1,178 @@
+<template>
+  <v-container>
+    <v-layout row wrap>
+      <v-flex xs6>
+        <h1>Employees</h1>
+      </v-flex>
+    </v-layout>
+
+    <v-container>
+      <v-layout row wrap v-for="e in tableData" :key="e.id">
+        <v-flex xs4>
+          {{ e.name }} <router-link :to="{name: 'personalPage', params: {id: e.id}}">View</router-link>
+        </v-flex>
+        <v-flex xs4>
+          Last evaluation date: <span class="font-weight-bold"> {{ e.evaluationStatus }} </span>
+        </v-flex>
+        <v-flex xs4>
+          <v-btn :disabled="e.evaluationStatus === 'In Progress'" @click="startEvaluationDialog(e)">Start evaluation</v-btn>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
+    <v-dialog
+      v-model="dialog.open"
+      max-width="800"
+      scrollable>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Start evaluation process</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-autocomplete
+                  :items="selectedEmployeeEvaluators.technical"
+                  color="primary"
+                  item-text="nameTemp"
+                  item-value="id"
+                  label="Technical Evaluator"
+                  v-model="selectedEmployee.technicalEvaluatorId"
+                  required
+                ></v-autocomplete>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <v-divider></v-divider>
+          <v-container>
+            <v-layout>
+              <v-flex xs12>
+                <span class="headline">360 feedback evaluators</span>
+              </v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs12>
+                <span class="red--text">TBD</span>
+                <!-- <v-autocomplete
+                  :items="employees"
+                  color="primary"
+                  item-text="nameTemp"
+                  item-value="id"
+                  label="Technical Evaluator"
+                  v-model="selectedEmployee.technicalEvaluatorId"
+                  required
+                ></v-autocomplete> -->
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn :disabled="!canStartEvaluation" @click="startEvaluation()">Start</v-btn>
+          <v-btn color="blue darken-1" flat @click="closeEvaluationDialog()">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  </v-container>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      dialog: {
+        open: false,
+        buttonDisabled: true,
+      },
+      // dialog: false,
+      employees: [],
+      evaluationsByEmployeeId: null,
+      selectedEmployee: {},
+      selectedEmployeeEvaluators: {
+        technical: [],
+        "360peers": [],
+        "360customers": [],
+        "360subordinates": [],
+      }
+    }
+  },
+
+  async created() {
+    const response = await axios.get(this.$backendUrl + 'api/employees')
+    this.employees = response.data;
+
+    this.evaluationsByEmployeeId = await this.loadEmployeeEvaluations();
+  },
+
+  computed: {
+    tableData(){
+      if (!this.employees.length || !this.evaluationsByEmployeeId) {
+        return []
+      }
+      const data = []
+      for (let e of this.employees) {
+        const evaluation = this.evaluationsByEmployeeId[e.id];
+        const status = evaluation
+          ? (evaluation.endDate || 'In Progress')
+          : 'None'
+
+        const d = {
+          id: e.id,
+          name: e.nameTemp,
+          evaluationStatus: status,
+          employeeTypeId: e.employeeTypeId
+        }
+        data.push(d)
+      }
+      return data;
+    },
+
+    canStartEvaluation(){
+      return !!this.selectedEmployee.employeeId
+        && !!this.selectedEmployee.technicalEvaluatorId;
+    }
+  },
+
+  methods: {
+    async loadEmployeeEvaluations(){
+      const evalResponse = await axios.get(this.$backendUrl + 'api/employeeEvaluations')
+      const byId = {}
+      evalResponse.data.forEach(r => byId[r.employeeId] = r)
+      return byId;
+    },
+    async startEvaluationDialog(employee){
+      this.dialog.open = true;
+      this.selectedEmployee = Object.assign({}, this.selectedEmployee, {
+        employeeId: employee.id,
+        technicalEvaluatorId: 0,
+        name: employee.nameTemp
+      })
+      const resp = await axios.get(this.$backendUrl + 'api/employees?typeId=' + employee.employeeTypeId)
+      this.selectedEmployeeEvaluators.technical = resp.data;
+    },
+
+    async startEvaluation(){
+      if (confirm(`This will start employee evaluation process for ${this.selectedEmployee.name}. Do you want to proceed?`)){
+        await axios.post(this.$backendUrl + 'api/employeeEvaluations', this.selectedEmployee)
+
+        this.dialog.open = false;
+
+        this.evaluationsByEmployeeId = await this.loadEmployeeEvaluations();
+      }
+    },
+
+    closeEvaluationDialog(){
+      this.selectedEmployee = {}
+      this.dialog.open = false;
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

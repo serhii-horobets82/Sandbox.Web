@@ -365,7 +365,7 @@ export default {
       }))
       data.employeeRelations.forEach(r => r.projectId = this.team.projectId)
 
-      if (!!data.id) {
+      if (data.id) {
         await axios.put(this.$backendUrl + 'api/teams/' + data.id, data)
       } else {
         await axios.post(this.$backendUrl + 'api/teams', data)

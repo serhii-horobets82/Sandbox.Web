@@ -1,5 +1,10 @@
 <template>
-    <h1>Evaluation related stuff: eCF, 360, etc</h1>
+  <v-content>
+    <v-layout>
+      <router-view></router-view>
+    </v-layout>
+  </v-content>
+
 </template>
 
 <script>
