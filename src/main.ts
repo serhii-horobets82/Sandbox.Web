@@ -1,16 +1,33 @@
-import Vue from 'vue'
-import './plugins/vuetify'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import './registerServiceWorker'
+import Vue from "vue";
+import axios from 'axios';
 
-Vue.config.productionTip = false
-Vue.prototype.$backendUrl = 'https://evoflareapi.azurewebsites.net/'
-// Vue.prototype.$backendUrl = 'http://localhost:63332/'
+import "./registerServiceWorker";
+
+// Plugins import
+import "./plugins";
+
+// Application imports
+import App from "./App.vue";
+import i18n from "@/i18n";
+import router from "@/router";
+import store from "@/store";
+
+Vue.config.productionTip = false;
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount("#app");
+
+
+axios.interceptors.request.use((config: any) => {
+  const authToken = store.getters['auth/authToken'];
+  if (authToken) {
+    config.headers.Authorization = `Bearer ${authToken}`;
+  }
+  return config;
+}, (err: any) => {
+  return Promise.reject(err);
+});

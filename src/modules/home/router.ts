@@ -8,6 +8,11 @@ const routes: RouteConfig[] = [
     component: Home
   },
   {
+    path: '/dashboard/home',
+    name: 'dashboard-home',
+    component: Home
+  },
+  {
     path: '/about',
     name: 'about',
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
