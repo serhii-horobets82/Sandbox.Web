@@ -23,7 +23,7 @@
     <v-layout>
       <v-flex xs12>
         <!-- <v-spacer></v-spacer> -->
-        <v-btn :disabled="!evaluationComplete">Finish Evaluation</v-btn>
+        <v-btn :disabled="!evaluationComplete" @click="finishEvaluation()">Finish Evaluation</v-btn>
       </v-flex>
     </v-layout>
     <!-- <v-list>
@@ -119,6 +119,10 @@ export default {
         }
         await axios.post(this.$backendUrl + 'api/EmployeeEvaluations/ecf-evaluation/' + this.evaluation.id, data)
       }
+    },
+
+    async finishEvaluation() {
+      alert('Nothing happens yet!')
     }
   }
 }

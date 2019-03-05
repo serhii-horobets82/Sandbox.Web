@@ -13,6 +13,7 @@
         </v-flex>
         <v-flex xs4>
           Last evaluation date: <span class="font-weight-bold"> {{ e.evaluationStatus }} </span>
+          <router-link v-if="e.evaluationId" :to="{name: 'ecfEvaluationForm', params: {id: e.evaluationId}}">eCF form</router-link>
         </v-flex>
         <v-flex xs4>
           <v-btn :disabled="e.evaluationStatus === 'In Progress'" @click="startEvaluationDialog(e)">Start evaluation</v-btn>
@@ -122,6 +123,7 @@ export default {
 
         const d = {
           id: e.id,
+          evaluationId: evaluation ? evaluation.id : 0,
           name: e.nameTemp,
           evaluationStatus: status,
           employeeTypeId: e.employeeTypeId
