@@ -1,59 +1,61 @@
 <template>
-  <v-card>
-    <v-container
-      fluid
-      grid-list-lg
-    >
-      <v-layout row wrap>
-        <v-flex xs12>
-          <v-card color="blue-grey darken-2" class="white--text">
+  <v-container>
+    <v-layout>
+      <v-flex>
+        <v-hover>
+          <v-card class="mx-auto"
+                  dark
+                  color="blue-grey darken-2"
+                  slot-scope="{ hover }"
+                  :class="`elevation-${hover ? 12 : 2}`">
             <v-card-title primary-title>
-              <div>
-                <div class="headline">About</div>
-                <Spinner/>
-                <span>Listen to your favorite artists and albums whenever and wherever, online and offline.</span>
-              </div>
+              <v-icon large left> info</v-icon>
+              <span class="headline font-weight-bold">About</span>
+
             </v-card-title>
+            <v-card-text>
+              <div class="text-xs-center" v-if="isLoading">
+                <v-progress-circular indeterminate></v-progress-circular>
+              </div>
+              <p v-if="versionData.version">API version: <span class="amber--text">{{versionData.version}}</span></p>
+              <p v-if="versionData.creationDate">Last API update: <span class="amber--text">{{versionData.creationDate | formatDate}}</span>
+              </p>
+              <p v-if="versionData.database">Database: <span class="amber--text">{{versionData.database}}</span></p>
+            </v-card-text>
             <v-card-actions>
-              <v-btn flat dark>Listen now</v-btn>
+              <v-btn flat dark v-on:click="handleSubmit">Update</v-btn>
             </v-card-actions>
           </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-card>
-
+        </v-hover>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
-  import Spinner from '@/components/Spinner.vue';
   import {Component, Vue} from 'vue-property-decorator';
-  import {mapGetters} from 'vuex';
-  import {dashboardService} from '../services/dashboard.service';
+  import {versionService} from '@/services/version.service';
 
-  @Component({
-    computed: mapGetters({
-      version: 'version',
-    }),
-    components: {
-      Spinner,
-    },
-  })
-  export default class DashboardHome extends Vue {
+  @Component({})
+  export default class About extends Vue {
 
-    private isBusy: boolean = false;
-    private homeData = {} as any;
+    private isLoading: boolean = false;
+    private versionData = {} as any;
 
-    get name() {
-      return this.homeData.firstName + ' ' + this.homeData.lastName;
+    private updateVersion() {
+      this.isLoading = true;
+      versionService.getVersion().then((resp: any) => {
+        this.versionData = resp.data;
+        this.isLoading = false;
+      });
+    }
+
+    private handleSubmit() {
+      this.updateVersion();
     }
 
     private created() {
-      this.isBusy = true;
-      dashboardService.getHomeDetails().then((resp: any) => {
-        this.homeData = resp.data;
-        this.isBusy = false;
-      });
+      this.updateVersion();
     }
   }
 </script>

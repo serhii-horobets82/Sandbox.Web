@@ -3,11 +3,22 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios';
 import './registerServiceWorker'
+import moment from 'moment'
 
 Vue.config.productionTip = false
-Vue.prototype.$backendUrl = 'https://evoflareapi.azurewebsites.net/'
-// Vue.prototype.$backendUrl = 'http://localhost:63332/'
+
+// using .env files
+Vue.prototype.$backendUrl = process.env.VUE_APP_ROOT_API;
+Vue.prototype.$http = axios;
+
+Vue.filter('formatDate', (value: any) => {
+  if (value) {
+    return moment(String(value)).format('DD/MM/YYYY hh:mm')
+  }
+});
+
 
 new Vue({
   router,

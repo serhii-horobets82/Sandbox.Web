@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 export abstract class BaseService {
 
-    protected readonly api = this.$backendUrl; //'http://localhost:5000/api';
+    protected readonly api = process.env.VUE_APP_ROOT_API;
 
     protected handleError(error: any) {
     const applicationError = error.headers['Application-Error'];
