@@ -74,15 +74,12 @@
       {title: "User", userName: "user@evoflare.com", password: "qwerty"}
     ]
 
-    private created() {
-    }
-
-    private setDemoCredential(credentials) {
+    private setDemoCredential(credentials: Credentials) {
       this.credentials = credentials;
     }
 
     get form() {
-      return this.$refs.form as Vue;
+      return this.$refs.form as Vue & { validate: () => boolean };
     }
 
     private handleSubmit() {
@@ -90,7 +87,7 @@
         this.isBusy = true;
         this.$store
           .dispatch("auth/authRequest", this.credentials)
-          .then(result => {
+          .then(() => {
             this.$router.push("/dashboard/home");
           })
           .catch(err => {

@@ -14,6 +14,8 @@ class ProfileService extends BaseService {
   }
 
   public get(): Observable<any> {
+
+
     return new Observable(observer => {
       axios
         .get(`${this.api}api/profile/me`)

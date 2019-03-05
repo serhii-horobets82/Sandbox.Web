@@ -59,7 +59,6 @@ const actions = {
   authLogout: ({commit, dispatch}: { commit: any; dispatch: any }) => {
     return new Promise((resolve, reject) => {
       commit("authLogout");
-      console.log('logout');
       localStorage.removeItem("auth-token");
       resolve();
     });

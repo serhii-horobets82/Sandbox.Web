@@ -112,7 +112,7 @@
             <v-icon>exit_to_app</v-icon>
           </v-btn>
         </template>
-        <span>Sign out {{profile.firstName}}</span>
+        <span>Sign out {{profile.fullName}}</span>
       </v-tooltip>
 
     </v-toolbar>
