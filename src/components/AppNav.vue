@@ -93,6 +93,28 @@
           <span>{{ item.text }}</span>
         </v-tooltip>
       </template>
+
+
+      <!-- Sign in-->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn v-on="data.on" v-show="!isAuthenticated" icon to="/auth">
+            <v-icon>lock</v-icon>
+          </v-btn>
+        </template>
+        <span>Sign in</span>
+      </v-tooltip>
+
+      <!-- Sign out-->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn v-on="data.on" v-show="isAuthenticated" icon @click="logOut">
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
+        <span>Sign out {{profile.firstName}}</span>
+      </v-tooltip>
+
     </v-toolbar>
   </nav>
 </template>
@@ -100,22 +122,42 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import Locale from "./Locale.vue";
+  import {EventBus} from '@/event-bus';
+  import {mapGetters} from 'vuex';
 
   @Component({
     components: {
       Locale
-    }
+    },
+    computed: mapGetters({
+      isAuthenticated: 'auth/isAuthenticated',
+      profile: 'user/profile',
+    }),
   })
   export default class AppNavigation extends Vue {
     private drawer: boolean = false;
+
+    private logOut() {
+      this.$store.dispatch('auth/authLogout').then(() => {
+        this.$router.push('/');
+      });
+    }
+
+    private created() {
+      EventBus.$on('logged-in', (payLoad: any) => {
+      });
+    }
+
+    private destroyed() {
+      EventBus.$off('logged-in');
+    }
 
     private items: any = [
       {id: 1, icon: "home", text: "Home", to: "/"},
       {id: 2, icon: "supervisor_account", text: "Organization", to: "/organization"},
       {id: 3, icon: "ballot", text: "Evaluation", to: "/evaluation"},
       {id: 4, icon: "timeline", text: "OKR", to: "/okr"},
-      {id: 5, icon: "info", text: "About", to: "/about", hiddenSmall: true},
-      {id: 6, icon: "lock", text: "Authorization", to: "/auth"}
+      {id: 5, icon: "info", text: "About", to: "/about", hiddenSmall: true}
     ];
   }
 </script>

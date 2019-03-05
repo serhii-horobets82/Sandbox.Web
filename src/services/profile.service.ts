@@ -1,24 +1,31 @@
-import axios from 'axios';
-import { BaseService } from './base.service';
-import { Observable } from 'rxjs';
+import axios from "axios";
+import {BaseService} from "./base.service";
+import {Observable} from "rxjs";
 
 class ProfileService extends BaseService {
+  private static instance: ProfileService;
 
-    private static instance: ProfileService;
+  private constructor() {
+    super();
+  }
 
-    private constructor() {  super(); }
+  public static get Instance() {
+    return this.instance || (this.instance = new this());
+  }
 
-    public static get Instance() {
-       // Do you need arguments? Make it a regular method instead.
-       return this.instance || (this.instance = new this());
-    }
-
-    public get(): Observable<any> {
-        return Observable.create(axios.get(`${this.api}/profile/me`))
-        .map((res: any) => res.data)
-        .catch((error: any) => this.handleError(error.response));
-    }
+  public get(): Observable<any> {
+    return new Observable(observer => {
+      axios
+        .get(`${this.api}api/profile/me`)
+        .then(response => {
+          observer.next(response.data);
+          observer.complete();
+        })
+        .catch(error => {
+          observer.error(error);
+        });
+    });
+  }
 }
 
-// export a singleton instance in the global namespace
 export const profileService = ProfileService.Instance;
