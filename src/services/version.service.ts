@@ -1,9 +1,9 @@
-import axios from 'axios';
-import {BaseService} from './base.service';
-import {Observable} from 'rxjs';
+import axios from "axios";
+import {BaseService} from "./base.service";
+import {Observable} from "rxjs";
+import {VersionInfo} from "@/models/version.interface";
 
 class VersionService extends BaseService {
-
   private static instance: VersionService;
 
   private constructor() {
@@ -14,14 +14,18 @@ class VersionService extends BaseService {
     return this.instance || (this.instance = new this());
   }
 
-  public getVersion(): Promise<any> {
-    return axios.get(`${this.api}api/version`);
-  }
-
-  public get(): Observable<any> {
-    return Observable.create(axios.get(`${this.api}/version`))
-      .map((res: any) => res.data)
-      .catch((error: any) => this.handleError(error.response));
+  public getVersion(): Observable<VersionInfo> {
+    return new Observable(observer => {
+      axios
+        .get(`${this.api}api/version`)
+        .then(response => {
+          observer.next(response.data as VersionInfo);
+          observer.complete();
+        })
+        .catch(error => {
+          observer.error(error);
+        });
+    });
   }
 }
 

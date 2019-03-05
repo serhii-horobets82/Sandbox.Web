@@ -1,11 +1,9 @@
-import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/src/stylus/app.styl'
-import colors from 'vuetify/es5/util/colors'
+import Vue from "vue";
+import Vuetify from "vuetify";
+import "vuetify/src/stylus/app.styl";
+import theme from "./theme";
 
 Vue.use(Vuetify, {
-  iconfont: 'md',
-  theme: {
-    primary: colors.blueGrey.darken2,
-  }
-})
+  iconfont: "md",
+  theme
+});

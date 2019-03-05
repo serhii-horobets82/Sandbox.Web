@@ -1,27 +1,21 @@
-import Vue from 'vue'
-import './plugins/vuetify'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import axios from 'axios';
-import './registerServiceWorker'
-import moment from 'moment'
+import Vue from "vue";
 
-Vue.config.productionTip = false
+import "./registerServiceWorker";
 
-// using .env files
-Vue.prototype.$backendUrl = process.env.VUE_APP_ROOT_API;
-Vue.prototype.$http = axios;
+// Plugins import
+import "./plugins";
 
-Vue.filter('formatDate', (value: any) => {
-  if (value) {
-    return moment(String(value)).format('DD/MM/YYYY hh:mm')
-  }
-});
+// Application imports
+import App from "./App.vue";
+import i18n from "@/i18n";
+import router from "@/router";
+import store from "@/store";
 
+Vue.config.productionTip = false;
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount("#app");
