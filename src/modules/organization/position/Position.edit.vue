@@ -34,11 +34,31 @@
         </v-card-title>
 
         <v-card-text>
-          {{ role.summary }}
+          <v-layout row wrap>
+            <v-flex sm6>
+              <v-layout>
+                  <v-card flat tile>
+                    <v-card-title class="title">Summary</v-card-title>
+                    <v-card-text>{{ role.summary }}</v-card-text>
+                  </v-card>
+              </v-layout>
+              <v-layout>
+                  <v-card flat tile>
+                    <v-card-title class="title">Description</v-card-title>
+                    <v-card-text>{{ role.description }}</v-card-text>
+                  </v-card>
+              </v-layout>
+            </v-flex>
+            <v-flex sm6>
+              <EcfCompetenceRow v-for="competence in (roleCompetences.get(role.id) || [])" :key="competence.id"
+                :competence="competence"
+                :competenceLevels="competence.levels"></EcfCompetenceRow>
+            </v-flex>
+          </v-layout>
+
         </v-card-text>
 
         <v-card-text>
-          {{ role.description }}
         </v-card-text>
 
 
@@ -70,6 +90,7 @@
 
     <v-dialog
       v-model="dialog"
+      @keydown.esc="dialog = false"
       max-width="800"
       scrollable
     >
@@ -103,11 +124,13 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
+            :disabled="positionRolesIds.has(role.id)"
             color="green darken-1"
             flat="flat"
             @click="addRole(role)"
           >
-            Add
+            <v-icon v-if="positionRolesIds.has(role.id)" color="success">done</v-icon>
+            {{ positionRolesIds.has(role.id) ? 'Added' : 'Add' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -143,15 +166,21 @@
 
 <script>
 import axios from 'axios'
+import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
 
 export default {
+  components: {
+    EcfCompetenceRow
+  },
   data() {
     return {
       valid: false,
       dialog: false,
       position: {name:'', roles: []},
       roles: [],
-      rolesFilter: ''
+      rolesFilter: '',
+      positionRolesIds: new Set(),
+      roleCompetences: new Map()
     }
   },
 
@@ -175,24 +204,38 @@ export default {
       }
       const data = {...this.position};
       data.positionRole = data.roles.map(r => ({roleId: r.id}));
-      // const response = await axios.post(this.$backendUrl + 'api/positions', data)
-      // this.$router.push({name: 'positions'})
+      const response = await axios.post(this.$backendUrl + 'api/positions', data)
+      this.$router.push({name: 'positions'})
     },
-    addRole(role){
-      // console.log('aaaaaaaaaad', role, this, this.position)
-      // if (this.position.roles === undefined) {
-      //   this.$set(this.position, 'roles', [])
-      // }
-      const exists = this.position.roles.some(r => r.id === role.id)
-      if (!exists)
+    async addRole(role){
+      if (!this.positionRolesIds.has(role.id)) {
+        this.positionRolesIds.add(role.id)
         this.position.roles.push(role)
+
+        const res = await axios.get(this.$backendUrl + 'api/ecfroles/' + role.id + '?withCompetences=true')
+        const competences = []
+        for (let c of res.data.ecfRoleCompetence) {
+          const item = {
+            id: c.competence.id,
+            name: c.competence.name,
+            levels: [],
+            roleLevel: c.competenceLevel
+          }
+
+          for (let level of c.competence.ecfCompetenceLevel) {
+            item.levels[level.level] = {
+              description: level.description,
+              level: level.level
+            }
+          }
+
+          competences.push(item)
+        }
+        this.roleCompetences.set(role.id, competences)
+        console.log(this.roleCompetences.get(role.id))
+      }
     },
-    removeRole(i){
-      // var index = this.position.roles.indexOf(role);
-      // if (index > -1) {
-      //   this.position.roles.splice(index, 1);
-      // }
-      // console.log(i, this.position.roles);
+    removeRole(i) {
       this.position.roles.splice(i, 1)
     }
   }
