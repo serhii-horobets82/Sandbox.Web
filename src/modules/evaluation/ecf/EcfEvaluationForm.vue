@@ -8,7 +8,10 @@
       Note: marks are changed automatically
     </v-layout>
 
-    <v-layout row wrap v-for="competence in competences" :key="competence.id" class="competenceRow">
+    <EcfCompetenceRow v-for="competence in competences" :key="competence.id"
+      :competence="competence"
+      :competenceLevels="competences.levels"></EcfCompetenceRow>
+    <!-- <v-layout row wrap v-for="competence in competences" :key="competence.id" class="competenceRow">
       <v-flex xs6>{{competence.id}}  {{competence.name}}</v-flex>
       <v-flex xs6>
         <div v-for="i in [1,2,3,4,5]" :key="i"
@@ -18,7 +21,7 @@
 
         </div>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
 
     <v-layout>
       <v-flex xs12>
@@ -58,8 +61,12 @@
 
 <script>
 import axios from 'axios'
+import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
 
 export default {
+  components: {
+    EcfCompetenceRow
+  },
   data: () => ({
     evaluation: {},
     employee: {},
@@ -129,29 +136,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .competenceRow {
-    font-size: 16px;
-    margin: 5px;
-  }
 
-  .competenceLevelFill {
-    width: 22px;
-    height: 22px;
-    margin: 1px;
-    float:left;
-
-    &.none {
-      background-color: lightblue;
-    }
-
-    &.available {
-      background-color: lightgreen;
-      cursor: pointer;
-    }
-
-    &.current {
-      background-color: green;
-      cursor: pointer;
-    }
-  }
 </style>
