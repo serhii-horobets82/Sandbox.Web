@@ -1,0 +1,32 @@
+{
+  "api": {
+    "baseUrl": "http://localhost:5000"
+  },
+  "features": {
+  },
+  "supportedLanguages": [
+    "en",
+    "ru",
+    "ua"
+  ],
+  "demo": {
+    "users": [
+      {
+        "title": "Admin",
+        "userName": "admin@evoflare.com",
+        "password": "qwerty"
+      },
+      {
+        "title": "Manager",
+        "userName": "manager@evoflare.com",
+        "password": "qwerty"
+      },
+      {
+        "title": "User",
+        "userName": "user@evoflare.com",
+        "password": "qwerty"
+      }
+    ]
+  },
+  "social" : {}
+}
