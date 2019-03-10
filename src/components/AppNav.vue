@@ -115,6 +115,28 @@
         <span>Sign out {{profile.fullName}}</span>
       </v-tooltip>
 
+      <v-speed-dial
+        direction="bottom"
+        v-show="isAuthenticated">
+        <template v-slot:activator>
+          <v-avatar size="32">
+            <img
+              v-bind:src="profile.pictureUrl"
+              v-bind:alt="profile.fullName">
+          </v-avatar>
+        </template>
+        <v-btn
+          fab
+          small>
+          <v-icon>edit</v-icon>
+        </v-btn>
+        <v-btn
+          fab
+          small @click="logOut">
+          <v-icon>exit_to_app</v-icon>
+        </v-btn>
+
+      </v-speed-dial>
     </v-toolbar>
   </nav>
 </template>

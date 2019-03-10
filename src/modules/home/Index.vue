@@ -1,30 +1,25 @@
 <template>
   <v-container>
-    <v-layout
-      text-xs-center
-      wrap>
+    <v-layout text-xs-center wrap>
       <v-flex xs12>
-        <v-img
-          :src="require('../../assets/logo.png')"
-          class="my-3"
-          contain
-          height="200"
-        ></v-img>
+        <v-img :src="require('../../assets/logo.png')" class="my-3" contain height="200"></v-img>
       </v-flex>
 
       <v-flex mb-4>
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Evoflare
         </h1>
+        <h2 v-if="isAuthenticated">{{profile.fullName}}</h2>
+
+        <v-avatar>
+          <img
+            v-bind:src="profile.pictureUrl"
+            v-bind:alt="profile.fullName">
+        </v-avatar>
+
       </v-flex>
       <v-flex xs12>
-
-        <v-card
-          class="mx-auto text-xs-center"
-          color="blue-grey darken-2"
-          dark
-          max-width="600"
-        >
+        <v-card class="mx-auto text-xs-center" color="blue-grey darken-2" dark max-width="600">
           <v-card-text>
             <v-sheet color="rgba(0, 0, 0, .12)">
               <v-sparkline
@@ -58,24 +53,17 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator';
+  import {Component, Vue} from "vue-property-decorator";
+  import {mapGetters} from "vuex";
 
-  @Component({})
+  @Component({
+    computed: mapGetters({
+      isAuthenticated: "auth/isAuthenticated",
+      profile: "user/profile"
+    })
+  })
   export default class Home extends Vue {
-    value = [
-      200,
-      675,
-      410,
-      390,
-      310,
-      460,
-      250,
-      240,
-      440,
-      540,
-      640,
-      1000,
-    ];
+    value = [200, 675, 410, 390, 310, 460, 250, 240, 440, 540, 640, 1000];
   }
 </script>
 
