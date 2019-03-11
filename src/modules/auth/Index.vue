@@ -63,6 +63,9 @@
                 <v-icon>{{ social.icon }}</v-icon>
               </v-btn>
             </v-card-actions>
+            <v-alert :value="isError" type="error">
+              {{ errorMessage }}
+            </v-alert>
           </v-card>
         </v-form>
       </v-flex>
@@ -77,40 +80,41 @@
   @Component
   export default class LoginForm extends Vue {
     private valid: boolean = true;
+    private isError: boolean = false;
     private rememberMe: boolean = false;
 
     private isBusy: boolean = false;
-    private errors: string = "";
+    private errorMessage: string = "";
     private credentials = {} as Credentials;
 
     private socials: any = [
       {
-        name : 'facebook',
+        name: 'facebook',
         icon: 'fab fa-facebook-f',
         color: '#3b5998'
       },
       {
-        name : 'twitter',
+        name: 'twitter',
         icon: 'fab fa-twitter',
         color: '#55acee'
       },
       {
-        name : 'linkedin',
+        name: 'linkedin',
         icon: 'fab fa-linkedin',
         color: '#0077b5'
       },
       {
-        name : 'instagram',
+        name: 'instagram',
         icon: 'fab fa-instagram',
         color: '#e4405f'
       },
       {
-        name : 'github',
+        name: 'github',
         icon: 'fab fa-github',
         color: '#00405d'
       },
       {
-        name : 'google',
+        name: 'google',
         icon: 'fab fa-google',
         color: '#ea4335'
       }
@@ -132,13 +136,18 @@
             vm.$router.push(redirect as string || "/dashboard/home");
           })
           .catch(err => {
-            vm.errors = err;
+            vm.errorMessage = err;
+            vm.isError = true;
           })
           .then(() => {
             vm.isBusy = false;
           });
+      }).catch(function (err: any) {
+        vm.errorMessage = err;
+        vm.isError = true;
       })
     }
+
     // rule for email validation
     emailRule(value: string) {
       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -164,7 +173,8 @@
             this.$router.push(redirect as string || "/dashboard/home");
           })
           .catch(err => {
-            this.errors = err;
+            this.errorMessage = err;
+            this.isError = true;
           })
           .then(() => {
             this.isBusy = false;

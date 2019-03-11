@@ -14,14 +14,8 @@
     name: 'App',
     components: {
       AppNavigation
-    },
-    data () {
-      return {
-        //
-      }
     }
   }
 </script>
-<style scoped>
-
+<style lang="scss">
 </style>

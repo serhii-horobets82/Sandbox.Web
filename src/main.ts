@@ -3,6 +3,9 @@ import axios from 'axios';
 
 import "./registerServiceWorker";
 
+// Import components
+//import "./components";
+
 // Plugins import
 import "./plugins";
 

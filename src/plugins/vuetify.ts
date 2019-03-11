@@ -15,14 +15,12 @@ Vue.use(VueAuthenticate, {
   baseUrl: process.env.VUE_APP_ROOT_API,
   providers: {
     github: {
-      clientId: '',
+      url: '/api/externalauth/github',
+      clientId: 'f44f8e1ecfbcc7040436',
     },
     facebook: {
       url: '/api/externalauth/facebook',
-      clientId: '416248725777348',
-      redirectUri: 'http://localhost:8080/auth/callback'
+      clientId: '416248725777348'
     }
   }
 })
-
-
