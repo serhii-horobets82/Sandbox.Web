@@ -54,16 +54,58 @@
             </v-layout>
             <v-layout>
               <v-flex xs12>
-                <span class="red--text">TBD</span>
-                <!-- <v-autocomplete
-                  :items="employees"
-                  color="primary"
-                  item-text="nameTemp"
-                  item-value="id"
-                  label="Technical Evaluator"
-                  v-model="selectedEmployee.technicalEvaluatorId"
-                  required
-                ></v-autocomplete> -->
+                <v-list subheader>
+                  <v-subheader inset>Peers</v-subheader>
+
+                  <v-list-tile
+                    v-for="item in selectedEmployeeEvaluators['360peers']"
+                    :key="item.id"
+                    avatar
+                  >
+                    <v-list-tile-avatar color="teal">
+                      <!-- <v-avatar color="teal"> -->
+                      <span class="white--text headline">
+                        {{item.nameTemp[0] }}
+                      </span>
+                      <!-- </v-avatar> -->
+                      <!-- <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon> -->
+                    </v-list-tile-avatar>
+
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ item.nameTemp }}</v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action>
+                      <v-btn icon ripple>
+                        <!-- <v-icon color="grey lighten-1">info</v-icon> -->
+                      </v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+
+                  <v-divider inset></v-divider>
+
+                  <v-subheader inset>Customers</v-subheader>
+
+                  <v-list-tile
+                    v-for="item in selectedEmployeeEvaluators['360customers']"
+                    :key="item.id"
+                    avatar
+                  >
+                    <v-list-tile-avatar>
+                      <!-- <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon> -->
+                    </v-list-tile-avatar>
+
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action>
+                      <v-btn icon ripple>
+                        <!-- <v-icon color="grey lighten-1">info</v-icon> -->
+                      </v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </v-list>
               </v-flex>
             </v-layout>
           </v-container>
@@ -155,10 +197,20 @@ export default {
       })
       const resp = await axios.get(this.$backendUrl + 'api/employees?typeId=' + employee.employeeTypeId)
       this.selectedEmployeeEvaluators.technical = resp.data;
+
+      const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/${employee.id}/evaluators`);
+      this.selectedEmployeeEvaluators['360peers'] = res.data.peers;
+      this.selectedEmployeeEvaluators['360customers'] = res.data.customers;
     },
 
     async startEvaluation(){
       if (confirm(`This will start employee evaluation process for ${this.selectedEmployee.name}. Do you want to proceed?`)){
+        this.selectedEmployee._360employeeEvaluation =
+          []
+          .concat(this.selectedEmployeeEvaluators['360peers'].map(e => ({ evaluatorEmployeeId: e.id, _360feedbackGroupId: 2 })))
+          // .concat(this.selectedEmployeeEvaluators['360customers'].map(e => ({ evaluatorEmployeeId: e.id, _360feedbackGroupId: 3 })))
+          // .concat(this.selectedEmployeeEvaluators['360subordinates'].map(e => ({ evaluatorEmployeeId: e.id, _360feedbackGroupId: 4 })))
+
         await axios.post(this.$backendUrl + 'api/employeeEvaluations', this.selectedEmployee)
 
         this.dialog.open = false;
