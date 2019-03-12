@@ -34,32 +34,22 @@ const actions = {
       );
     });
   },
-  facebookAuthRequest: (
-    {commit, dispatch}: { commit: any; dispatch: any },
-    accessToken: string
+  OAuthRequest: (
+    {commit, dispatch}: { commit: any; dispatch: any }, res: any
   ) => {
+    let token = res.data as Token;
     return new Promise((resolve, reject) => {
       commit("authRequest");
-      authService.facebookLogin(accessToken).subscribe(
-        (result: any) => {
-          localStorage.setItem("auth-token", result); // stash the auth token in localStorage
-          commit("authSuccess", result);
-          EventBus.$emit("logged-in", null);
-          dispatch("user/userRequest", null, {root: true});
-          resolve(result);
-        },
-        (errors: any) => {
-          commit("authError", errors);
-          localStorage.removeItem("auth-token");
-          reject(errors);
-        }
-      );
+      localStorage.setItem("auth-token", token.authToken);
+      commit("authSuccess", token);
+      EventBus.$emit("logged-in", null);
+      dispatch("user/userRequest", null, {root: true});
+      resolve(token);
     });
   },
   authLogout: ({commit, dispatch}: { commit: any; dispatch: any }) => {
     return new Promise((resolve, reject) => {
       commit("authLogout");
-      console.log('logout');
       localStorage.removeItem("auth-token");
       resolve();
     });

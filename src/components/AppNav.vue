@@ -105,16 +105,29 @@
         <span>Sign in</span>
       </v-tooltip>
 
-      <!-- Sign out-->
-      <v-tooltip bottom>
-        <template #activator="data">
-          <v-btn v-on="data.on" v-show="isAuthenticated" icon @click="logOut">
-            <v-icon>exit_to_app</v-icon>
-          </v-btn>
+      <v-speed-dial
+        direction="bottom"
+        v-show="isAuthenticated">
+        <template v-slot:activator>
+          <v-avatar size="32">
+            <img
+              v-bind:src="profile.pictureUrl"
+              v-bind:alt="profile.fullName">
+          </v-avatar>
         </template>
-        <span>Sign out {{profile.firstName}}</span>
-      </v-tooltip>
+        <v-btn
+          fab
+          to="/profile"
+          small>
+          <v-icon>edit</v-icon>
+        </v-btn>
+        <v-btn
+          fab
+          small @click="logOut">
+          <v-icon>exit_to_app</v-icon>
+        </v-btn>
 
+      </v-speed-dial>
     </v-toolbar>
   </nav>
 </template>
