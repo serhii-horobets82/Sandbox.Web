@@ -1,64 +1,37 @@
 <template>
   <nav>
     <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app absolute v-model="drawer">
-      <v-list dense>
-        <template v-for="item in items">
-          <v-layout row v-if="item.heading" align-center :key="item.heading">
-            <v-flex xs6>
-              <v-subheader v-if="item.heading">
-                {{ item.heading }}
-              </v-subheader>
-            </v-flex>
-            <v-flex xs6 class="text-xs-center">
-              <a href="#!" class="body-2 black--text">EDIT</a>
-            </v-flex>
-          </v-layout>
-          <v-list-group
-            v-else-if="item.children"
-            v-model="item.model"
-            :key="item.text"
-            :prepend-icon="item.model ? item.icon : item['icon-alt']"
-            append-icon=""
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ item.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile v-for="(child, i) in item.children" :key="i">
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ child.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list-group>
-          <v-list-tile :to="item.to" v-else :key="item.text">
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{ item.text }}
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-      </v-list>
       <v-divider></v-divider>
 
-      <v-toolbar flat class="transparent">
-        <v-list>
-          <v-list-tile>
-            <Locale/>
-          </v-list-tile>
-        </v-list>
-      </v-toolbar>
+      <v-list dense>
+        <template v-for="(item, i) in sidebar">
+          <v-subheader v-if="item.header " v-text="item.header" v-bind:key="i"/>
+          <v-divider v-else-if="item.divider" v-bind:key="i" light/>
+          <template v-else>
+            <template v-if="!item.autoHide || (item.unauthRequired && !isAuthenticated) ||
+                      (item.authRequired && isAuthenticated && !item.managerRoleRequired && !item.adminRoleRequired) ||
+                      (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
+                      (item.authRequired && isAuthenticated && item.managerRoleRequired && (userIsManager || userIsAdmin))">
+              <v-list-tile :key="item.title"
+                           @click="item.router != null ? visitRoute(item.router) : visitUrl(item.link)">
+                <v-list-tile-action>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </template>
+        </template>
+      </v-list>
+
+      <v-list>
+        <v-subheader>Language</v-subheader>
+        <v-list-tile>
+          <Locale/>
+        </v-list-tile>
+      </v-list>
 
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
@@ -119,7 +92,7 @@
           fab
           to="/profile"
           small>
-          <v-icon>edit</v-icon>
+          <v-icon>person</v-icon>
         </v-btn>
         <v-btn
           fab
@@ -145,10 +118,13 @@
     computed: mapGetters({
       isAuthenticated: 'auth/isAuthenticated',
       profile: 'user/profile',
+      userIsAdmin: 'user/userIsAdmin',
+      userIsManager: 'user/userIsAdmin'
     }),
+
   })
   export default class AppNavigation extends Vue {
-    private drawer: boolean = false;
+    private drawer: boolean = true;
 
     private logOut() {
       this.$store.dispatch('auth/authLogout').then(() => {
@@ -157,6 +133,14 @@
     }
 
     private created() {
+      const isAuthenticated = this.$store.getters["auth/isAuthenticated"];
+      const profile = this.$store.getters["user/profile"];
+
+      if(isAuthenticated && !profile.id){
+        this.$store.dispatch('user/userRequest').then(() => {
+          this.$router.push('/');
+        });
+      }
       EventBus.$on('logged-in', (payLoad: any) => {
       });
     }
@@ -164,6 +148,80 @@
     private destroyed() {
       EventBus.$off('logged-in');
     }
+
+    visitUrl(url: string) {
+      window.open(url);
+    }
+
+    visitRoute(url: string) {
+      // temporary
+      if (url === '/logout') {
+        this.logOut();
+        this.$router.push('/');
+        return;
+      }
+      this.$router.push(url)
+    }
+
+    sidebar: any = [
+      {header: 'Main'},
+      {
+        title: 'Home',
+        icon: 'home',
+        router: '/'
+      },
+      {
+        title: 'Organization',
+        icon: 'supervisor_account',
+        router: '/organization'
+      },
+      {
+        title: 'Evaluation',
+        icon: 'ballot',
+        router: '/evaluation'
+      },
+      {
+        title: 'OKR',
+        icon: 'timeline',
+        router: '/okr'
+      },
+      {
+        title: 'About',
+        icon: 'info',
+        router: '/about'
+      },
+      {header: 'Personal'},
+      {
+        title: 'Account',
+        icon: 'person',
+        router: '/profile',
+        authRequired: true,
+        autoHide: true
+      },
+      {
+        title: 'Login',
+        icon: 'person',
+        router: '/auth',
+        unauthRequired: true,
+        autoHide: true
+      },
+      {
+        title: 'Logout',
+        icon: 'exit_to_app',
+        router: '/logout',
+        authRequired: true,
+        autoHide: true
+      },
+      {
+        title: 'Administrator',
+        icon: 'build',
+        router: '/admin',
+        authRequired: true,
+        adminRoleRequired: true,
+        autoHide: true
+      }
+    ];
+
 
     private items: any = [
       {id: 1, icon: "home", text: "Home", to: "/"},

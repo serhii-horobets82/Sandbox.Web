@@ -4,6 +4,7 @@ import Vuex from "vuex";
 import auth from "@/modules/auth/store";
 import home from "@/modules/home/store";
 import user from "@/modules/user/store";
+import admin from "@/modules/admin/store";
 import evaluation from "@/modules/evaluation/store";
 import okr from "@/modules/okr/store";
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     auth,
     user,
     home,
+    admin,
     evaluation,
     okr
   }

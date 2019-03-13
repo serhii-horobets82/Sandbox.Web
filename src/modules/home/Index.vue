@@ -10,8 +10,7 @@
           Welcome to Evoflare
         </h1>
         <h2 v-if="isAuthenticated">{{profile.fullName}}</h2>
-
-        <v-avatar>
+        <v-avatar v-if="isAuthenticated">
           <img
             v-bind:src="profile.pictureUrl"
             v-bind:alt="profile.fullName">
