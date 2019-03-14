@@ -1,3 +1,4 @@
+import {NavigationGroup} from "../models/navigation.interface";
 <template>
   <nav>
     <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app absolute v-model="drawer">
@@ -5,15 +6,25 @@
 
       <v-list dense>
         <template v-for="(item, i) in sidebar">
-          <v-subheader v-if="item.header " v-text="item.header" v-bind:key="i"/>
+          <v-subheader v-if="item.header" v-text="item.header" v-bind:key="i"/>
           <v-divider v-else-if="item.divider" v-bind:key="i" light/>
           <template v-else>
-            <template v-if="!item.autoHide || (item.unauthRequired && !isAuthenticated) ||
-                      (item.authRequired && isAuthenticated && !item.managerRoleRequired && !item.adminRoleRequired) ||
-                      (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
-                      (item.authRequired && isAuthenticated && item.managerRoleRequired && (userIsManager || userIsAdmin))">
-              <v-list-tile :key="item.title"
-                           @click="item.router != null ? visitRoute(item.router) : visitUrl(item.link)">
+            <template
+              v-if="
+                !item.autoHide ||
+                  (item.unauthRequired && !isAuthenticated) ||
+                  (item.authRequired &&
+                    isAuthenticated &&
+                    !item.managerRoleRequired &&
+                    !item.adminRoleRequired) ||
+                  (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
+                  (item.authRequired &&
+                    isAuthenticated &&
+                    item.managerRoleRequired &&
+                    (userIsManager || userIsAdmin))
+              "
+            >
+              <v-list-tile :key="item.title" :to="item.router">
                 <v-list-tile-action>
                   <v-icon>{{ item.icon }}</v-icon>
                 </v-list-tile-action>
@@ -28,11 +39,8 @@
 
       <v-list>
         <v-subheader>Language</v-subheader>
-        <v-list-tile>
-          <Locale/>
-        </v-list-tile>
+        <v-list-tile></v-list-tile>
       </v-list>
-
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
       <v-toolbar-title style="width: 200px" class="ml-0 pl-3">
@@ -49,7 +57,7 @@
       ></v-text-field>
 
       <v-spacer></v-spacer>
-
+      <Locale/>
       <!--render top right icons-->
       <template v-for="item in items">
         <v-tooltip bottom :key="item.text">
@@ -67,7 +75,6 @@
         </v-tooltip>
       </template>
 
-
       <!-- Sign in-->
       <v-tooltip bottom>
         <template #activator="data">
@@ -78,29 +85,28 @@
         <span>Sign in</span>
       </v-tooltip>
 
-      <v-speed-dial
-        direction="bottom"
-        v-show="isAuthenticated">
-        <template v-slot:activator>
-          <v-avatar size="32">
-            <img
-              v-bind:src="profile.pictureUrl"
-              v-bind:alt="profile.fullName">
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-avatar size="32" v-on="on" v-if="profile">
+            <img :src="profile.pictureUrl" :alt="profile.fullName"/>
           </v-avatar>
+          <v-icon v-else>account_circle</v-icon>
         </template>
-        <v-btn
-          fab
-          to="/profile"
-          small>
-          <v-icon>person</v-icon>
-        </v-btn>
-        <v-btn
-          fab
-          small @click="logOut">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
-
-      </v-speed-dial>
+        <v-list>
+          <v-list-tile
+            v-for="(item, index) in personalNavigationAuth"
+            :key="index"
+            :to="item.router"
+          >
+            <v-list-tile-content>
+              <v-list-tile-title v-text="item.title"/>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar>
   </nav>
 </template>
@@ -108,45 +114,119 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import Locale from "./Locale.vue";
-  import {EventBus} from '@/event-bus';
-  import {mapGetters} from 'vuex';
+  import {mapGetters} from "vuex";
+  import {EventBus} from "@/event-bus";
+  import {NavigationItem, NavigationGroup} from "@/models/navigation.interface";
+  import {UserProfile} from "@/modules/user/types";
 
   @Component({
     components: {
       Locale
     },
-    computed: mapGetters({
-      isAuthenticated: 'auth/isAuthenticated',
-      profile: 'user/profile',
-      userIsAdmin: 'user/userIsAdmin',
-      userIsManager: 'user/userIsAdmin'
-    }),
-
+    computed: {
+      ...mapGetters("auth", ["isAuthenticated"]),
+      ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
+    }
   })
   export default class AppNavigation extends Vue {
+    // for mapped variables
+    isAuthenticated: boolean;
+    profile: UserProfile;
+
+    // private variables
     private drawer: boolean = true;
 
+    sidebar: Array<NavigationItem> = [
+      {header: "Main"},
+      {
+        title: "Home",
+        icon: "home",
+        router: "/"
+      },
+      {
+        title: "Organization",
+        icon: "supervisor_account",
+        router: "/organization"
+      },
+      {
+        title: "Evaluation",
+        icon: "ballot",
+        router: "/evaluation"
+      },
+      {
+        title: "OKR",
+        icon: "timeline",
+        router: "/okr"
+      },
+      {
+        title: "About",
+        icon: "info",
+        router: "/about"
+      },
+      {header: "Personal"},
+      {
+        title: "Account",
+        icon: "person",
+        router: "/profile",
+        authRequired: true,
+        group: NavigationGroup.Personal,
+        autoHide: true
+      },
+      {
+        title: "Sign in",
+        icon: "lock",
+        router: "/auth",
+        unauthRequired: true,
+        autoHide: true,
+        group: NavigationGroup.Personal
+      },
+      {
+        title: "Administrator",
+        icon: "build",
+        router: "/admin",
+        authRequired: true,
+        adminRoleRequired: true,
+        autoHide: true,
+        group: NavigationGroup.Personal
+      },
+      {
+        title: "Sign out",
+        icon: "exit_to_app",
+        router: "/logout",
+        authRequired: true,
+        autoHide: true,
+        group: NavigationGroup.Personal
+      }
+    ];
+
+    get personalNavigation(): Array<NavigationItem> {
+      return this.sidebar.filter(i => i.group === NavigationGroup.Personal);
+    }
+
+    get personalNavigationAuth(): Array<NavigationItem> {
+      return this.sidebar.filter(i => i.group === NavigationGroup.Personal && i.authRequired);
+    }
+
+    // methods
     private logOut() {
-      this.$store.dispatch('auth/authLogout').then(() => {
-        this.$router.push('/');
+      this.$store.dispatch("auth/authLogout").then(() => {
+        this.$router.push("/");
       });
     }
 
     private created() {
-      const isAuthenticated = this.$store.getters["auth/isAuthenticated"];
-      const profile = this.$store.getters["user/profile"];
-
-      if(isAuthenticated && !profile.id){
-        this.$store.dispatch('user/userRequest').then(() => {
-          this.$router.push('/');
+      // try reload profile data on page refresh
+      if (this.isAuthenticated && !this.profile) {
+        this.$store.dispatch("user/userRequest").then(() => {
+          this.$router.push("/");
         });
       }
-      EventBus.$on('logged-in', (payLoad: any) => {
+      EventBus.$on("logged-in", (payLoad: any) => {
       });
     }
 
     private destroyed() {
-      EventBus.$off('logged-in');
+      EventBus.$off("logged-in");
     }
 
     visitUrl(url: string) {
@@ -155,73 +235,13 @@
 
     visitRoute(url: string) {
       // temporary
-      if (url === '/logout') {
+      if (url === "/logout") {
         this.logOut();
-        this.$router.push('/');
+        this.$router.push("/");
         return;
       }
-      this.$router.push(url)
+      this.$router.push(url);
     }
-
-    sidebar: any = [
-      {header: 'Main'},
-      {
-        title: 'Home',
-        icon: 'home',
-        router: '/'
-      },
-      {
-        title: 'Organization',
-        icon: 'supervisor_account',
-        router: '/organization'
-      },
-      {
-        title: 'Evaluation',
-        icon: 'ballot',
-        router: '/evaluation'
-      },
-      {
-        title: 'OKR',
-        icon: 'timeline',
-        router: '/okr'
-      },
-      {
-        title: 'About',
-        icon: 'info',
-        router: '/about'
-      },
-      {header: 'Personal'},
-      {
-        title: 'Account',
-        icon: 'person',
-        router: '/profile',
-        authRequired: true,
-        autoHide: true
-      },
-      {
-        title: 'Login',
-        icon: 'person',
-        router: '/auth',
-        unauthRequired: true,
-        autoHide: true
-      },
-      {
-        title: 'Logout',
-        icon: 'exit_to_app',
-        router: '/logout',
-        authRequired: true,
-        autoHide: true
-      },
-      {
-        title: 'Administrator',
-        icon: 'build',
-        router: '/admin',
-        authRequired: true,
-        adminRoleRequired: true,
-        autoHide: true
-      }
-    ];
-
 
     private items: any = [
       {id: 1, icon: "home", text: "Home", to: "/"},

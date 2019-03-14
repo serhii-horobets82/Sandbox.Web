@@ -27,7 +27,7 @@ const routes: RouteConfig[] = [
       },
       {
         path: "addUser",
-        name: "activitylogs",
+        name: "addUser",
         component: AddUser,
         meta: {requiresAuth: true, requiresAdminRole: true}
       }

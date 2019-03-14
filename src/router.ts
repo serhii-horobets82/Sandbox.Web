@@ -14,7 +14,15 @@ Vue.use(Router);
 const router: Router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [...AuthRoutes, ...UserRoutes, ...AdminRoutes, ...HomeRoutes, ...OrganizationRoutes, ...EvaluationRoutes, ...OkrRoutes]
+  routes: [
+    ...AuthRoutes,
+    ...UserRoutes,
+    ...AdminRoutes,
+    ...HomeRoutes,
+    ...OrganizationRoutes,
+    ...EvaluationRoutes,
+    ...OkrRoutes
+  ]
 });
 
 router.beforeEach((to: Route, from: Route, next: any) => {
@@ -23,16 +31,14 @@ router.beforeEach((to: Route, from: Route, next: any) => {
     const isAuthenticated = store.getters["auth/isAuthenticated"];
     const userIsAdmin = store.getters["user/userIsAdmin"];
     const userIsManager = store.getters["user/userIsManager"];
+    const userIsHR = store.getters["user/userIsHR"];
 
     if (!isAuthenticated) {
       next({path: "/auth", query: {redirect: to.fullPath}});
     } else {
-
       if (to.matched.some((record: RouteRecord) => record.meta.requiresAdminRole) && !userIsAdmin) {
-          next({path: "/", query: {redirect: to.fullPath}});
-      }
-      else
-      next();
+        next({path: "/403", query: {redirect: "/403"}});
+      } else next();
     }
   } else {
     next();
