@@ -112,7 +112,7 @@ import {NavigationGroup} from "../models/navigation.interface";
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+  import {Component, Prop, Vue} from "vue-property-decorator";
   import Locale from "./Locale.vue";
   import {mapGetters} from "vuex";
   import {EventBus} from "@/event-bus";

@@ -1,6 +1,9 @@
 <template>
   <v-app>
-    <app-navigation></app-navigation>
+    <core-toolbar />
+    <core-drawer />
+
+    <!--<app-navigation></app-navigation>-->
     <v-content>
       <router-view/>
     </v-content>
@@ -18,4 +21,5 @@
   }
 </script>
 <style lang="scss">
+  @import '@/styles/index.scss';
 </style>
