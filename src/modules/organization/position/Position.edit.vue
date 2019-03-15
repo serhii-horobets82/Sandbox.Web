@@ -58,8 +58,6 @@
 
         </v-card-text>
 
-        <v-card-text>
-        </v-card-text>
 
 
       </v-card>
@@ -110,30 +108,30 @@
 
         </v-card-title>
         <v-card-text>
-      <v-card v-for="role in rolesFiltered" :key="role.id">
-        <v-card-title class="headline">{{role.name}}</v-card-title>
+        <v-card v-for="role in rolesFiltered" :key="role.id">
+          <v-card-title class="headline">{{role.name}}</v-card-title>
 
-        <v-card-text>
-          {{ role.summary }}
-        </v-card-text>
+          <v-card-text>
+            {{ role.summary }}
+          </v-card-text>
 
-        <v-card-text>
-          {{ role.description }}
-        </v-card-text>
+          <v-card-text>
+            {{ role.description }}
+          </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            :disabled="positionRolesIds.has(role.id)"
-            color="green darken-1"
-            flat="flat"
-            @click="addRole(role)"
-          >
-            <v-icon v-if="positionRolesIds.has(role.id)" color="success">done</v-icon>
-            {{ positionRolesIds.has(role.id) ? 'Added' : 'Add' }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              :disabled="positionRolesIds.has(role.id)"
+              color="green darken-1"
+              flat="flat"
+              @click="addRole(role)"
+            >
+              <v-icon v-if="positionRolesIds.has(role.id)" color="success">done</v-icon>
+              {{ positionRolesIds.has(role.id) ? 'Added' : 'Add' }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-card-text>
 
       <v-divider></v-divider>

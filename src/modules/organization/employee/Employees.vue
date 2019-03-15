@@ -1,15 +1,24 @@
 <template>
   <v-container>
-    <v-layout row align-center>
+    <v-layout row align-center class="mb-2">
       <h3>Employees</h3>
       <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
       <v-btn color="primary" :to="{name:'employeeEdit', params:{id: 0}}">Create</v-btn>
     </v-layout>
 
     <v-data-table
       :headers="headers"
       :items="employees"
+      :search="search"
       class="elevation-1"
+      :pagination.sync="pagination"
     >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
@@ -34,6 +43,8 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      search: null,
+      pagination: {rowsPerPage: -1},
       headers: [{
         text: 'ID',
         sortable: true,

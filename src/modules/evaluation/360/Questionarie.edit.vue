@@ -155,7 +155,11 @@ export default {
 
       console.log(res.data)
 
-      const result = {}
+      const result = {
+        1: {question:null},
+        3: {question:null},
+        5: {question:null},
+      }
       res.data.forEach(d => {
         const t = {
           question: d._360question.length ? d._360question[0].question : null,
@@ -167,30 +171,30 @@ export default {
       this.questionsByMark = result;
       return ;
 
-      if (!res.data.length){
-        const data = {
-          1: {_360question: []},
-          3: {_360question: []},
-          5: {_360question: []},
-        }
-        this.questionsByMark = data;
-        return ;
-      }
-      // current implementation expect single aggregated statement per mark
-      const data = {}
-      data[1] = getOne(res.data, 1);
-      data[3] = getOne(res.data, 3);
-      data[5] = getOne(res.data, 5);
-      this.questionsByMark = data;
+      // if (!res.data.length){
+      //   const data = {
+      //     1: {_360question: []},
+      //     3: {_360question: []},
+      //     5: {_360question: []},
+      //   }
+      //   this.questionsByMark = data;
+      //   return ;
+      // }
+      // // current implementation expect single aggregated statement per mark
+      // const data = {}
+      // data[1] = getOne(res.data, 1);
+      // data[3] = getOne(res.data, 3);
+      // data[5] = getOne(res.data, 5);
+      // this.questionsByMark = data;
 
-      function getOne(qs, mark){
-        const result = qs.find(d => d.markId == mark);
-        if (result) {
-          const q = result;
-          return q;
-        }
-        return {_360question: []};
-      }
+      // function getOne(qs, mark){
+      //   const result = qs.find(d => d.markId == mark);
+      //   if (result) {
+      //     const q = result;
+      //     return q;
+      //   }
+      //   return {_360question: []};
+      // }
     },
 
     async saveQuestionStatements(){

@@ -21,30 +21,38 @@
               <v-card-title primary-title>
                 <div>
                   <div class="headline">{{ position.name }}</div>
-                  <span>ID: {{ position.id }}</span>
+                  <!-- <span>ID: {{ position.id }}</span> -->
                 </div>
               </v-card-title>
               <v-card-text>
-                <v-card v-for="item in position.positionRole" :key="item.id">
-                  <v-card-title>{{ item.role.name }}</v-card-title>
+                <v-card v-for="item in position.positionRole" :key="item.id" class="mb-1">
+                  <v-card-title>
+
+                      <span class="subheading">{{ item.role.name }}</span>
+
+
+                  </v-card-title>
+                  <v-divider></v-divider>
                   <v-card-text>
-                      <v-list dense>
-                          <!-- <v-subheader>Recent chat</v-subheader> -->
-                          <v-list-tile
-                            v-for="competence in item.role.ecfRoleCompetence"
-                            :key="competence.id"
-                          >
+                    <EcfCompetenceRow v-for="competence in (getRoleCompetences(item.role) || [])" :key="competence.id"
+                      :competence="competence"
+                      :competenceLevels="competence.levels"
+                      ></EcfCompetenceRow>
+                      <!-- <v-list dense>
+                        <v-list-tile
+                          v-for="competence in item.role.ecfRoleCompetence"
+                          :key="competence.id"
+                        >
 
-                            <v-list-tile-content>
-                              <!-- <v-list-tile-title v-text="item.title"></v-list-tile-title> -->
-                              <v-list-tile-title>{{ competence.competence.name }}</v-list-tile-title>
-                              </v-list-tile-content>
+                          <v-list-tile-content>
+                            <v-list-tile-title>{{ competence.competence.name }}</v-list-tile-title>
+                          </v-list-tile-content>
 
-                            <v-list-tile-action>
-                              {{ competence.competenceLevel }}
-                            </v-list-tile-action>
-                          </v-list-tile>
-                        </v-list>
+                          <v-list-tile-action>
+                            {{ competence.competenceLevel }}
+                          </v-list-tile-action>
+                        </v-list-tile>
+                      </v-list> -->
 
                   </v-card-text>
                 </v-card>
@@ -64,8 +72,13 @@
 
 <script>
 import axios from 'axios';
+import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
 
 export default {
+  components: {
+    EcfCompetenceRow
+  },
+
   data() {
     return {
       positions: [],
@@ -81,6 +94,32 @@ export default {
   async created() {
     const response = await axios.get(this.$backendUrl + 'api/positions')
     this.positions = response.data;
+
+
+  },
+
+  methods: {
+    getRoleCompetences(role){
+      const competences = []
+      for (let c of role.ecfRoleCompetence) {
+        const item = {
+          id: c.competence.id,
+          name: c.competence.name,
+          levels: [],
+          roleLevel: c.competenceLevel
+        }
+
+        for (let level of c.competence.ecfCompetenceLevel) {
+          item.levels[level.level] = {
+            description: level.description,
+            level: level.level
+          }
+        }
+
+        competences.push(item)
+      }
+      return  competences
+    }
   }
 }
 </script>
