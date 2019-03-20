@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <core-toolbar />
+
     <core-drawer />
 
     <!--<app-navigation></app-navigation>-->

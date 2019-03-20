@@ -12,12 +12,26 @@ import {GlobalState} from "@/types/global";
 
 Vue.use(Vuex);
 
-const store: StoreOptions<GlobalState> = {
-  state: {
+const getDefaultState = () => {
+  return {
+    title: "Evoflare",
     version: version,
     drawer: true,
-    color: 'success',
+    color: 'info',
     image: 'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg'
+  };
+};
+
+export const set = (property: any) => (state: any, payload: any) => (state[property] = payload);
+export const toggle = (property: any) => (state: any) => (state[property] = !state[property]);
+
+const store: StoreOptions<GlobalState> = {
+  state: getDefaultState(),
+  mutations: {
+    setDrawer: set('drawer'),
+    setImage: set('image'),
+    setColor: set('color'),
+    toggleDrawer: toggle('drawer')
   },
   modules: {
     auth,

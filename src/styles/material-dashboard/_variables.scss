@@ -2,7 +2,7 @@
 @import "./colors";
 
 //  Brand Colors
-$brand-primary:                    $purple !default;
+$brand-primary:                    $cyan !default;
 $brand-success:                    $green !default;
 $brand-danger:                     $red !default;
 $brand-warning:                    $orange !default;
@@ -89,7 +89,7 @@ $mdb-shadow-ambient-shadow-opacity: .12 !default;
 $toolbar-min-height:                70px !default;
 
 // Toolbar Margin
-$toolbar-margin-left:               260px !default;
+$toolbar-margin-left:               0px !default;
 
 //  Body Background Color
 $body-color:                        #eee !default;

@@ -1,29 +1,24 @@
 <template>
   <v-toolbar
     id="core-toolbar"
-
+    app
     flat
-    prominent
-    style="background: #eee;"
+    fixed
   >
-    <div class="v-toolbar-title">
-      <v-toolbar-title
-        class="tertiary--text font-weight-light"
+    <v-toolbar-title
+      class="tertiary--text font-weight-light"
+    >
+      <v-btn
+        class="default v-btn--simple"
+        dark
+        icon
+        @click.stop="onClickBtn"
       >
-        <v-btn
-          v-if="responsive"
-          class="default v-btn--simple"
-          dark
-          icon
-          @click.stop="onClickBtn"
-        >
-          <v-icon>mdi-view-list</v-icon>111
-        </v-btn>
-        {{ title }}
-      </v-toolbar-title>
-    </div>
-
-    <v-spacer />
+        <v-icon>list</v-icon>
+      </v-btn>
+      {{ title }}
+    </v-toolbar-title>
+    <v-spacer/>
     <v-toolbar-items>
       <v-flex
         align-center
@@ -37,114 +32,111 @@
           hide-details
           color="purple"
         />
+        <!-- Dashboard icon -->
         <router-link
           v-ripple
           class="toolbar-items"
-          to="/"
-        >
-          <v-icon color="tertiary">mdi-view-dashboard</v-icon>
+          to="/">
+          <v-icon color="tertiary">dashboard</v-icon>
         </router-link>
-        <v-menu
-          bottom
-          left
-          content-class="dropdown-menu"
-          offset-y
-          transition="slide-y-transition">
-          <router-link
-            v-ripple
-            slot="activator"
-            class="toolbar-items"
-            to="/notifications"
-          >
-            <v-badge
-              color="error"
-              overlap
+
+        <!-- Language switch -->
+        <widget-locale/>
+
+        <!-- Notification -->
+        <widget-notifications/>
+
+        <!-- Sign in-->
+        <router-link v-show="!isAuthenticated"
+                     :title="$t('Auth.signIn')"
+                     v-ripple
+                     class="toolbar-items"
+                     to="/auth">
+          <v-icon color="tertiary">lock</v-icon>
+        </router-link>
+
+        <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
+          <template #activator="data">
+            <v-avatar size="32" v-on="data.on">
+              <img :src="profile.pictureUrl" :alt="profile.fullName"/>
+            </v-avatar>
+          </template>
+          <v-list>
+            <v-list-tile
+              v-for="(item, index) in personalNavigationAuth"
+              :key="index"
+              :to="item.router"
             >
-              <template slot="badge">
-                {{ notifications.length }}
-              </template>
-              <v-icon color="tertiary">mdi-bell</v-icon>
-            </v-badge>
-          </router-link>
-          <v-card>
-            <v-list dense>
-              <v-list-tile
-                v-for="notification in notifications"
-                :key="notification"
-                @click="onClick"
-              >
-                <v-list-tile-title
-                  v-text="notification"
-                />
-              </v-list-tile>
-            </v-list>
-          </v-card>
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title v-text="item.title"/>
+              </v-list-tile-content>
+
+            </v-list-tile>
+          </v-list>
         </v-menu>
-        <router-link
-          v-ripple
-          class="toolbar-items"
-          to="/user-profile"
-        >
-          <v-icon color="tertiary">mdi-account</v-icon>
-        </router-link>
+
       </v-flex>
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
-<script>
+<script lang="ts">
+  import {
+    mapMutations,
+    mapGetters
+  } from 'vuex'
+  import {EventBus} from "@/event-bus";
+  import {NavigationItem, NavigationGroup} from "@/models/navigation.interface";
+  import {UserProfile} from "@/modules/user/types";
+  import Menu from "@/data/menu";
 
-import {
-  mapMutations
-} from 'vuex'
-
-export default {
-  data: () => ({
-    notifications: [
-      'Mike, John responded to your email',
-      'You have 5 new tasks',
-      'You\'re now a friend with Andrew',
-      'Another Notification',
-      'Another One'
-    ],
-    title: null,
-    responsive: false,
-    responsiveInput: false
-  }),
-
-  watch: {
-    '$route' (val) {
-      this.title = val.name
-    }
-  },
-
-  mounted () {
-    this.onResponsiveInverted()
-    window.addEventListener('resize', this.onResponsiveInverted)
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.onResponsiveInverted)
-  },
-
-  methods: {
-    ...mapMutations(['setDrawer', 'toggleDrawer']),
-    onClickBtn () {
-      this.setDrawer(!this.$store.state.drawer)
+  export default {
+    data: () => ({
+      title: null,
+      responsive: false,
+      responsiveInput: false
+    }),
+    computed: {
+      ...mapGetters('auth', ['isAuthenticated']),
+      ...mapGetters('user', ['profile', 'userIsAdmin', 'userIsManager']),
+      personalNavigationAuth(): Array<NavigationItem> {
+        return Menu.filter(i => i.group === NavigationGroup.Personal && i.authRequired);
+      }
     },
-    onClick () {
-      //
+    watch: {
+      '$route' (val) {
+        this.title = val.name
+      }
     },
-    onResponsiveInverted () {
-      if (window.innerWidth < 991) {
-        this.responsive = true
-        this.responsiveInput = false
-      } else {
-        this.responsive = false
-        this.responsiveInput = true
+
+
+    mounted () {
+      this.onResponsiveInverted()
+      window.addEventListener('resize', this.onResponsiveInverted)
+    },
+    beforeDestroy () {
+      window.removeEventListener('resize', this.onResponsiveInverted)
+    },
+
+    methods: {
+      ...mapMutations(['toggleDrawer']),
+      onClickBtn () {
+        this.toggleDrawer()
+      },
+      onResponsiveInverted () {
+        if (window.innerWidth < 991) {
+          this.responsive = true
+          this.responsiveInput = false
+        } else {
+          this.responsive = false
+          this.responsiveInput = true
+        }
       }
     }
   }
-}
 </script>
 
 <style>
