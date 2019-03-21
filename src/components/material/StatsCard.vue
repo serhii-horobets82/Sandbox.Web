@@ -16,6 +16,7 @@
       >
         {{ icon }}
       </v-icon>
+
     </v-card>
     <div class="text-xs-right">
       <p

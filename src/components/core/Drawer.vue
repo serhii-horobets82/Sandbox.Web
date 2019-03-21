@@ -199,7 +199,7 @@
     isAuthenticated: boolean;
     profile: UserProfile;
 
-    logo: string = './img/logo.png';
+    logo: string = '/img/logo.png';
     responsive: boolean = false;
 
     links : Array<NavigationItem> = Menu;
