@@ -9,7 +9,6 @@
       slot="activator"
       class="toolbar-items">
     <v-badge
-
       color="error"
       overlap
     >

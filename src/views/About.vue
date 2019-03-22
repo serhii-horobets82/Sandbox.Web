@@ -5,16 +5,8 @@
         <material-card color="green" :title="$t('About.title')">
           <v-container>
             <v-layout wrap>
-              <!--<v-flex lg4 sm6 xs12>-->
-                <!--<widget-stats-->
-                  <!--icon="fas fa-info-circle"-->
-                  <!--:title="versionData.version"-->
-                  <!--:sub-title="$t('About.apiVersion')"-->
-                  <!--color="info"-->
-                <!--&gt;-->
-                <!--</widget-stats>-->
-              <!--</v-flex>-->
-              <v-flex xs12>
+
+              <v-flex xs12 lg4>
                 <material-stats-card
                   color="info"
                   icon="info"
@@ -22,20 +14,20 @@
                   :value="versionData.version"
                 />
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 lg4>
                 <material-stats-card
                   color="orange"
                   icon="cloud"
                   :title="$t('About.databaseInfo')"
-                  :small-value="versionData.database"
+                  :small-value="versionData.database | splitStr(',',1)"
                 />
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 sm lg4>
                 <material-stats-card
                   color="red"
                   icon="update"
                   :title="$t('About.apiUpdateDate')"
-                  :value="versionData.creationDate | formatDate"
+                  :small-value="versionData.creationDate | formatDate"
                 />
               </v-flex>
               <v-flex xs12 text-xs-right>

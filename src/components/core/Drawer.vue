@@ -82,92 +82,6 @@
     </v-img>
   </v-navigation-drawer>
 </template>
-
-<script2>
-  // Utilities
-  import {
-  mapMutations,
-  mapState
-  } from 'vuex'
-
-  export default {
-  data: () => ({
-  logo: './img/logo.png',
-  menu : Menu,
-  links: [
-  {
-  to: '/dashboard',
-  icon: 'home',
-  text: 'Dashboard'
-  },
-  {
-  to: '/user-profile',
-  icon: 'mdi-account',
-  text: 'User Profile'
-  },
-  {
-  to: '/table-list',
-  icon: 'mdi-clipboard-outline',
-  text: 'Table List'
-  },
-  {
-  to: '/typography',
-  icon: 'mdi-format-font',
-  text: 'Typography'
-  },
-  {
-  to: '/icons',
-  icon: 'mdi-chart-bubble',
-  text: 'Icons'
-  },
-  {
-  to: '/maps',
-  icon: 'mdi-map-marker',
-  text: 'Maps'
-  },
-  {
-  to: '/notifications',
-  icon: 'mdi-bell',
-  text: 'Notifications'
-  }
-  ],
-  responsive: false
-  }),
-  computed: {
-  ...mapState(['image', 'color', ]),
-  inputValue: {
-  get () {
-  return this.$store.state.drawer
-  },
-  set (val) {
-  this.setDrawer(val)
-  }
-  },
-  items () {
-  console.log('xxx')
-  return this.$t('Layout.View.items')
-  }
-  },
-  mounted () {
-  this.onResponsiveInverted()
-  window.addEventListener('resize', this.onResponsiveInverted)
-  },
-  beforeDestroy () {
-  window.removeEventListener('resize', this.onResponsiveInverted)
-  },
-  methods: {
-  ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-  onResponsiveInverted () {
-  if (window.innerWidth < 991) {
-  this.responsive = true
-  } else {
-  this.responsive = false
-  }
-  }
-  }
-  }
-</script2>
-
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import {mapGetters, mapState, mapMutations} from "vuex";
@@ -191,17 +105,21 @@
       },
     },
     methods: {
-      ...mapMutations(['setDrawer', 'toggleDrawer']),
+    },
+    created(): void {
+      // try reload profile data on page refresh
+      if (this.isAuthenticated && !this.profile) {
+        this.$store.dispatch("user/userRequest").then(() => {
+          this.$router.push("/");
+        });
+      }
+      EventBus.$on("logged-in", (payLoad: any) => {
+      });
     }
   })
   export default class AppDrawer extends Vue {
-    // for mapped variables
-    isAuthenticated: boolean;
-    profile: UserProfile;
-
     logo: string = '/img/logo.png';
     responsive: boolean = false;
-
     links : Array<NavigationItem> = Menu;
 
     get personalNavigation(): Array<NavigationItem> {
@@ -216,17 +134,6 @@
     private logOut() {
       this.$store.dispatch("auth/authLogout").then(() => {
         this.$router.push("/");
-      });
-    }
-
-    private created() {
-      // try reload profile data on page refresh
-      if (this.isAuthenticated && !this.profile) {
-        this.$store.dispatch("user/userRequest").then(() => {
-          this.$router.push("/");
-        });
-      }
-      EventBus.$on("logged-in", (payLoad: any) => {
       });
     }
 

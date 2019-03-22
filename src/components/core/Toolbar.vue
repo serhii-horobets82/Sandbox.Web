@@ -4,7 +4,7 @@
       <v-btn class="default v-btn--simple" dark icon @click.stop="onClickBtn">
         <v-icon>list</v-icon>
       </v-btn>
-      {{ title }}
+      <!--{{ title }}-->
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
@@ -40,7 +40,7 @@
 
         <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
           <template #activator="data">
-            <v-avatar size="28" v-on="data.on" v-show="isAuthenticated">
+            <v-avatar size="32" v-on="data.on" v-show="isAuthenticated">
               <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile"/>
               <v-icon color="tertiary" v-else>person</v-icon>
             </v-avatar>
@@ -65,7 +65,7 @@
   </v-toolbar>
 </template>
 
-<script lang="ts">
+<script>
   import {mapMutations, mapGetters} from "vuex";
   import {EventBus} from "@/event-bus";
   import {NavigationItem, NavigationGroup} from "@/models/navigation.interface";
@@ -81,7 +81,7 @@
     computed: {
       ...mapGetters("auth", ["isAuthenticated"]),
       ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"]),
-      personalNavigationAuth(): Array<NavigationItem> {
+      personalNavigationAuth() {
         return Menu.filter(i => i.group === NavigationGroup.Personal && i.authRequired);
       }
     },

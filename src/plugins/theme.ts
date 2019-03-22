@@ -1,7 +1,7 @@
 import colors from "vuetify/es5/util/colors";
 
 export default {
-  primary: 'info',
+  primary: '#00bcd4',
   secondary: '#4caf50',
   tertiary: '#495057',
   accent: '#82B1FF',

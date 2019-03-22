@@ -5,17 +5,12 @@
         <router-view />
       </v-fade-transition>
     </div>
-    <core-footer v-if="$route.name !== 'Maps'" />
   </v-content>
 </template>
 
 <script>
 export default {
-  metaInfo () {
-    return {
-      title: 'Vuetify Material Dashboard by CreativeTim'
-    }
-  }
+
 }
 </script>
 

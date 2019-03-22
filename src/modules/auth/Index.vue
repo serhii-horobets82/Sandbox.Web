@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout justify-center>
-      <v-flex xs12 sm6 md4>
+      <v-flex xs12 sm6 md6 lg4>
         <material-card
           color="info"
           :title="$t('Auth.signIn')"

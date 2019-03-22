@@ -1,21 +1,42 @@
 <template>
-  <v-container>
+  <v-container fill-height
+               fluid
+               grid-list-xl>
     <v-layout text-xs-center wrap>
       <v-flex xs12>
         <v-img :src="require('../../assets/logo.png')" class="my-3" contain height="200"></v-img>
       </v-flex>
-
+      <v-flex lg4 sm6 xs12>
+        <widget-stats
+          icon="fas fa-info-circle"
+          title="Evoflare"
+          sub-title="Welcome"
+          color="info"
+        >
+        </widget-stats>
+      </v-flex>
+      <v-flex lg4 sm6 xs12>
+        <widget-stats
+          icon="fab fa-facebook"
+          title="100+"
+          sub-title="Likes"
+          color="indigo"
+        >
+        </widget-stats>
+      </v-flex>
+      <v-flex lg4 sm6 xs12>
+        <widget-stats
+          icon="fab fa-google"
+          title="150+"
+          sub-title="Connections"
+          color="red"
+        >
+        </widget-stats>
+      </v-flex>
       <v-flex xs12>
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Evoflare
         </h1>
-        <h2 v-if="isAuthenticated && profile">{{profile.fullName}}</h2>
-        <v-avatar v-if="isAuthenticated">
-          <img v-if="profile"
-            v-bind:src="profile.pictureUrl"
-            v-bind:alt="profile.fullName">
-        </v-avatar>
-
       </v-flex>
       <v-flex
         md12
@@ -108,7 +129,7 @@
 
 <script>
   export default {
-    data () {
+    data() {
       return {
         dailySalesChart: {
           data: {
@@ -252,7 +273,7 @@
       }
     },
     methods: {
-      complete (index) {
+      complete(index) {
         this.list[index] = !this.list[index]
       }
     }
