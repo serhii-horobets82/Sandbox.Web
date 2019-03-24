@@ -6,7 +6,7 @@
         <v-list two-line subheader >
           <div v-for="group in groups"  :key="group.id">
           <!-- <template v-for="group in groups"> -->
-            <v-subheader inset>
+            <v-subheader>
               {{ group.type}}
               <v-spacer></v-spacer>
               <v-btn icon flat small class="ma-0 right" color="success" @click="addQuestion(group.id)">
@@ -19,7 +19,7 @@
                 @click="selectQuestion(question.id)"
                 :class="selectedQuestionId == question.id ? 'blue--text text--darken-1' : ''"
               >
-                <v-list-tile-title>
+                <v-list-tile-title class="ml-4">
                     {{ question.text }}
                   </v-list-tile-title>
                   <v-list-tile-action>

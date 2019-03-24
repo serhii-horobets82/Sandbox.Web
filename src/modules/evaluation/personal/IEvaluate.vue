@@ -1,5 +1,22 @@
 <template>
   <v-container>
+    <v-layout>
+      <v-flex xs6>
+        <span>FOR TESTING PURPOSES</span>
+      </v-flex>
+      <v-flex xs6>
+        <v-select
+          :items="testEmployees"
+          item-value="id"
+          item-text="nameTemp"
+          label="Switch between users"
+          solo
+          v-model="testEmployeeId"
+          @change="selectTestEmployee()"
+        ></v-select>
+      </v-flex>
+    </v-layout>
+
     <v-layout row wrap>
       <v-flex xs4>
         <v-text-field
@@ -19,24 +36,32 @@
     </v-layout>
 
     <v-layout row wrap>
+
       <v-flex xs1 v-for="e in employeesFiltered" :key="e.id" class="text-xs-center">
-        <v-avatar color="teal">
-          <span class="white--text headline">
-            {{ e.name[0] }}
-          </span>
-        </v-avatar>
-        <br/>
-        {{ e.name.split(' ')[0] }} <br/>
-        {{ e.name.split(' ')[1] }}
+
+        <v-card flat @click="selectEmployeeFor360(e)"
+          :class="{'elevation-4': currentEmployee && e.id === currentEmployee.id}">
+          <v-card-text>
+          <v-avatar color="teal">
+            <span class="white--text headline">
+              {{ e.name[0] }}
+            </span>
+          </v-avatar>
+          <br/>
+          {{ e.name.split(' ')[0] }} <br/>
+          {{ e.name.split(' ')[1] }}
+          </v-card-text>
+        </v-card>
+
       </v-flex>
     </v-layout>
 
     <v-layout row wrap class="mt-4">
       <v-flex xs12>
         <v-layout row wrap class="text-xs-center">
-          <v-flex v-for="q in questions" :key="q.id">
+          <v-flex v-for="(q, idx) in questionarie" :key="q.id">
             <!-- <v-divider vertical></v-divider> -->
-            <v-card @click="selectQuestion(q.id)" class="green lighten-3">
+            <v-card :class="`green lighten-${currentQuestionIndex == idx ? 2 : 4}`">
               {{q.text}}
             </v-card>
           </v-flex>
@@ -44,16 +69,45 @@
         <v-layout row wrap>
           <v-flex xs12>
           <v-card>
-          <template v-if="questionsByMark">
-            <v-flex xs12><v-card @click="setFeedback(1)"><v-card-text>{{ questionsByMark[1] }}</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card @click="setFeedback(2)"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card @click="setFeedback(3)"><v-card-text>{{ questionsByMark[3] }}</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card @click="setFeedback(4)"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card @click="setFeedback(5)"><v-card-text>{{ questionsByMark[5] }}</v-card-text></v-card></v-flex>
+          <template v-if="currentQuestions">
 
+            <v-flex xs12 v-for="i of [1,2,3,4,5]" :key="i">
+              <v-card tile :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === i}"  @click="setFeedback(i)">
+                <v-card-text style="white-space: pre;">{{ i % 2 == 1 ? currentQuestions[i].question : "Demonstrates behaviors described above and below" }}</v-card-text>
+              </v-card>
+            </v-flex>
+
+            <!-- <v-flex xs12><v-card tile @click="setFeedback(1)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 1}"><v-card-text style="white-space: pre;">{{ currentQuestions[1].question }}</v-card-text></v-card></v-flex>
+            <v-flex xs12><v-card tile @click="setFeedback(2)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 2}"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
+            <v-flex xs12><v-card tile @click="setFeedback(3)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 3}"><v-card-text style="white-space: pre;">{{ currentQuestions[3].question }}</v-card-text></v-card></v-flex>
+            <v-flex xs12><v-card tile @click="setFeedback(4)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 4}"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
+            <v-flex xs12><v-card tile @click="setFeedback(5)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 5}"><v-card-text style="white-space: pre;">{{ currentQuestions[5].question }}</v-card-text></v-card></v-flex> -->
+
+            <v-flex>
+              <v-card tile >
+                <v-card-text>
+                  <v-textarea v-model="currentQuestionFeedback.comment" label="Comment"></v-textarea>
+                </v-card-text>
+              </v-card>
+            </v-flex>
             <v-layout>
               <v-spacer></v-spacer>
-              <v-btn class="primary" :disabled="!selectedQuestionMark">Submit</v-btn>
+
+              <v-btn class="primary"
+                v-if="currentQuestionIndex === (questionarie.length - 1)"
+                :disabled="!currentQuestionFeedback.feedbackMarkId"
+                @click="submitFeedback()"
+                >
+                Submit
+              </v-btn>
+
+              <v-btn class="primary"
+                v-else
+                :disabled="!currentQuestionFeedback.feedbackMarkId"
+                @click="nextQuestion()"
+                >
+                Next
+              </v-btn>
             </v-layout>
           </template>
           </v-card>
@@ -66,6 +120,7 @@
       v-model="dialog.open"
       max-width="600"
       scrollable
+      @keydown.esc="dialog.open=false"
     >
       <v-card>
         <v-card-title class="headline">
@@ -119,47 +174,34 @@ import axios from 'axios'
 export default {
   data: () => ({
     filter: '',
-    employees: [
-      {id: 1, name: 'Some person'},
-      {id: 2, name: 'John doe'},
-      {id: 3, name: 'Aba babar'},
-      {id: 4, name: 'Misk Nkfi'},
-    ],
-    questions: [
-      {id: 1, text: 'Q1. Contributing to team work'},
-      {id: 2, text: 'Q2. Contributing to team work'},
-      {id: 3, text: 'Q3. Contributing to team work'},
-      {id: 4, text: 'Q4. Contributing to team work'},
-      {id: 5, text: 'Q5. Contributing to team work'},
-    ],
-    questionsByMark: {
+    testEmployees: [],
+    testEmployeeId: null,
+    employees: [],
+    currentEmployee: null,
+    questionarie: [],
+    // currentQuestionId: 0,
+    currentQuestionIndex: 0,
+    currentQuestionFeedback: null,
 
-    },
-    selectedQuestionMark: 0,
+    questionFeedbacks: [],
+    // selectedQuestionMark: 0,
+
     dialog: {
       open: false,
       employees: [
-        {id: 1, name: 'Some person'},
-        {id: 2, name: 'John doe'},
-        {id: 3, name: 'Aba babar'},
-        {id: 4, name: 'Misk Nkfi'},
       ],
       filter: ''
     }
   }),
 
   async created(){
+    const res = await axios.get(this.$backendUrl + `api/employees`);
+    this.testEmployees = res.data;
 
+    // const res = await axios.get(this.$backendUrl + `api/questionarie`);
   },
 
   methods: {
-    add(id) {
-
-    },
-    async save(){
-
-    },
-
     async openInviteDialog(){
       this.dialog.open = true;
       const res = await axios.get(this.$backendUrl + 'api/Employees');
@@ -169,27 +211,82 @@ export default {
       // const res = await axios.get(this.$backendUrl + 'api/');
     },
 
-    async selectQuestion(id) {
-      const res = await axios.get(this.$backendUrl + `api/_360questionarie/${id}/questions`);
-      const d = {}
-      const d1 = res.data.filter(q => q.markId == 1)
-      d[1] = d1[0]._360question[0].question
-      const d2 = res.data.filter(q => q.markId == 3)
-      d[3] = d2[0]._360question[0].question
-      const d3 = res.data.filter(q => q.markId == 5)
-      d[5] = d3[0]._360question[0].question
-    },
+    // async selectQuestion(id) {
+    //   const res = await axios.get(this.$backendUrl + `api/_360questionarie/${id}/questions`);
+    //   const d = {}
+    //   const d1 = res.data.filter(q => q.markId == 1)
+    //   d[1] = d1[0]._360question[0].question
+    //   const d2 = res.data.filter(q => q.markId == 3)
+    //   d[3] = d2[0]._360question[0].question
+    //   const d3 = res.data.filter(q => q.markId == 5)
+    //   d[5] = d3[0]._360question[0].question
+    // },
+
     setFeedback(mark){
-      this.selectedQuestionMark = mark;
+      this.currentQuestionFeedback.feedbackMarkId = mark;
+    },
+    nextQuestion() {
+      this.questionFeedbacks.push(this.currentQuestionFeedback);
+      this.currentQuestionIndex++;
+      this.newQuestionFeedback();
+    },
+    async submitFeedback(){
+      this.questionFeedbacks.push(this.currentQuestionFeedback);
+      const res = await axios.post(this.$backendUrl + `api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, this.questionFeedbacks);
+      // this.selectedQuestionMark = 0;
+      await selectTestEmployee();
     },
 
-    async submitFeedback(){
-      // const res = await axios.post(this.$backendUrl + `api/`);
-      this.selectedQuestionMark = 0;
+    async selectTestEmployee(){
+      const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360/${this.testEmployeeId}`);
+      this.employees = res.data.map(e => ({
+        id: e.evaluation.employee.id,
+        name: e.evaluation.employee.nameTemp,
+        evaluationId: e.id
+      }));
+    },
+
+    async selectEmployeeFor360(employee) {
+      this.currentQuestionIndex = 0;
+      this.questionFeedbacks = [];
+
+      this.selectedEmployee = employee;
+      const res = await axios.get(this.$backendUrl + `api/_360evaluation/employee/${employee.id}/evaluator/${this.testEmployeeId}`);
+      this.questionarie = res.data;
+
+      this.newQuestionFeedback();
+      // this.currentQuestionId = this.questionarie[0].id;
+    },
+
+    newQuestionFeedback(){
+      this.currentQuestionFeedback = {
+        evaluationId: this.selectedEmployee.evaluationId,
+        questionId: this.questionarie[this.currentQuestionIndex].id,
+        feedbackMarkId: 0,
+        comment: null
+      }
     }
   },
 
   computed: {
+    currentQuestions() {
+      // if (!this.currentQuestionId) return null;
+      if (!this.questionarie) return null;
+
+      // const q = this.questionarie.filter(r => r.id == this.currentQuestionId)[0];
+      const q = this.questionarie[this.currentQuestionIndex];
+      if (!q) return null;
+      const qByMark = {}
+      q._360questionToMark.forEach(qm => {
+        qByMark[qm.markId] = {
+          id: qm.id,
+          markId: qm.markId,
+          question: qm._360question[0].question
+        }
+      })
+
+      return qByMark;
+    },
     employeesFiltered(){
       if (this.filter) {
         const f = this.filter.toLowerCase();
