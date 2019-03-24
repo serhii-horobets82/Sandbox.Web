@@ -3,3 +3,4 @@ import "./axios";
 import "./filters";
 import "./theme";
 import "./vuetify";
+import "./chartlist";

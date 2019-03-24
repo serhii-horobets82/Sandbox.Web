@@ -4,12 +4,12 @@ import {authService} from "@/services/auth.service";
 import {EventBus} from "@/event-bus";
 
 const state = {
-  token: localStorage.getItem("auth-token") || "",
+  token: {authToken: localStorage.getItem("auth-token")} || {},
   status: ""
 };
 
 const getters = {
-  isAuthenticated: (authState: any) => !!authState.token,
+  isAuthenticated: (authState: any) => !!authState.token.authToken,
   authStatus: (authState: any) => authState.status,
   authToken: (authState: any) => authState.token
 };
@@ -51,6 +51,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit("authLogout");
       localStorage.removeItem("auth-token");
+      dispatch("user/userReset", null, {root: true});
       resolve();
     });
   }
@@ -69,6 +70,7 @@ const mutations = {
   },
   authLogout: (authState: any) => {
     authState.token = "";
+    EventBus.$emit("logged-out", null);
   }
 };
 

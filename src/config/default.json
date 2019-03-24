@@ -5,9 +5,18 @@
   "features": {
   },
   "supportedLanguages": [
-    "en",
-    "ru",
-    "ua"
+    {
+      "locale": "en",
+      "name": "English"
+    },
+    {
+      "locale": "ua",
+      "name": "Українська"
+    },
+    {
+      "locale": "ru",
+      "name": "Русский"
+    }
   ],
   "demo": {
     "users": [
@@ -28,5 +37,5 @@
       }
     ]
   },
-  "social" : {}
+  "social": {}
 }

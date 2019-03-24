@@ -1,13 +1,12 @@
 <template>
-
   <v-container>
     <v-layout justify-center>
-      <v-flex xs12 sm6 md4>
+      <v-flex xs12 sm6 md6 lg4>
+        <material-card
+          color="info"
+          :title="$t('Auth.signIn')"
+        >
         <v-form ref="form" v-model="valid" lazy-validation>
-          <v-card class="elevation-12">
-            <v-toolbar dark color="primary">
-              <v-toolbar-title>{{ $t("Auth.signIn") }}</v-toolbar-title>
-            </v-toolbar>
             <v-card-text>
               <v-text-field
                 prepend-icon="person"
@@ -56,6 +55,7 @@
                 :color="social.color"
                 class="white--text"
                 fab
+                round
                 icon
                 @click="auth(social.name)"
                 small
@@ -66,8 +66,8 @@
             <v-alert :value="isError" type="error">
               {{ errorMessage }}
             </v-alert>
-          </v-card>
         </v-form>
+        </material-card>
       </v-flex>
     </v-layout>
   </v-container>

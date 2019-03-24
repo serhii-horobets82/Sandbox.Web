@@ -7,5 +7,7 @@ declare module "vue/types/vue" {
     $config: any;
     $appTitle: string;
     $backendUrl: string;
+    isAuthenticated?: boolean;
+    profile?: any;
   }
 }
