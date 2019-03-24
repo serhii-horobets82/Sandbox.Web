@@ -28,61 +28,40 @@
 
         <h3>Team members:</h3>
         <v-list>
-            <v-list-tile
-              v-for="(item, i) in team.employeeRelationEmployee" :key="item.employeeId"
-              avatar
-            >
-              <!-- <v-list-tile-avatar>
-                <img :src="item.avatar">
-              </v-list-tile-avatar> -->
+          <v-list-tile
+            v-for="(item, i) in team.employeeRelationEmployee"
+            :key="item.employeeId"
+            avatar
+          >
+            <v-list-tile-avatar color="teal">
+              <span class="white--text headline">{{ employeesById[item.employeeId].nameTemp[0] }}</span>
+            </v-list-tile-avatar>
 
-              <v-list-tile-content>
-                <!-- <v-list-tile-title> -->
-                  <v-layout row align-center>
-                    <v-flex xs5>
-                      {{ employeesById[item.employeeId].nameTemp }}
-                    </v-flex>
+            <v-list-tile-content>
+              <v-container>
+              <v-layout align-center>
+                <v-flex xs5>
+                  {{ employeesById[item.employeeId].nameTemp }}
+                </v-flex>
 
-                    <v-flex xs5>
-                      <!-- <v-icon>add</v-icon> -->
-                      <span v-if="!!item.positionId">(Position: {{ positionsById[item.positionId].name}})</span>
-                      <v-btn v-if="!item.positionId" outline @click="positionsDialog = true; currentEmployeeRelation = item">Assign position</v-btn>
-                      <!-- <a v-if="!item.position" @click.prevent="assignPosition(item)">Assign position</a> -->
-                    </v-flex>
+                <v-flex xs5>
+                  <!-- <v-icon>add</v-icon> -->
+                  <span v-if="!!item.positionId">(Position: {{ positionsById[item.positionId].name}})</span>
+                  <v-btn v-if="!item.positionId" outline @click="positionsDialog = true; currentEmployeeRelation = item">Assign position</v-btn>
+                  <!-- <a v-if="!item.position" @click.prevent="assignPosition(item)">Assign position</a> -->
+                </v-flex>
+              </v-layout>
+              </v-container>
+            </v-list-tile-content>
 
-                    <!-- <v-flex xs2>
-                      <v-icon>add</v-icon>
-                    </v-flex> -->
-                </v-layout>
-                <!-- </v-list-tile-title> -->
+            <v-list-tile-action>
+              <v-icon color="red" @click="team.employeeRelationEmployee.split(i, 1)">clear</v-icon>
+              <!-- <v-icon color="success" @click="addEmployee(item)">add</v-icon> -->
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
 
-              </v-list-tile-content>
-
-              <v-list-tile-action>
-                <v-icon color="red" @click="team.employeeRelationEmployee.split(i, 1)">clear</v-icon>
-                <!-- <v-icon color="success" @click="addEmployee(item)">add</v-icon> -->
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list>
-        <!-- <v-autocomplete
-          v-for="(e, i) in team.teamMembers"
-          :key="e.id"
-          :items="employees"
-          color="primary"
-          item-text="nameTemp"
-          :label="'Employee ' + i"
-        ></v-autocomplete> -->
-
-        <!-- <v-autocomplete
-          :items="employees"
-          color="primary"
-          item-text="nameTemp"
-          :label="'Employee ' + i"
-          @input=""
-        ></v-autocomplete> -->
-
-
-        <v-btn @click="addTeamMembers()">Add</v-btn>
+        <v-btn @click="addTeamMembers()"><v-icon>add</v-icon>Add</v-btn>
       </v-form>
 
     <v-dialog
@@ -126,6 +105,10 @@
               :key="item.id"
               avatar
             >
+              <v-list-tile-avatar color="teal">
+                <span class="white--text headline">{{ item.nameTemp[0] }}</span>
+              </v-list-tile-avatar>
+
               <v-list-tile-content>
                 <v-list-tile-title>{{ item.nameTemp }}</v-list-tile-title>
               </v-list-tile-content>

@@ -1,15 +1,14 @@
 <template>
 <v-container>
-  <v-layout row wrap>
-  <v-flex xs6>
-    <h1>Projects list</h1>
-  </v-flex>
-  <v-flex xs6 text-xs-right>
-    <!-- <v-spacer></v-spacer> -->
-
-    <v-btn color="success" :to="{name: 'projectEdit', params: {id: 0}}">Create project</v-btn>
-  </v-flex>
+  <v-layout row wrap class="align-center">
+    <v-flex xs6>
+      <h1>Projects list</h1>
+    </v-flex>
+    <v-flex xs6 text-xs-right>
+      <v-btn color="success" :to="{name: 'projectEdit', params: {id: 0}}">Create project</v-btn>
+    </v-flex>
   </v-layout>
+
   <v-card>
       <v-container fluid grid-list-lg>
         <v-layout row wrap>
