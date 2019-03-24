@@ -8,6 +8,11 @@ const Menu: Array<NavigationItem> = [
     router: "/"
   },
   {
+    title: "Personal",
+    icon: "home",
+    router: "/personal"
+  },
+  {
     title: "Organization",
     icon: "supervisor_account",
     router: "/organization"

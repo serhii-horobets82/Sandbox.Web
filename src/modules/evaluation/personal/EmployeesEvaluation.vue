@@ -193,7 +193,7 @@ export default {
       this.selectedEmployee = Object.assign({}, this.selectedEmployee, {
         employeeId: employee.id,
         technicalEvaluatorId: 0,
-        name: employee.nameTemp
+        name: employee.name
       })
       const resp = await axios.get(this.$backendUrl + 'api/employees?typeId=' + employee.employeeTypeId)
       this.selectedEmployeeEvaluators.technical = resp.data;

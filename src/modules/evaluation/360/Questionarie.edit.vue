@@ -6,7 +6,7 @@
         <v-list two-line subheader >
           <div v-for="group in groups"  :key="group.id">
           <!-- <template v-for="group in groups"> -->
-            <v-subheader inset>
+            <v-subheader>
               {{ group.type}}
               <v-spacer></v-spacer>
               <v-btn icon flat small class="ma-0 right" color="success" @click="addQuestion(group.id)">
@@ -19,7 +19,7 @@
                 @click="selectQuestion(question.id)"
                 :class="selectedQuestionId == question.id ? 'blue--text text--darken-1' : ''"
               >
-                <v-list-tile-title>
+                <v-list-tile-title class="ml-4">
                     {{ question.text }}
                   </v-list-tile-title>
                   <v-list-tile-action>
@@ -155,7 +155,11 @@ export default {
 
       console.log(res.data)
 
-      const result = {}
+      const result = {
+        1: {question:null},
+        3: {question:null},
+        5: {question:null},
+      }
       res.data.forEach(d => {
         const t = {
           question: d._360question.length ? d._360question[0].question : null,
@@ -167,30 +171,30 @@ export default {
       this.questionsByMark = result;
       return ;
 
-      if (!res.data.length){
-        const data = {
-          1: {_360question: []},
-          3: {_360question: []},
-          5: {_360question: []},
-        }
-        this.questionsByMark = data;
-        return ;
-      }
-      // current implementation expect single aggregated statement per mark
-      const data = {}
-      data[1] = getOne(res.data, 1);
-      data[3] = getOne(res.data, 3);
-      data[5] = getOne(res.data, 5);
-      this.questionsByMark = data;
+      // if (!res.data.length){
+      //   const data = {
+      //     1: {_360question: []},
+      //     3: {_360question: []},
+      //     5: {_360question: []},
+      //   }
+      //   this.questionsByMark = data;
+      //   return ;
+      // }
+      // // current implementation expect single aggregated statement per mark
+      // const data = {}
+      // data[1] = getOne(res.data, 1);
+      // data[3] = getOne(res.data, 3);
+      // data[5] = getOne(res.data, 5);
+      // this.questionsByMark = data;
 
-      function getOne(qs, mark){
-        const result = qs.find(d => d.markId == mark);
-        if (result) {
-          const q = result;
-          return q;
-        }
-        return {_360question: []};
-      }
+      // function getOne(qs, mark){
+      //   const result = qs.find(d => d.markId == mark);
+      //   if (result) {
+      //     const q = result;
+      //     return q;
+      //   }
+      //   return {_360question: []};
+      // }
     },
 
     async saveQuestionStatements(){

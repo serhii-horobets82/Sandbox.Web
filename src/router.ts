@@ -8,6 +8,7 @@ import HomeRoutes from "./modules/home/router";
 import OrganizationRoutes from "./modules/organization/router";
 import EvaluationRoutes from "./modules/evaluation/router";
 import OkrRoutes from "./modules/okr/router";
+import Personal from "./modules/personal/router";
 
 Vue.use(Router);
 
@@ -19,6 +20,7 @@ const router: Router = new Router({
     ...UserRoutes,
     ...AdminRoutes,
     ...HomeRoutes,
+    ...Personal,
     ...OrganizationRoutes,
     ...EvaluationRoutes,
     ...OkrRoutes
