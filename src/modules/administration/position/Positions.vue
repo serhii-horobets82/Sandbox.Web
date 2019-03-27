@@ -5,7 +5,7 @@
       <h1>Positions</h1>
     </v-flex>
     <v-flex xs6 text-xs-right>
-      <v-btn color="success" :disabled="true" :to="{name: 'positionEdit', params: {id: 0}}">Create position</v-btn>
+      <v-btn color="success" :to="{name: 'positionEdit', params: {id: 0}}">Create position</v-btn>
     </v-flex>
   </v-layout>
   <v-card>
@@ -17,30 +17,26 @@
           <v-flex xs12 md6 lg4 v-for="position in positions" :key="position.id">
             <v-card color="blue-grey darken-2" class="white--text">
               <v-card-title primary-title>
+                <!-- <div> -->
+                  <div class="headline">{{ position.name }}</div>
 
-                <div class="headline">{{ position.name }}</div>
-                <!-- <span>ID: {{ position.id }}</span> -->
-                <v-spacer></v-spacer>
-                <v-btn icon flat color="white" >
-                  <v-icon>edit</v-icon>
-                </v-btn>
-
+                  <v-spacer></v-spacer>
+                  <v-btn icon flat color="white" :to="{path: position.id}">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <!-- <span>ID: {{ position.id }}</span> -->
+                <!-- </div> -->
               </v-card-title>
               <v-card-text>
                 <v-card v-for="item in position.positionRole" :key="item.id" class="mb-1">
                   <v-card-title>
+
                       <span class="subheading">{{ item.role.name }}</span>
 
-                      <v-spacer></v-spacer>
-                      <v-btn flat icon @click="expandCollapse(item)">
-                        <v-icon >
-                          {{item.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
-                        </v-icon>
-                      </v-btn>
-                  </v-card-title>
 
-                  <v-divider v-if="item.expanded"></v-divider>
-                  <v-card-text v-if="item.expanded">
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-text>
                     <EcfCompetenceRow v-for="competence in (getRoleCompetences(item.role) || [])" :key="competence.id"
                       :competence="competence"
                       :competenceLevels="competence.levels"
@@ -88,7 +84,13 @@ export default {
 
   data() {
     return {
-      positions: null,
+      positions: [],
+      items: [
+          { active: true, title: 'Jason Oner', avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' },
+          { active: true, title: 'Ranee Carlson', avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+          { title: 'Cindy Baker', avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+          { title: 'Ali Connors', avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' }
+        ],
     }
   },
 
@@ -120,15 +122,6 @@ export default {
         competences.push(item)
       }
       return  competences
-    },
-
-    expandCollapse(item) {
-      if (item.expanded == undefined) {
-        this.$set(item, 'expanded', true)
-      }
-      else {
-        item.expanded = !item.expanded
-      }
     }
   }
 }

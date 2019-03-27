@@ -18,9 +18,14 @@ const Menu: Array<NavigationItem> = [
     router: "/organization"
   },
   {
-    title: "Evaluation",
+    title: "HR",
     icon: "ballot",
     router: "/evaluation"
+  },
+  {
+    title: "Administration",
+    icon: "accessible_forward",
+    router: "/administration"
   },
   {
     title: "OKR",

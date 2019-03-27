@@ -5,7 +5,19 @@
       <h1>Projects list</h1>
     </v-flex>
     <v-flex xs6 text-xs-right>
-      <v-btn color="success" :to="{name: 'projectEdit', params: {id: 0}}">Create project</v-btn>
+      <v-layout row wrap justify-space-between>
+        <v-select
+          :items="filters"
+          label="Filter"
+          item-text="name"
+          item-value="id"
+          v-model="filter"
+          @change="loadProjects()"
+          disabled="true"
+        >
+        </v-select>
+        <v-btn color="success" :to="{name: 'projectEdit', params: {id: 0}}">Create project</v-btn>
+      </v-layout>
     </v-flex>
   </v-layout>
 
@@ -18,6 +30,7 @@
                 {{ project.name }}
                 <span> (Project ID: {{ project.id }})</span>
                 <v-spacer></v-spacer>
+                <v-btn :to="{name: 'project-positions', params: {id:project.id}}">Manage Positions</v-btn>
                 <v-btn :to="{name: 'teamEdit', params: {projectId: project.id, id:0}}"> <v-icon>add</v-icon> Add Team</v-btn>
                 <v-btn :to="{name: 'projectEdit', params: {id:project.id}}">Edit</v-btn>
               </v-card-title>
@@ -81,18 +94,23 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      filters: [
+        {id: 1, name: 'Mine'},
+        {id: 2, name: 'All'},
+      ],
+      filter: 2,
       projects: []
     }
   },
 
   async created() {
-    try {
-    const response = await axios.get(this.$backendUrl + 'api/projects')
-    console.log(response)
-    this.projects = response.data;
-    }
-    catch (e){
-      console.log(e)
+    await this.loadProjects();
+  },
+
+  methods: {
+    async loadProjects(){
+      const response = await axios.get(this.$backendUrl + `api/projects${this.filter === 1 ? '?only-mine' : ''}`)
+      this.projects = response.data;
     }
   }
 }

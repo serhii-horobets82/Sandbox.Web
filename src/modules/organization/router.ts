@@ -4,13 +4,11 @@ import ProjectEdit from './project/Project.edit.vue'
 import Positions from './position/Positions.vue'
 import PositionEdit from './position/Position.edit.vue'
 import TeamEdit from './project/Team.edit.vue'
-import Employees from './employee/Employees.vue'
-import EmployeeEdit from './employee/Employee.edit.vue'
 
 const routes: RouteConfig[] = [{
   path: '/organization',
   name: 'organization',
-  redirect: '/organization/project',
+  redirect: '/organization/projects',
   // route level code-splitting
   // this generates a separate chunk (about.[hash].js) for this route
   // which is lazy-loaded when the route is visited.
@@ -29,13 +27,13 @@ const routes: RouteConfig[] = [{
     },
 
     {
-      path: 'position',
-      name: 'positions',
+      path: 'project/:id/position',
+      name: 'project-positions',
       component: Positions
     },
     {
-      path: 'position/:id',
-      name: 'positionEdit',
+      path: 'project/:id/position/:positionId',
+      name: 'project-positionEdit',
       component: PositionEdit
     },
 
@@ -43,17 +41,6 @@ const routes: RouteConfig[] = [{
       path: 'team/:projectId/:id',
       name: 'teamEdit',
       component: TeamEdit
-    },
-
-    {
-      path: 'employee',
-      name: 'employees',
-      component: Employees
-    },
-    {
-      path: 'employee/:id',
-      name: 'employeeEdit',
-      component: EmployeeEdit
     },
   ]
 }]
