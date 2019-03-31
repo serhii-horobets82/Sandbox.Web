@@ -83,13 +83,13 @@
             <v-flex xs12><v-card tile @click="setFeedback(4)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 4}"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
             <v-flex xs12><v-card tile @click="setFeedback(5)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 5}"><v-card-text style="white-space: pre;">{{ currentQuestions[5].question }}</v-card-text></v-card></v-flex> -->
 
-            <v-flex>
+            <!-- <v-flex>
               <v-card tile >
                 <v-card-text>
                   <v-textarea v-model="currentQuestionFeedback.comment" label="Comment"></v-textarea>
                 </v-card-text>
               </v-card>
-            </v-flex>
+            </v-flex> -->
             <v-layout>
               <v-spacer></v-spacer>
 
@@ -165,6 +165,26 @@
         </v-card>
       </v-dialog>
 
+    <v-dialog
+      v-model="feedbackCommentsDialog.open"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          Suggestions to improve
+        </v-card-title>
+        <v-card-text>
+          <v-card flat><v-textarea v-model="feedbackCommentsDialog.startDoing" label="Start doing"></v-textarea></v-card>
+          <v-card flat><v-textarea v-model="feedbackCommentsDialog.stopDoing" label="Stop doing"></v-textarea></v-card>
+          <v-card flat><v-textarea v-model="feedbackCommentsDialog.otherComments" label="Other comments"></v-textarea></v-card>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn :disabled="!(feedbackCommentsDialog.startDoing || feedbackCommentsDialog.stopDoing)" @click="submitFeedback()">Done</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -191,14 +211,26 @@ export default {
       employees: [
       ],
       filter: ''
+    },
+    feedbackCommentsDialog: {
+      open: false,
+      startDoing: null,
+      stopDoing: null,
+      otherComments: null
     }
   }),
 
   async created(){
-    const res = await axios.get(this.$backendUrl + `api/employees`);
-    this.testEmployees = res.data;
+    // const res = await axios.get(this.$backendUrl + `api/employees`);
+    // this.testEmployees = res.data;
 
     // const res = await axios.get(this.$backendUrl + `api/questionarie`);
+    const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360`);
+      this.employees = res.data.map(e => ({
+        id: e.evaluation.employee.id,
+        name: e.evaluation.employee.nameTemp,
+        evaluationId: e.id
+      }));
   },
 
   methods: {
@@ -230,21 +262,32 @@ export default {
       this.currentQuestionIndex++;
       this.newQuestionFeedback();
     },
-    async submitFeedback(){
+    lastQuestion() {
       this.questionFeedbacks.push(this.currentQuestionFeedback);
-      const res = await axios.post(this.$backendUrl + `api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, this.questionFeedbacks);
-      // this.selectedQuestionMark = 0;
-      await selectTestEmployee();
+
+      this.feedbackCommentsDialog.startDoing = null;
+      this.feedbackCommentsDialog.stopDoing = null;
+      this.feedbackCommentsDialog.open = true;
+    },
+    async submitFeedback() {
+      const data = {
+        feedbacks: this.questionFeedbacks,
+        startDoing: this.feedbackCommentsDialog.startDoing,
+        stopDoing: this.feedbackCommentsDialog.stopDoing,
+        otherComments: this.feedbackCommentsDialog.otherComments
+      }
+      const res360 = await axios.post(this.$backendUrl + `api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, data);
+      this.selectedEmployee = null;
     },
 
-    async selectTestEmployee(){
-      const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360`);
-      this.employees = res.data.map(e => ({
-        id: e.evaluation.employee.id,
-        name: e.evaluation.employee.nameTemp,
-        evaluationId: e.id
-      }));
-    },
+    // async selectTestEmployee(){
+    //   const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360`);
+    //   this.employees = res.data.map(e => ({
+    //     id: e.evaluation.employee.id,
+    //     name: e.evaluation.employee.nameTemp,
+    //     evaluationId: e.id
+    //   }));
+    // },
 
     async selectEmployeeFor360(employee) {
       this.currentQuestionIndex = 0;
@@ -258,6 +301,7 @@ export default {
       // this.currentQuestionId = this.questionarie[0].id;
     },
 
+    // private
     newQuestionFeedback(){
       this.currentQuestionFeedback = {
         evaluationId: this.selectedEmployee.evaluationId,

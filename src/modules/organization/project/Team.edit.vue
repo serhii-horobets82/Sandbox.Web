@@ -149,6 +149,7 @@
         v-model="positionsDialog"
         max-width="800"
         scrollable
+        @keydown.esc="positionsDialog = false"
       >
 
         <v-card>
@@ -211,10 +212,10 @@
 
           <v-divider></v-divider>
 
-          <!-- <v-card-actions>
+          <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="positionsDialog = false">Done</v-btn>
-          </v-card-actions> -->
+          </v-card-actions>
         </v-card>
       </v-dialog>
 <!-- {{team}} -->

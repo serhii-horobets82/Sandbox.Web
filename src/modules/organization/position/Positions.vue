@@ -2,10 +2,10 @@
   <v-container>
   <v-layout row wrap class="align-center">
     <v-flex xs6>
-      <h1>Positions</h1>
+      <h1>Positions for Project: {{ project.name }}</h1>
     </v-flex>
     <v-flex xs6 text-xs-right>
-      <v-btn color="success" :disabled="true" :to="{name: 'positionEdit', params: {id: 0}}">Create position</v-btn>
+      <v-btn color="success" :to="{name: 'project-positionEdit', params: {id: 0, projectId: $route.params.projectId }}">Create position</v-btn>
     </v-flex>
   </v-layout>
   <v-card>
@@ -21,7 +21,7 @@
                 <div class="headline">{{ position.name }}</div>
                 <!-- <span>ID: {{ position.id }}</span> -->
                 <v-spacer></v-spacer>
-                <v-btn icon flat color="white" >
+                <v-btn icon flat color="white" v-if="false" :to="{name: 'project-positionEdit', params: {id: position.id, projectId: $route.params.projectId }}">
                   <v-icon>edit</v-icon>
                 </v-btn>
 
@@ -89,14 +89,16 @@ export default {
   data() {
     return {
       positions: null,
+      project: {},
     }
   },
 
   async created() {
-    const response = await axios.get(this.$backendUrl + 'api/positions')
+    const projectId = this.$route.params.projectId;
+    const res = await axios.get(this.$backendUrl + `api/projects/${projectId}`);
+    this.project = res.data;
+    const response = await axios.get(this.$backendUrl + `api/positions/project/${projectId}`)
     this.positions = response.data;
-
-
   },
 
   methods: {

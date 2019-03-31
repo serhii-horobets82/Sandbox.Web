@@ -27,12 +27,12 @@ const routes: RouteConfig[] = [{
     },
 
     {
-      path: 'project/:id/position',
+      path: 'project/:projectId/position',
       name: 'project-positions',
       component: Positions
     },
     {
-      path: 'project/:id/position/:positionId',
+      path: 'project/:projectId/position/:id',
       name: 'project-positionEdit',
       component: PositionEdit
     },

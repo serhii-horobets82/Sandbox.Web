@@ -2,8 +2,8 @@
   <v-container>
   <v-layout>
     <v-flex>
-      <h1 v-if="$route.params.id == 0">Create Position</h1>
-      <h1 v-else>Edit project (ID: {{$route.params.id}})</h1>
+      <h1 v-if="$route.params.id == 0">Create Position for Project: {{ project.name }}</h1>
+      <h1 v-else>Edit position (ID: {{$route.params.id}})</h1>
     </v-flex>
 
   </v-layout>
@@ -153,7 +153,7 @@
       Create
     </v-btn>
 
-    <v-btn :to="{name: 'positions'}">
+    <v-btn @click="back()">
       Back
     </v-btn>
 
@@ -178,11 +178,22 @@ export default {
       roles: [],
       rolesFilter: '',
       positionRolesIds: new Set(),
-      roleCompetences: new Map()
+      roleCompetences: new Map(),
+      project: {},
     }
   },
 
   async created(){
+    const res = await axios.get(this.$backendUrl + `api/projects/${this.$route.params.projectId}`);
+    this.project = res.data;
+
+
+    // const id = this.$route.params.id;
+    // if (id) {
+    //   const res = await axios.get(this.$backendUrl + `api/positions/${id}`);
+    // }
+
+
     const rolesResponse = await axios.get(this.$backendUrl + 'api/ecfroles');
     this.roles = rolesResponse.data;
   },
@@ -201,14 +212,20 @@ export default {
         return;
       }
       const data = {...this.position};
+      if (!data.projectId) {
+        data.projectId = this.project.id;
+      }
       data.positionRole = data.roles.map(r => ({roleId: r.id}));
       const response = await axios.post(this.$backendUrl + 'api/positions', data)
-      this.$router.push({name: 'positions'})
+
+      this.back();
     },
+
     async addRole(role){
       if (!this.positionRolesIds.has(role.id)) {
         this.positionRolesIds.add(role.id)
-        this.position.roles.push(role)
+        role.roleId = role.id;
+        this.position.positionRole.push(role)
 
         const res = await axios.get(this.$backendUrl + 'api/ecfroles/' + role.id + '?withCompetences=true')
         const competences = []
@@ -233,8 +250,13 @@ export default {
         console.log(this.roleCompetences.get(role.id))
       }
     },
+
     removeRole(i) {
       this.position.roles.splice(i, 1)
+    },
+
+    back() {
+      this.$router.push({name: 'project-positions', params: {projectId: this.$route.params.projectId}})
     }
   }
 

@@ -31,7 +31,7 @@
                 {{ project.name }}
                 <span> (Project ID: {{ project.id }})</span>
                 <v-spacer></v-spacer>
-                <v-btn :to="{name: 'project-positions', params: {id:project.id}}">Manage Positions</v-btn>
+                <v-btn :to="{name: 'project-positions', params: {projectId:project.id, projectName: project.name}}">Manage Positions</v-btn>
                 <v-btn :to="{name: 'teamEdit', params: {projectId: project.id, id:0}}"> <v-icon>add</v-icon> Add Team</v-btn>
                 <v-btn :to="{name: 'projectEdit', params: {id:project.id}}">Edit</v-btn>
               </v-card-title>
