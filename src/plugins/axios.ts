@@ -9,6 +9,7 @@ axios.interceptors.request.use((config: any) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token.authToken}`;
   }
+  config.headers._EmployeeId = Vue.prototype.$employee.get().id;
   return config;
 }, (err: any) => {
   return Promise.reject(err);

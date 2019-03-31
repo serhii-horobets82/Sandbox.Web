@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout>
+    <!-- <v-layout>
       <v-flex xs6>
         <span>FOR TESTING PURPOSES</span>
       </v-flex>
@@ -15,7 +15,7 @@
           @change="selectTestEmployee()"
         ></v-select>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
 
     <v-layout row wrap>
       <v-flex xs4>
@@ -174,8 +174,8 @@ import axios from 'axios'
 export default {
   data: () => ({
     filter: '',
-    testEmployees: [],
-    testEmployeeId: null,
+    // testEmployees: [],
+    // testEmployeeId: null,
     employees: [],
     currentEmployee: null,
     questionarie: [],
@@ -238,7 +238,7 @@ export default {
     },
 
     async selectTestEmployee(){
-      const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360/${this.testEmployeeId}`);
+      const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360`);
       this.employees = res.data.map(e => ({
         id: e.evaluation.employee.id,
         name: e.evaluation.employee.nameTemp,
@@ -251,7 +251,7 @@ export default {
       this.questionFeedbacks = [];
 
       this.selectedEmployee = employee;
-      const res = await axios.get(this.$backendUrl + `api/_360evaluation/employee/${employee.id}/evaluator/${this.testEmployeeId}`);
+      const res = await axios.get(this.$backendUrl + `api/_360evaluation/employee/${employee.id}/evaluator`);
       this.questionarie = res.data;
 
       this.newQuestionFeedback();

@@ -54,7 +54,10 @@ export default {
     ],
   }),
   created() {
-    this.$router.push({name: 'personal-notifications'});
+    if (this.$router.currentRoute.name == 'personal') {
+      this.$router.push({name: 'personal-profile'});
+      // this.$router.push({name: 'personal-notifications'});
+    }
   },
 }
 </script>

@@ -107,8 +107,7 @@ export default {
   }),
 
   async created(){
-    const id = 21;
-    const res = await axios.get(this.$backendUrl + `api/employees/profile/${id}`);
+    const res = await axios.get(this.$backendUrl + `api/employees/profile`);
     this.employee = res.data;
 
     this.employee.employeeRelationsEmployee.forEach(r => {
@@ -129,7 +128,7 @@ export default {
       t.teams.push(d)
     })
 
-    const resEcf = await axios.get(this.$backendUrl + `api/employees/profile/${id}/ecf-evaluation`);
+    const resEcf = await axios.get(this.$backendUrl + `api/employees/profile/ecf-evaluation`);
     this.competences = resEcf.data;
   },
 

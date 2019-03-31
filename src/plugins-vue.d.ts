@@ -9,5 +9,6 @@ declare module "vue/types/vue" {
     $backendUrl: string;
     isAuthenticated?: boolean;
     profile?: any;
+    employee?: any;
   }
 }

@@ -8,11 +8,11 @@ import TeamEdit from './project/Team.edit.vue'
 const routes: RouteConfig[] = [{
   path: '/organization',
   name: 'organization',
-  redirect: '/organization/projects',
+  redirect: '/organization/project',
   // route level code-splitting
   // this generates a separate chunk (about.[hash].js) for this route
   // which is lazy-loaded when the route is visited.
-  component: () => import(/* webpackChunkName: "about" */ './Index.vue'),
+  component: () => import(/* webpackChunkName: "organization" */ './Index.vue'),
 
   children: [
     {

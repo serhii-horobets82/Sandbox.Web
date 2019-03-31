@@ -9,6 +9,9 @@
     <v-spacer/>
     <v-toolbar-items>
       <v-flex align-center layout py-2>
+
+        <widget-switch-employee />
+
         <v-text-field
           v-if="responsiveInput"
           class="mr-4 mt-2 purple-input"

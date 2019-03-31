@@ -12,9 +12,10 @@
           item-text="name"
           item-value="id"
           v-model="filter"
-          @change="loadProjects()"
-          disabled="true"
         >
+        <!--
+          @change="loadProjects()"
+          :disabled="true" -->
         </v-select>
         <v-btn color="success" :to="{name: 'projectEdit', params: {id: 0}}">Create project</v-btn>
       </v-layout>
