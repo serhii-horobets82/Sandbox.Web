@@ -190,6 +190,7 @@
 
 <script>
 import axios from 'axios'
+import toast from '@/services/toast'
 
 export default {
   data: () => ({
@@ -278,6 +279,8 @@ export default {
       }
       const res360 = await axios.post(this.$backendUrl + `api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, data);
       this.selectedEmployee = null;
+
+      toast.success(`Feedback has been saved.`)
     },
 
     // async selectTestEmployee(){

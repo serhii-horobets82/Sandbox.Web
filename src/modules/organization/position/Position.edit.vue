@@ -165,6 +165,7 @@
 <script>
 import axios from 'axios'
 import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
+import toast from '@/services/toast'
 
 export default {
   components: {
@@ -218,6 +219,7 @@ export default {
       data.positionRole = data.roles.map(r => ({roleId: r.id}));
       const response = await axios.post(this.$backendUrl + 'api/positions', data)
 
+      toast.success(`Position has been created.`)
       this.back();
     },
 

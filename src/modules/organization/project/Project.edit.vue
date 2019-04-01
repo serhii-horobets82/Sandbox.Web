@@ -108,6 +108,7 @@
 
 <script>
 import axios from 'axios'
+import toast from '@/services/toast'
 
 export default {
   data: () => ({
@@ -167,12 +168,14 @@ export default {
       this.customerDialog.open = false;
     },
     async save(){
-      if (+this.project.id == 0) {
+      const isNew = +this.project.id == 0;
+      if (isNew) {
         const res = await axios.post(this.$backendUrl + `api/projects`, this.project);
       } else {
         const res = await axios.put(this.$backendUrl + `api/projects/${this.project.id}`, this.project);
       }
 
+      toast.success(`Project has been ${isNew ? 'created': 'saved'}.`)
       this.$router.push({name: 'projects'});
     },
   }

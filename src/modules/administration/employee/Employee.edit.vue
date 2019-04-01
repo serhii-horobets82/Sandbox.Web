@@ -51,6 +51,8 @@
 
 <script>
 import axios from 'axios'
+import toast from '@/services/toast'
+
 export default {
   data: () => ({
     valid: false,
@@ -85,6 +87,8 @@ export default {
       } else {
         await axios.post(this.$backendUrl + 'api/employees/', employee)
       }
+
+      toast.success(`Employee has been ${employee.id ? 'created': 'saved'}.`)
       this.$router.push({name: 'employees'})
     }
   }

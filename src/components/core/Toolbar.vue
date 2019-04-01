@@ -12,13 +12,13 @@
 
         <widget-switch-employee />
 
-        <v-text-field
+        <!-- <v-text-field
           v-if="responsiveInput"
           class="mr-4 mt-2 purple-input"
           label="Search..."
           hide-details
           color="purple"
-        />
+        /> -->
         <!-- Dashboard icon -->
         <router-link v-ripple class="toolbar-items" to="/">
           <v-icon color="tertiary">dashboard</v-icon>
