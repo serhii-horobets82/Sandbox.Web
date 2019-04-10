@@ -1,76 +1,77 @@
 <template>
-  <v-container>
-    <v-layout justify-center>
-      <v-flex xs12 sm6 md6 lg4>
-        <material-card
-          color="info"
-          :title="$t('Auth.signIn')"
-        >
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-card-text>
-              <v-text-field
-                prepend-icon="person"
-                name="login"
-                :label="$t('Auth.email')"
-                type="text"
-                :rules="[requireRule, emailRule]"
-                required
-                v-model="credentials.userName"
-              ></v-text-field>
-              <v-text-field
-                id="password"
-                prepend-icon="lock"
-                name="password"
-                :label="$t('Auth.password')"
-                v-model="credentials.password"
-                required
-                :rules="[requireRule]"
-                type="password"
-              ></v-text-field>
-              <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
-            </v-card-text>
-            <v-card-actions>
-              <v-menu offset-y>
-                <template #activator="data">
-                  <v-btn v-on="data.on" block>{{$t("Auth.demo")}}</v-btn>
-                </template>
-                <v-list>
-                  <v-list-tile
-                    v-for="(item, index) in $config.demo.users"
-                    :key="index"
-                    @click="setDemoCredential(item)">
-                    <v-list-tile-title prepend-icon="person">{{ item.title }}</v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
-              </v-menu>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" block :disabled="!valid" @click="handleSubmit">{{ $t("Auth.signIn") }}</v-btn>
-            </v-card-actions>
-            <v-divider></v-divider>
-            <v-subheader>Sign In using your account with</v-subheader>
-            <v-card-actions class="white justify-center">
-              <v-btn
-                v-for="(social, i) in socials"
-                :key="i"
-                :color="social.color"
-                class="white--text"
-                fab
-                round
-                icon
-                @click="auth(social.name)"
-                small
-              >
-                <v-icon>{{ social.icon }}</v-icon>
-              </v-btn>
-            </v-card-actions>
-            <v-alert :value="isError" type="error">
-              {{ errorMessage }}
-            </v-alert>
-        </v-form>
-        </material-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-app id="login" class="primary">
+    <v-container>
+      <v-layout justify-center>
+        <v-flex xs12 sm6 md6 lg4>
+          <v-card :title="$t('Auth.signIn')"
+          >
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-card-text>
+                <v-text-field
+                  prepend-icon="person"
+                  name="login"
+                  :label="$t('Auth.email')"
+                  type="text"
+                  :rules="[requireRule, emailRule]"
+                  required
+                  v-model="credentials.userName"
+                ></v-text-field>
+                <v-text-field
+                  id="password"
+                  prepend-icon="lock"
+                  name="password"
+                  :label="$t('Auth.password')"
+                  v-model="credentials.password"
+                  required
+                  :rules="[requireRule]"
+                  type="password"
+                ></v-text-field>
+                <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
+              </v-card-text>
+              <v-card-actions>
+                <v-menu offset-y>
+                  <template #activator="data">
+                    <v-btn round v-on="data.on" block>{{$t("Auth.demo")}}</v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-tile
+                      v-for="(item, index) in $config.demo.users"
+                      :key="index"
+                      @click="setDemoCredential(item)">
+                      <v-list-tile-title prepend-icon="person">{{ item.title }}</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+                <v-spacer></v-spacer>
+                <v-btn round color="primary" block :disabled="!valid" @click="handleSubmit">{{ $t("Auth.signIn") }}
+                </v-btn>
+              </v-card-actions>
+              <v-divider></v-divider>
+              <v-subheader>Sign In using your account with</v-subheader>
+              <v-card-actions class="white justify-center">
+                <v-btn
+                  v-for="(social, i) in socials"
+                  :key="i"
+                  :color="social.color"
+                  class="white--text"
+                  fab
+                  round
+                  icon
+                  @click="auth(social.name)"
+                  small
+                >
+                  <v-icon>{{ social.icon }}</v-icon>
+                </v-btn>
+              </v-card-actions>
+              <v-alert :value="isError" type="error">
+                {{ errorMessage }}
+              </v-alert>
+            </v-form>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -170,7 +171,7 @@
           .dispatch("auth/authRequest", this.credentials)
           .then(() => {
             let {redirect} = this.$route.query;
-            this.$router.push(redirect as string || "/dashboard/home");
+            this.$router.push(redirect as string || "/");
           })
           .catch(err => {
             this.errorMessage = err;

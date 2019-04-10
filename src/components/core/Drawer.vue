@@ -100,7 +100,7 @@
           return this.$store.state.drawer
         },
         set (val) {
-          this.$store.dispatch("setDrawer", val)
+          this.$store.dispatch("showSidebar", val)
         }
       },
     },
