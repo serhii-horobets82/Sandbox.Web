@@ -1,8 +1,6 @@
 import {RouteConfig} from 'vue-router';
-import EmployeePersonal from './personal/EmployeePersonal.vue'
+import EvaluationSchedule from './EvaluationSchedule.vue'
 import EmployeesEvaluation from './personal/EmployeesEvaluation.vue'
-import EcfEvaluationForm from './ecf/EcfEvaluationForm.vue'
-import IEvaluate from './personal/IEvaluate.vue'
 
 const routes: RouteConfig[] = [{
   path: '/evaluation',
@@ -12,24 +10,14 @@ const routes: RouteConfig[] = [{
 
   children: [
     {
-      name: 'personalPage',
-      path: 'personal/:id',
-      component: EmployeePersonal
-    },
-    {
       name: 'employeesEvaluation',
       path: 'employees-evaluation',
       component: EmployeesEvaluation
     },
     {
-      name: 'ecfEvaluationForm',
-      path: 'ecf-evaluation-form/:id',
-      component: EcfEvaluationForm
-    },
-    {
-      name: 'IEvaluate',
-      path: 'i-evaluate',
-      component: IEvaluate
+      name: 'evaluation-schedule',
+      path: 'schedule',
+      component: EvaluationSchedule
     },
   ]
 }]

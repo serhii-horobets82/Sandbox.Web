@@ -3,6 +3,7 @@ import Notifications from './Notifications.vue'
 import Profile from './Profile.vue'
 import IEvaluate from './IEvaluate.vue'
 import Pdp from './Pdp.vue'
+import SuggestionsToImprove from './360SuggestionsToImprove.vue'
 
 const routes: RouteConfig[] = [{
   path: '/personal',
@@ -25,6 +26,11 @@ const routes: RouteConfig[] = [{
       name: 'personal-i-evaluate',
       path: 'i-evaluate',
       component: IEvaluate
+    },
+    {
+      name: 'personal-suggestions-to-improve',
+      path: 'suggestions-to-improve',
+      component: SuggestionsToImprove
     },
     {
       name: 'personal-pdp',

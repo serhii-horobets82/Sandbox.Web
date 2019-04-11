@@ -16,84 +16,124 @@
         ></v-select>
       </v-flex>
     </v-layout> -->
-
-    <v-layout row wrap>
-      <v-flex xs4>
-        <v-text-field
-          label="Filter"
-          prepend-inner-icon="search"
-          v-model="filter"
-          >
-        </v-text-field>
+    <v-layout>
+      <v-flex>
+        <h1>360</h1>
       </v-flex>
-      <v-spacer></v-spacer>
-      <!-- <v-flex xs4> -->
-        <v-btn @click="openInviteDialog()">
-          <v-icon>add</v-icon>
-          Add user for evaluation
-        </v-btn>
-      <!-- </v-flex> -->
     </v-layout>
 
-    <v-layout row wrap>
+    <v-layout>
+      <v-flex xs4 class="pr-4">
+        <v-card>
+          <v-layout row class="pt-1 pb-1">
+            <v-flex xs12>
+            <v-text-field
+              class="pl-2"
+              solo flat :hide-details="true"
+              label="Filter"
+              prepend-inner-icon="search"
+              v-model="filter"
+              >
+            </v-text-field>
+            </v-flex>
 
-      <v-flex xs1 v-for="e in employeesFiltered" :key="e.id" class="text-xs-center">
+            <v-flex>
+            <v-btn icon color="teal" class="mt-1 white--text" @click="openInviteDialog()">
+              <v-icon>add</v-icon>
+            </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card>
 
-        <v-card flat @click="selectEmployeeFor360(e)"
-          :class="{'elevation-4': currentEmployee && e.id === currentEmployee.id}">
-          <v-card-text>
-          <v-avatar color="teal">
-            <span class="white--text headline">
-              {{ e.name[0] }}
-            </span>
-          </v-avatar>
-          <br/>
-          {{ e.name.split(' ')[0] }} <br/>
-          {{ e.name.split(' ')[1] }}
-          </v-card-text>
+        <v-card>
+          <v-list>
+            <v-list-tile
+              v-for="e in employeesFiltered" :key="e.id"
+              @click="!e.evaluation.endDate && selectEmployeeFor360(e)"
+              :class="{
+                'grey lighten-3': selectedEmployee && e.id === selectedEmployee.id,
+                'evaluated': e.evaluation.endDate
+              }"
+              avatar
+            >
+              <v-list-tile-avatar :color="e.evaluation.endDate ? 'grey' : 'teal'">
+                <!-- <img :src="item.avatar"> -->
+                <span class="white--text headline">
+                  {{ e.name[0] }}
+                </span>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>{{ e.name }}</v-list-tile-title>
+                <!-- <v-list-tile-sub-title>{{ e.employeeType.type }}</v-list-tile-sub-title> -->
+              </v-list-tile-content>
+
+              <v-list-tile-action>
+                <!-- <v-icon :color="item.active ? 'teal' : 'grey'">chat_bubble</v-icon> -->
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
         </v-card>
 
       </v-flex>
-    </v-layout>
 
-    <v-layout row wrap class="mt-4">
-      <v-flex xs12>
-        <v-layout row wrap class="text-xs-center">
+      <v-flex xs8>
+        <v-card>
+        <v-layout row class="text-xs-center">
           <v-flex v-for="(q, idx) in questionarie" :key="q.id">
             <!-- <v-divider vertical></v-divider> -->
-            <v-card :class="`green lighten-${currentQuestionIndex == idx ? 2 : 4}`">
+            <v-card :class="`green lighten-${currentQuestionIndex == idx ? 2 : 4} pa-3`">
               {{q.text}}
             </v-card>
           </v-flex>
         </v-layout>
-        <v-layout row wrap>
-          <v-flex xs12>
-          <v-card>
-          <template v-if="currentQuestions">
+
+        <v-layout row v-if="currentQuestions" class="pa-4">
+          <v-flex xs8>
+            <h2>Q1. Contributing to the team's work</h2>
+            <span>Please select the block...</span>
+          </v-flex>
+          <v-flex xs4 class="text-xs-center">
+            <v-card flat class="pt-2 pb-2 pl-5 pr-5 blue--text" color="blue lighten-5">
+              <h3>{{selectedEmployee.name}}</h3>
+              <span>User type</span>
+            </v-card>
+          </v-flex>
+        </v-layout>
+
+        <v-layout row wrap v-if="currentQuestions">
+          <v-flex xs12 class="pa-3" v-if="currentQuestions && !feedbackCommentsDialog.open" >
 
             <v-flex xs12 v-for="i of [1,2,3,4,5]" :key="i">
-              <v-card tile :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === i}"  @click="setFeedback(i)">
+              <v-card class="mb-3" tile :hover="true" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === i}"  @click="setFeedback(i)">
                 <v-card-text style="white-space: pre;">{{ i % 2 == 1 ? currentQuestions[i].question : "Demonstrates behaviors described above and below" }}</v-card-text>
               </v-card>
             </v-flex>
 
-            <!-- <v-flex xs12><v-card tile @click="setFeedback(1)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 1}"><v-card-text style="white-space: pre;">{{ currentQuestions[1].question }}</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card tile @click="setFeedback(2)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 2}"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card tile @click="setFeedback(3)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 3}"><v-card-text style="white-space: pre;">{{ currentQuestions[3].question }}</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card tile @click="setFeedback(4)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 4}"><v-card-text>Demonstrates behaviors described above and below</v-card-text></v-card></v-flex>
-            <v-flex xs12><v-card tile @click="setFeedback(5)" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === 5}"><v-card-text style="white-space: pre;">{{ currentQuestions[5].question }}</v-card-text></v-card></v-flex> -->
+          </v-flex>
 
-            <!-- <v-flex>
-              <v-card tile >
-                <v-card-text>
-                  <v-textarea v-model="currentQuestionFeedback.comment" label="Comment"></v-textarea>
-                </v-card-text>
-              </v-card>
-            </v-flex> -->
-            <v-layout>
-              <v-spacer></v-spacer>
+          <v-flex xs12 class="pa-3" v-if="feedbackCommentsDialog.open">
+            <v-card flat>
+              <v-card-title class="headline pa-0">
+                Suggestions to improve
+              </v-card-title>
+              <v-card-text class="pa-0">
+                <v-card flat><v-textarea color="green" v-model="feedbackCommentsDialog.startDoing" label="Start doing"></v-textarea></v-card>
+                <v-card flat><v-textarea color="red" v-model="feedbackCommentsDialog.stopDoing" label="Stop doing"></v-textarea></v-card>
+                <v-card flat><v-textarea v-model="feedbackCommentsDialog.otherComments" label="Other comments"></v-textarea></v-card>
+              </v-card-text>
+              <!-- <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="!(feedbackCommentsDialog.startDoing || feedbackCommentsDialog.stopDoing)" @click="submitFeedback()">Done</v-btn>
+              </v-card-actions> -->
+            </v-card>
+          </v-flex>
 
-              <v-btn class="primary"
+          <v-flex>
+             <!-- <v-layout> -->
+              <!-- <v-spacer></v-spacer> -->
+
+              <!-- <v-btn class="primary ma-0" block large
                 v-if="currentQuestionIndex === (questionarie.length - 1)"
                 :disabled="!currentQuestionFeedback.feedbackMarkId"
                 @click="submitFeedback()"
@@ -101,18 +141,31 @@
                 Submit
               </v-btn>
 
-              <v-btn class="primary"
+              <v-btn class="primary ma-0" block large
+                v-else
+                :disabled="!currentQuestionFeedback.feedbackMarkId"
+                @click="nextQuestion()"
+                >
+                Next
+              </v-btn> -->
+              <v-btn class="primary ma-0" block large
+                v-if="feedbackCommentsDialog.open"
+                :disabled="!(feedbackCommentsDialog.startDoing || feedbackCommentsDialog.stopDoing)"
+                @click="submitFeedback()"
+                >
+                Submit
+              </v-btn>
+              <v-btn class="primary ma-0" block large
                 v-else
                 :disabled="!currentQuestionFeedback.feedbackMarkId"
                 @click="nextQuestion()"
                 >
                 Next
               </v-btn>
-            </v-layout>
-          </template>
-          </v-card>
+            <!-- </v-layout> -->
           </v-flex>
         </v-layout>
+        </v-card>
       </v-flex>
     </v-layout>
 
@@ -165,7 +218,7 @@
         </v-card>
       </v-dialog>
 
-    <v-dialog
+    <!-- <v-dialog
       v-model="feedbackCommentsDialog.open"
       max-width="600"
     >
@@ -183,7 +236,7 @@
           <v-btn :disabled="!(feedbackCommentsDialog.startDoing || feedbackCommentsDialog.stopDoing)" @click="submitFeedback()">Done</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
   </v-container>
 </template>
@@ -198,7 +251,7 @@ export default {
     // testEmployees: [],
     // testEmployeeId: null,
     employees: [],
-    currentEmployee: null,
+    selectedEmployee: null,
     questionarie: [],
     // currentQuestionId: 0,
     currentQuestionIndex: 0,
@@ -230,7 +283,8 @@ export default {
       this.employees = res.data.map(e => ({
         id: e.evaluation.employee.id,
         name: e.evaluation.employee.nameTemp,
-        evaluationId: e.id
+        evaluationId: e.id,
+        evaluation: e
       }));
   },
 
@@ -244,21 +298,15 @@ export default {
       // const res = await axios.get(this.$backendUrl + 'api/');
     },
 
-    // async selectQuestion(id) {
-    //   const res = await axios.get(this.$backendUrl + `api/_360questionarie/${id}/questions`);
-    //   const d = {}
-    //   const d1 = res.data.filter(q => q.markId == 1)
-    //   d[1] = d1[0]._360question[0].question
-    //   const d2 = res.data.filter(q => q.markId == 3)
-    //   d[3] = d2[0]._360question[0].question
-    //   const d3 = res.data.filter(q => q.markId == 5)
-    //   d[5] = d3[0]._360question[0].question
-    // },
 
     setFeedback(mark){
       this.currentQuestionFeedback.feedbackMarkId = mark;
     },
     nextQuestion() {
+      if (this.currentQuestionIndex === (this.questionarie.length - 1)) {
+        this.lastQuestion();
+        return;
+      }
       this.questionFeedbacks.push(this.currentQuestionFeedback);
       this.currentQuestionIndex++;
       this.newQuestionFeedback();

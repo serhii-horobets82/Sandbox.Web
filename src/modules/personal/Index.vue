@@ -49,6 +49,7 @@ export default {
       {title: 'Notifications', url: 'personal-notifications'},
       {title: 'Profile', url: 'personal-profile'},
       {title: 'I Evaluate', url: 'personal-i-evaluate'},
+      {title: 'Suggestions to improve', url: 'personal-suggestions-to-improve'},
       {title: 'PDP', url: 'personal-pdp'},
       // {title: 'Notifications', url: ''},
     ],

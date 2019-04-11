@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Toast from './Toast.vue';
 
+//////////////////////////////////////////
+// https://github.com/pzs/vuetify-toast //
+//////////////////////////////////////////
 
 const colors = ['success', 'info', 'error'];
 
