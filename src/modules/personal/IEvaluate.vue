@@ -171,49 +171,75 @@
 
     <v-dialog
       v-model="dialog.open"
-      max-width="600"
+      max-width="500"
       scrollable
       @keydown.esc="dialog.open=false"
     >
       <v-card>
-        <v-card-title class="headline">
-          <v-layout row align-center class="dialog-header">
-            <v-flex xs6>Invite Employees for evaluation</v-flex>
-            <v-flex xs6>
-              <v-text-field flat
+        <v-card-title class="headline pb-0">
+          <v-layout row wrap align-center class="dialog-header">
+            <v-flex xs12 class="mb-3">Invite for evaluation</v-flex>
+            <v-flex xs12>
+              <v-text-field solo
                 hide-details
                 label="Filter"
                 prepend-inner-icon="search"
                 v-model="dialog.filter"
                 ></v-text-field>
             </v-flex>
-          </v-layout>
 
+            <v-flex xs12 class="mt-4">
+
+              <span class="subheading">Result</span>
+            </v-flex>
+          </v-layout>
         </v-card-title>
 
-        <v-card-text>
-          <v-list>
+        <v-card-text class="pt-0">
+
+          <v-list two-line>
             <v-list-tile
               v-for="item in dialogEmployeesFiltered"
               :key="item.id"
+              @click="inviteForEvaluation(item)"
               avatar
             >
+              <v-list-tile-avatar color="teal" class="align-center">
+                <!-- <img :src="item.avatar"> -->
+                <span class="white--text headline">
+                  {{ item.name[0] }}
+                </span>
+              </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                <v-list-tile-title>
+                  {{ item.name }}
+                </v-list-tile-title>
+                <!-- <v-list-tile-subtitle>aaaaaa</v-list-tile-subtitle> -->
+                <v-list-tile-sub-title v-if="item.__show">
+                  <v-layout row>
+                    <v-flex xs12>
+                      <v-text-field class="pt-1" placeholder="Reason to add" :hide-details="true"></v-text-field>
+
+                    </v-flex>
+                    <v-flex>
+                      <v-btn>Invite</v-btn>
+                    </v-flex>
+                  </v-layout>
+
+                </v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-list-tile-action>
+              <!-- <v-list-tile-action>
                 <v-btn color="primary" @click="inviteForEvaluation(item.id)">Invite</v-btn>
-              </v-list-tile-action>
+              </v-list-tile-action> -->
             </v-list-tile>
           </v-list>
 
         </v-card-text>
 
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialog.open = false; dialog.filter=''">Done</v-btn>
+        <v-card-actions class="pa-0">
+          <v-btn block large @click="dialog.open = false; dialog.filter=''">Cancel</v-btn>
         </v-card-actions>
         </v-card>
       </v-dialog>
@@ -294,7 +320,8 @@ export default {
       const res = await axios.get(this.$backendUrl + 'api/Employees');
       this.dialog.employees = res.data.map(e => ({id: e.id, name: e.nameTemp}))
     },
-    inviteForEvaluation (id) {
+    inviteForEvaluation (employee) {
+      this.$set(employee, '__show', true)
       // const res = await axios.get(this.$backendUrl + 'api/');
     },
 
