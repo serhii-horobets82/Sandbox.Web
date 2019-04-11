@@ -2,6 +2,7 @@ import {Credentials} from "@/models/credentials.interface";
 import {Token} from "@/models/token.interface";
 import {authService} from "@/services/auth.service";
 import {EventBus} from "@/event-bus";
+import {EVENTS} from "@/constants";
 
 const state = {
   token: {authToken: localStorage.getItem("auth-token")} || {},
@@ -22,8 +23,8 @@ const actions = {
         (result: Token) => {
           localStorage.setItem("auth-token", result.authToken); // stash the auth token in localStorage
           commit("authSuccess", result);
-          EventBus.$emit("logged-in", null);
-          dispatch("user/userRequest", null, {root: true});
+          EventBus.$emit(EVENTS.LOGGED_IN);
+          //dispatch("user/userRequest", null, {root: true});
           resolve(result);
         },
         (errors: any) => {
@@ -42,8 +43,8 @@ const actions = {
       commit("authRequest");
       localStorage.setItem("auth-token", token.authToken);
       commit("authSuccess", token);
-      EventBus.$emit("logged-in", null);
-      dispatch("user/userRequest", null, {root: true});
+      //dispatch("user/userRequest", null, {root: true});
+      EventBus.$emit(EVENTS.LOGGED_IN);
       resolve(token);
     });
   },
@@ -70,7 +71,7 @@ const mutations = {
   },
   authLogout: (authState: any) => {
     authState.token = "";
-    EventBus.$emit("logged-out", null);
+    EventBus.$emit(EVENTS.LOGGED_OUT);
   }
 };
 

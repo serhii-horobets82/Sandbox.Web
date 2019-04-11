@@ -3,7 +3,7 @@
     id="app-drawer"
     v-model="drawerModel"
     app
-    dark
+    :dark="$vuetify.dark"
     floating
     persistent
     mobile-break-point="991"
@@ -100,7 +100,7 @@
           return this.$store.state.drawer
         },
         set (val) {
-          this.$store.dispatch("setDrawer", val)
+          this.$store.dispatch("showSidebar", val)
         }
       },
     },

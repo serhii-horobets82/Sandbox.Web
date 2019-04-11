@@ -5,19 +5,19 @@
     offset-y
     content-class="dropdown-menu"
     transition="slide-y-transition">
-    <div
-      slot="activator"
-      class="toolbar-items">
-    <v-badge
-      color="error"
-      overlap
-    >
-      <template slot="badge">
-        {{ count }}
-      </template>
-      <v-icon color="tertiary">notifications</v-icon>
-    </v-badge>
-    </div>
+    <v-btn icon
+           slot="activator"
+           class="toolbar-items">
+      <v-badge
+        color="error"
+        overlap
+      >
+        <template slot="badge">
+          {{ count }}
+        </template>
+        <v-icon>notifications</v-icon>
+      </v-badge>
+    </v-btn>
 
     <v-card>
       <v-card-title>
@@ -56,7 +56,7 @@
   export default {
     data: () => ({
       items: notes,
-      count:  notes.filter(i=> i.title).length
+      count: notes.filter(i => i.title).length
     }),
     methods: {
       handleClick: (e) => {
