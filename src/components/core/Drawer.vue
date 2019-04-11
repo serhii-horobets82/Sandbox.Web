@@ -4,6 +4,7 @@
     v-model="drawerModel"
     app
     dark
+    class="primary"
     floating
     persistent
     mobile-break-point="991"

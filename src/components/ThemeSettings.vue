@@ -55,7 +55,8 @@
     data() {
       return {
         sideBarOption: 'light',
-        colors: colors
+        colors: colors,
+        themeColor : null
       };
     },
     computed: {
