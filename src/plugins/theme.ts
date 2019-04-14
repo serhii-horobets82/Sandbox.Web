@@ -2,15 +2,16 @@ import colors from "vuetify/es5/util/colors";
 
 export default {
   primary: {
-    base: "#3C88B5",
-    darken1: "#3C88B5",
-    darken2: "#3C88B5",
+    base: "#273EAF",
+    lighten1: "#3047B1",
+    darken1: "#273EAF",
+    darken2: "#273EAF",
   },
-  secondary: '#4caf50',
+  secondary: '#21BDCA',
   tertiary: '#495057',
   accent: '#82B1FF',
   error: '#f55a4e',
-  info: '#3C88B5',
+  info: '#273EAF',
   success: '#5cb860',
   warning: '#ffa21a'
 };

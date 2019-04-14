@@ -17,7 +17,7 @@ const getDefaultState = () => {
     title: "Evoflare",
     version: version,
     drawer: true,
-    color: "info"
+    color: "secondary"
   };
 };
 

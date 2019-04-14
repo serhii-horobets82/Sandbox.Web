@@ -54,7 +54,7 @@
   export default {
     data() {
       return {
-        sideBarOption: 'light',
+        sideBarOption: 'dark',
         colors: colors,
         themeColor : null
       };
@@ -155,7 +155,9 @@
       },
       sideBarOption: {
         handler(val) {
+
           this.$vuetify.dark = (val === 'dark');
+          console.log('this.$vuetify.dark', this.$vuetify.dark );
         },
         immediate: true
       }

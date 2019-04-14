@@ -7,8 +7,9 @@ import theme from "./theme";
 
 Vue.use(Vuetify, {
   theme,
-  customProperties: true,
+  options: {
+    customProperties: true
+  },
   iconfont: "fa"
 });
-
 
