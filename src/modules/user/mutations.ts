@@ -1,7 +1,8 @@
 import {MutationTree} from "vuex";
 import {UserProfileState, UserProfile} from "./types";
 import {getDefaultState} from "./index";
-import {ROLES} from "@/constants";
+import {EVENTS, ROLES} from "@/constants";
+import {EventBus} from "@/event-bus";
 
 // mutation constants
 export const RESET_PROFILE = 'RESET_PROFILE';
@@ -33,5 +34,7 @@ export const mutations: MutationTree<UserProfileState> = {
   [RESET_PROFILE](state) {
     // set state as default
     Object.assign(state, getDefaultState());
+    // Show snackbar
+    EventBus.$emit(EVENTS.SHOW_SNACKBAR, {text: "Logout successfully"});
   }
 };

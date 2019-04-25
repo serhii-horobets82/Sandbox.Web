@@ -1,0 +1,48 @@
+/*------------------------------------------------------------------
+[Table of contents]
+/*
+# overwrite some style of stylus */
+
+/*------------------------------------------------------------------
+[FontAwesome]
+*/
+
+/*------------------------------------------------------------------
+[Global]
+*/
+$button-text-transform = none
+$body-font-family = 'Montserrat'
+$body-bg-light := #3C88B5
+
+@import '~vuetify/src/stylus/main.styl'
+
+body
+  font-family: $body-font-family
+  font-size: $font-size-root
+  font-weight: $font-weights.regular
+  line-height: $line-height-root
+
+h2
+  color: #3C88B5
+  font-size: 36px
+  font-family: Montserrat
+  letter-spacing: -0.5
+
+/*------------------------------------------------------------------
+[Components / Toolbar]
+*/
+
+.theme
+  &--dark
+    .v-list
+      background: #3047B1
+    &.v-navigation-drawer
+      background-color #3047B1
+
+.v-toolbar
+  &__items
+    .v-avatar
+      align-self: center
+  &__extension
+    > .v-toolbar__title
+      margin-left: 36px

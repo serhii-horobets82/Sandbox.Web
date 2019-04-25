@@ -2,7 +2,7 @@
   <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
     <template #activator="data">
       <v-btn icon v-on="data.on" class="toolbar-items">
-        <v-icon color="tertiary">fa fa-language</v-icon>
+        <v-icon>fa fa-language 2x</v-icon>
       </v-btn>
     </template>
 

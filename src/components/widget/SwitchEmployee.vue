@@ -1,7 +1,7 @@
 <template>
   <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
     <template #activator="data">
-      <v-btn v-on="data.on" @click="showEmployeeSelection()">
+      <v-btn v-on="data.on" flat @click="showEmployeeSelection()">
         {{ vueEmployee.nameTemp }} ({{ vueEmployee.employeeType.type }})
       </v-btn>
       <!-- <v-btn icon v-on="data.on" @click="showEmployeeSelection()" class="toolbar-items">
