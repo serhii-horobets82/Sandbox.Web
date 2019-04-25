@@ -90,7 +90,7 @@
 
         <v-layout row v-if="currentQuestions" class="pa-4">
           <v-flex xs8>
-            <h2>Q1. Contributing to the team's work</h2>
+            <h2 class="text-uppercase">Q1. Contributing to the team's work</h2>
             <span>Please select the block...</span>
           </v-flex>
           <v-flex xs4 class="text-xs-center">
