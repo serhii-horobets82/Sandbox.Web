@@ -41,30 +41,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex xs6>
-          <v-card>
-            <v-card-title>
-              Technical Competence
-            </v-card-title>
-            <v-card-text style="min-height: 150px">
-              <EcfCompetenceRow v-for="competence in competences" :key="competence.id"
-                :competence="competence"
-                :competenceLevels="competence.levels"
-                ></EcfCompetenceRow>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
-        <v-flex xs6>
-          <v-card>
-            <v-card-title>
-              360 Degree
-            </v-card-title>
-            <v-card-text style="height: 150px">
-
-            </v-card-text>
-          </v-card>
-        </v-flex>
+        <ProfileEvaluation></ProfileEvaluation>
 
         <v-flex xs6>
           <v-card>
@@ -95,10 +72,12 @@
 <script>
 import axios from 'axios'
 import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
+import ProfileEvaluation from './profile/ProfileEvaluation.vue'
 
 export default {
   components: {
-    EcfCompetenceRow
+    EcfCompetenceRow,
+    ProfileEvaluation
   },
   data: () => ({
     employee: null,
@@ -128,8 +107,6 @@ export default {
       t.teams.push(d)
     })
 
-    const resEcf = await axios.get(this.$backendUrl + `api/employees/profile/ecf-evaluation`);
-    this.competences = resEcf.data;
   },
 
   methods: {

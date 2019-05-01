@@ -30,6 +30,7 @@
 
       <div v-for="i in [1,2,3,4,5]" :key="i"
         class="competenceLevelFill"
+        @click="$emit('click-competence-level', {level: i, competence: competence})"
         :class="{
           'none': !competence.levels[i],
           'current': competence.levels[i] && competence.levels[i].level === competence.competenceLevel,

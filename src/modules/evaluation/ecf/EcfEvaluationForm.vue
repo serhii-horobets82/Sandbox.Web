@@ -10,7 +10,9 @@
 
     <EcfCompetenceRow v-for="competence in competences" :key="competence.id"
       :competence="competence"
-      :competenceLevels="competences.levels"></EcfCompetenceRow>
+      :competenceLevels="competences.levels"
+      v-on:click-competence-level="evaluate"></EcfCompetenceRow>
+
     <!-- <v-layout row wrap v-for="competence in competences" :key="competence.id" class="competenceRow">
       <v-flex xs6>{{competence.id}}  {{competence.name}}</v-flex>
       <v-flex xs6>
@@ -84,14 +86,16 @@ export default {
     })
     this.employee = Object.assign({}, this.employee, res.data.employee);
 
+    const ecfEvaluationId = res.data.ecfEmployeeEvaluation[0].id;
     const competences = []
-    for (let e of res.data.ecfEvaluation) {
+    for (let e of res.data.ecfEmployeeEvaluation[0].ecfEvaluationResult) {
       const c = {
-        evaluationId: e.id,
+        resultMarkId: e.id,
         id: e.competenceNavigation.id,
         name: e.competenceNavigation.name,
         competenceLevel: e.competenceLevel,
-        levels: []
+        levels: [],
+        ecfEvaluationId: ecfEvaluationId
       }
       const levels = e.competenceNavigation.ecfCompetenceLevel;
       for (let level of levels) {
@@ -115,12 +119,17 @@ export default {
   },
 
   methods: {
-    async evaluate(evaluationId, competenceLevel, competence) {
-      competence.competenceLevel = competenceLevel;
+    // async evaluate(evaluationId, competenceLevel, competence) {
+    async evaluate(payload) {
+      const competence = payload.competence;
+      const competenceLevel = payload.level;
+      const resultMarkId = payload.competence.resultMarkId;
+
       if (competence.levels[competenceLevel]) {
+        competence.competenceLevel = competenceLevel;
         const data = {
-          id: evaluationId,
-          evaluationId: this.evaluation.id,
+          id: resultMarkId,
+          evaluationId: competence.ecfEvaluationId,
           competence: competence.id,
           competenceLevel: competenceLevel
         }
