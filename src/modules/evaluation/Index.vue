@@ -6,8 +6,7 @@
         <v-toolbar-items class="hidden-sm-and-down">
             <v-btn flat to="/evaluation/employees-evaluation">Employees evaluation</v-btn>
             <v-btn flat to="/evaluation/schedule">Evaluation Schedule</v-btn>
-            <!-- <v-btn flat to="/okr">OKR</v-btn>
-            <v-btn flat to="/evaluation">Evaluation</v-btn> -->
+            <v-btn flat to="/evaluation/360-team-view">360 Team Review</v-btn>
           </v-toolbar-items>
       </v-toolbar>
     <!-- </v-layout>

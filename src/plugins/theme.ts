@@ -2,7 +2,7 @@ import colors from "vuetify/es5/util/colors";
 
 export default {
   primary: {
-    base: "#273EAF",
+    base: "#3C88B5",
     lighten1: "#3047B1",
     darken1: "#273EAF",
     darken2: "#273EAF",

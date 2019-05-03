@@ -2,6 +2,7 @@ import {RouteConfig} from 'vue-router';
 import EvaluationSchedule from './EvaluationSchedule.vue'
 import EmployeesEvaluation from './personal/EmployeesEvaluation.vue'
 import EvaluationForm from './ecf/EcfEvaluationForm.vue'
+import _360TeamView from './360TeamView.vue'
 
 const routes: RouteConfig[] = [{
   path: '/evaluation',
@@ -24,6 +25,11 @@ const routes: RouteConfig[] = [{
       name: 'evaluation-schedule',
       path: 'schedule',
       component: EvaluationSchedule
+    },
+    {
+      name: '360-team-view',
+      path: '360-team-view',
+      component: _360TeamView
     },
   ]
 }]

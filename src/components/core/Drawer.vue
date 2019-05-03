@@ -119,7 +119,7 @@
   export default class AppDrawer extends Vue {
     logo: string = '/img/logo.svg';
     responsive: boolean = false;
-    mini: boolean = true;
+    mini: boolean = false;
     links: Array<NavigationItem> = Menu;
 
     get personalNavigation(): Array<NavigationItem> {
