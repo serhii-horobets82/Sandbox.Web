@@ -36,17 +36,16 @@ h2
 [Components / Toolbar]
 */
 
-.theme
-  &--dark
-    .v-list
-      background: #3047B1
-    &.v-navigation-drawer
-      background-color #3047B1
 
-.v-toolbar
-  &__items
-    .v-avatar
-      align-self: center
-  &__extension
-    > .v-toolbar__title
-      margin-left: 36px
+.v-list__tile:not(.v-list__tile--active)
+  .theme--light.v-icon
+    color: rgba(0, 145, 255, 0.4) !important;
+    
+
+.v-list__tile--active
+  .theme--light.v-icon
+    color: #0091FF !important;    
+
+
+
+  

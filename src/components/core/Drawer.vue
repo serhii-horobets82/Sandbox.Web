@@ -3,12 +3,12 @@
     id="app-drawer"
     v-model="drawerModel"
     app
-    mini-variant-width="60"
+    mini-variant-width="64"
     :mini-variant="mini"
     class="primary lighten-1"
     floating
     persistent
-    width="260"
+    width="200"
   >
     <v-layout tag="v-list" column>
       <v-list-tile>
@@ -38,11 +38,7 @@
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
           >
-            <v-list-tile
-              :key="item.title"
-              :to="item.router"
-              :active-class="color"
-            >
+            <v-list-tile :key="item.title" :to="item.router">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>
@@ -94,7 +90,6 @@ import Menu from "@/data/menu";
   }
 })
 export default class AppDrawer extends Vue {
-  logo: string = "/img/logo.svg";
   responsive: boolean = false;
   mini: boolean = true;
   links: Array<NavigationItem> = Menu;
