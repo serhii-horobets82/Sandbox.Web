@@ -1,8 +1,8 @@
 <template>
-  <v-toolbar id="core-toolbar" color="primary" app dark fixed extension-height="148">
+  <v-toolbar id="core-toolbar" color="primary" app fixed>
 
     <template v-slot:extension v-if="isAuthenticated">
-      <v-toolbar-title>
+      <v-toolbar-title > 
         <v-badge overlap class="ma-3">
           <template v-slot:badge>
             <v-icon large dark color="yellow">tag_faces</v-icon>
@@ -22,7 +22,7 @@
       <v-toolbar-items class="ml-2">
         <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
           <template #activator="data">
-            <v-avatar size="48" v-on="data.on" color="#3047B1">
+            <v-avatar size="48" v-on="data.on">
               <v-icon>more_horiz</v-icon>
             </v-avatar>
           </template>
@@ -43,10 +43,8 @@
         </v-menu>
       </v-toolbar-items>
     </template>
-
-    <v-toolbar-side-icon @click.stop="handleDrawerToggle"></v-toolbar-side-icon>
     <v-toolbar-title>
-      <v-img src="/img/logo.svg" width="100px"></v-img>
+      <v-img color="secondary" src="/img/logo.svg" width="100px"></v-img>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
@@ -116,9 +114,6 @@
     },
 
     methods: {
-      handleDrawerToggle () {
-        this.$store.dispatch('toggleSideBar')
-      },
       handleFullScreen () {
         Util.toggleFullScreen()
       },

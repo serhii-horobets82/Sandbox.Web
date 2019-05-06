@@ -44,7 +44,9 @@
       :right="snackbar.x === 'right'"
       :bottom="snackbar.y === 'bottom'"
       :top="snackbar.y === 'top'"
-      :color="snackbar.color" v-model="snackbar.show">
+      :color="snackbar.color"
+      v-model="snackbar.show"
+    >
       {{ snackbar.text }}
       <v-btn dark flat @click.native="snackbar.show = false" icon>
         <v-icon>close</v-icon>
@@ -54,35 +56,42 @@
 </template>
 
 <script>
-  import {EventBus} from "@/event-bus";
-  import {EVENTS} from "@/constants/index";
+import { EventBus } from "@/event-bus";
+import { EVENTS } from "@/constants/index";
 
-  export default {
-    data: () => ({
-      expanded: true,
-      rightDrawer: false,
-      snackbar: {
-        show: false,
-      }
-    }),
-    created() {
-      EventBus.$on(EVENTS.SHOW_SNACKBAR, snackbar => {
-        let defSnackbar = {show: true, color: "green", timeout: 3000, x: "right", y: "bottom"};
-        this.snackbar = {...defSnackbar, ...snackbar};
-      });
-    },
-    methods: {
-      openThemeSettings() {
-        this.$vuetify.goTo(0);
-        this.rightDrawer = !this.rightDrawer;
-      }
+export default {
+  data: () => ({
+    expanded: true,
+    rightDrawer: false,
+    snackbar: {
+      show: false
     }
-  };
+  }),
+  created() {
+    EventBus.$on(EVENTS.SHOW_SNACKBAR, snackbar => {
+      let defSnackbar = {
+        show: true,
+        color: "green",
+        timeout: 3000,
+        x: "right",
+        y: "bottom"
+      };
+      this.snackbar = { ...defSnackbar, ...snackbar };
+    });
+  },
+  methods: {
+    openThemeSettings() {
+      this.$vuetify.goTo(0);
+      this.rightDrawer = !this.rightDrawer;
+    }
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
-  .setting-fab
-    top: 50% !important;
-    right: 0;
-    border-radius: 0
+.setting-fab {
+  top: 50% !important;
+  right: 0;
+  border-radius: 0;
+}
 </style>
