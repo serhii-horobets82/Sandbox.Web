@@ -8,22 +8,16 @@
     class="primary lighten-1"
     floating
     persistent
-    width="200"
   >
-    <v-layout tag="v-list" column>
-      <v-list-tile>
-        <v-toolbar-side-icon @click.stop="mini = !mini"></v-toolbar-side-icon>
-        <v-list-tile-action>
-          <v-btn icon @click.stop="mini = !mini">
-            <v-icon>chevron_left</v-icon>
-          </v-btn>
-        </v-list-tile-action>
+    <v-layout tag="v-list" column class="left-menu">
+      <v-list-tile class="left-menu__switch">
+        <v-btn icon @click.stop="mini = !mini">
+          <v-icon color="secondary" size="36">notes</v-icon>
+        </v-btn>
       </v-list-tile>
       <v-divider/>
       <template v-for="(item, i) in links">
-        <v-subheader v-if="item.header" v-text="item.header" v-bind:key="i"/>
-        <v-divider v-else-if="item.divider" v-bind:key="i"/>
-        <template v-else>
+        <template>
           <template
             v-if="
                 !item.autoHide ||
@@ -38,7 +32,7 @@
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
           >
-            <v-list-tile :key="item.title" :to="item.router">
+            <v-list-tile class="left-menu__icons" :key="i" :to="item.router">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>

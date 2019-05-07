@@ -1,14 +1,13 @@
 <template>
-  <v-toolbar id="core-toolbar" color="primary" app fixed>
-
+  <v-toolbar id="core-toolbar" color="primary" app fixed extended>
     <template v-slot:extension v-if="isAuthenticated">
-      <v-toolbar-title > 
+      <v-toolbar-title>
         <v-badge overlap class="ma-3">
           <template v-slot:badge>
             <v-icon large dark color="yellow">tag_faces</v-icon>
           </template>
           <v-avatar size="100">
-            <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile"/>
+            <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile">
           </v-avatar>
         </v-badge>
       </v-toolbar-title>
@@ -44,7 +43,7 @@
       </v-toolbar-items>
     </template>
     <v-toolbar-title>
-      <v-img color="secondary" src="/img/logo.svg" width="100px"></v-img>
+        <v-img color="secondary" src="/img/logo.svg" width="100px" @click.stop="this.$router.push('/')"></v-img>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
@@ -71,67 +70,67 @@
       <v-btn icon to="/auth" v-show="!isAuthenticated">
         <v-icon>lock</v-icon>
       </v-btn>
-
-
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
 <script>
-  import { mapMutations, mapGetters } from 'vuex'
-  import { EventBus } from '@/event-bus'
-  import { NavigationItem, NavigationGroup } from '@/models/navigation.interface'
-  import { UserProfile } from '@/modules/user/types'
-  import Menu from '@/data/menu'
-  import Util from '@/util'
-  import { EVENTS } from '@/constants/index'
+import { mapMutations, mapGetters } from "vuex";
+import { EventBus } from "@/event-bus";
+import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
+import { UserProfile } from "@/modules/user/types";
+import Menu from "@/data/menu";
+import Util from "@/util";
+import { EVENTS } from "@/constants/index";
 
-  export default {
-    data: () => ({
-      title: null,
-      responsive: false,
-      responsiveInput: false
-    }),
-    computed: {
-      ...mapGetters('auth', ['isAuthenticated']),
-      ...mapGetters('user', ['profile', 'userIsAdmin', 'userIsManager']),
-      personalNavigationAuth () {
-        return Menu.filter(i => i.group === NavigationGroup.Personal && i.authRequired)
-      }
-    },
-    watch: {
-      $route (val) {
-        this.title = val.name
-      }
-    },
+export default {
+  data: () => ({
+    title: null,
+    responsive: false,
+    responsiveInput: false
+  }),
+  computed: {
+    ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"]),
+    personalNavigationAuth() {
+      return Menu.filter(
+        i => i.group === NavigationGroup.Personal && i.authRequired
+      );
+    }
+  },
+  watch: {
+    $route(val) {
+      this.title = val.name;
+    }
+  },
 
-    mounted () {
-      this.onResponsiveInverted()
-      window.addEventListener('resize', this.onResponsiveInverted)
-    },
-    beforeDestroy () {
-      window.removeEventListener('resize', this.onResponsiveInverted)
-    },
+  mounted() {
+    this.onResponsiveInverted();
+    window.addEventListener("resize", this.onResponsiveInverted);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResponsiveInverted);
+  },
 
-    methods: {
-      handleFullScreen () {
-        Util.toggleFullScreen()
-      },
-      onResponsiveInverted () {
-        if (window.innerWidth < 991) {
-          this.responsive = true
-          this.responsiveInput = false
-        } else {
-          this.responsive = false
-          this.responsiveInput = true
-        }
+  methods: {
+    handleFullScreen() {
+      Util.toggleFullScreen();
+    },
+    onResponsiveInverted() {
+      if (window.innerWidth < 991) {
+        this.responsive = true;
+        this.responsiveInput = false;
+      } else {
+        this.responsive = false;
+        this.responsiveInput = true;
       }
     }
   }
+};
 </script>
 
 <style>
-  #core-toolbar a {
-    text-decoration: none;
-  }
+#core-toolbar a {
+  text-decoration: none;
+}
 </style>
