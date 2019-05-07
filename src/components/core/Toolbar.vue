@@ -1,12 +1,25 @@
 <template>
-  <v-toolbar id="core-toolbar" color="primary" app fixed extended>
+  <v-toolbar
+    id="core-toolbar"
+    color="primary lighten-1"
+    app
+    fixed
+    extended
+    extension-height="100px"
+  >
     <template v-slot:extension v-if="isAuthenticated">
+      <v-card>
+        <v-card-text>111</v-card-text>
+        <v-card-text>111</v-card-text>
+        <v-card-text>111</v-card-text>
+      </v-card>
+
       <v-toolbar-title>
         <v-badge overlap class="ma-3">
           <template v-slot:badge>
             <v-icon large dark color="yellow">tag_faces</v-icon>
           </template>
-          <v-avatar size="100">
+          <v-avatar size="90">
             <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile">
           </v-avatar>
         </v-badge>
@@ -18,7 +31,7 @@
         <span class="display-1 ml-1">4.04</span>
       </v-toolbar-title>
 
-      <v-toolbar-items class="ml-2">
+      <v-toolbar-items>
         <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
           <template #activator="data">
             <v-avatar size="48" v-on="data.on">
@@ -40,10 +53,26 @@
             </v-list-tile>
           </v-list>
         </v-menu>
+        <v-progress-linear color="secondary" height="10" value="15"></v-progress-linear>
       </v-toolbar-items>
+
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn flat to="/evaluation/employees-evaluation">Employees evaluation</v-btn>
+        <v-btn flat to="/evaluation/schedule">Evaluation Schedule</v-btn>
+        <v-btn flat to="/evaluation/360-team-view">360 Team Review</v-btn>
+      </v-toolbar-items>
+
+      <v-list>
+        <v-list-tile class="left-menu__icons" :key="i" to="/">
+          <v-list-tile-content>
+            <v-list-tile-title>Profile</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
     </template>
+
     <v-toolbar-title>
-        <v-img color="secondary" src="/img/logo.svg" width="100px" @click.stop="this.$router.push('/')"></v-img>
+      <v-img color="secondary" src="/img/logo.svg" width="100px" @click.stop="$router.push('/')"></v-img>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>

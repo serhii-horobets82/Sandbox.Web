@@ -10,7 +10,7 @@
 */
 $button-text-transform = none;
 $body-font-family = 'Montserrat';
-$body-bg-light ?= #3C88B5;
+$light-color = #F5F9FC;
 $secondary-color = #0091FF;
 
 @import '~vuetify/src/stylus/main.styl';
@@ -34,17 +34,29 @@ h2 {
 /* ------------------------------------------------------------------
 [Components / Toolbar]
 */
+.primary--text .v-list__tile--active {
+  color: black !important;
+}
+
+.theme--light.v-list {
+  .v-list__tile--link:hover {
+    background: $light-color;
+  }
+}
+
 .left-menu {
   padding-top: 0px;
 
-  .list__tile {
-    padding-left: 0px !important;
+  .v-list__tile {
+    padding-left: 8px;
+    border-radius: 0;
   }
 
   &__switch {
     background-color: #F5F9FC;
     min-width: 64px;
     min-height: 64px;
+    padding-top: 8px;
   }
 
   &__icons {
@@ -56,12 +68,10 @@ h2 {
 
     // active menu icon
     .v-list__tile--active {
+      border-right: 2px solid $secondary-color;
+
       .theme--light.v-icon {
         color: $secondary-color !important;
-      }
-
-      .v-list__tile__action {
-        border-right: 2px solid $secondary-color;
       }
     }
   }
