@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <template v-if="!$route.meta.public">
+    <template v-if="!$route.meta.public && isAuthenticated">
       <core-toolbar/>
       <core-drawer/>
       <core-view/>
@@ -56,12 +56,12 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "@/event-bus";
 import { EVENTS } from "@/constants/index";
 
 export default {
   data: () => ({
-    expanded: true,
     rightDrawer: false,
     snackbar: {
       show: false
@@ -71,13 +71,16 @@ export default {
     EventBus.$on(EVENTS.SHOW_SNACKBAR, snackbar => {
       let defSnackbar = {
         show: true,
-        color: "green",
+        color: "secondary",
         timeout: 3000,
         x: "right",
         y: "bottom"
       };
       this.snackbar = { ...defSnackbar, ...snackbar };
     });
+  },
+  computed: {
+    ...mapGetters("auth", ["isAuthenticated"])
   },
   methods: {
     openThemeSettings() {

@@ -2,8 +2,8 @@
   "api": {
     "baseUrl": "http://localhost:5000"
   },
-  "features": {
-  },
+  "title": "Evoflare",
+  "features": {},
   "supportedLanguages": [
     {
       "locale": "en",
@@ -28,6 +28,11 @@
       {
         "title": "Manager",
         "userName": "manager@evoflare.com",
+        "password": "qwerty"
+      },
+      {
+        "title": "HR",
+        "userName": "hr@evoflare.com",
         "password": "qwerty"
       },
       {

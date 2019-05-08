@@ -8,12 +8,6 @@
     extension-height="100px"
   >
     <template v-slot:extension v-if="isAuthenticated">
-      <v-card>
-        <v-card-text>111</v-card-text>
-        <v-card-text>111</v-card-text>
-        <v-card-text>111</v-card-text>
-      </v-card>
-
       <v-toolbar-title>
         <v-badge overlap class="ma-3">
           <template v-slot:badge>
@@ -109,7 +103,7 @@ import { EventBus } from "@/event-bus";
 import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
 import { UserProfile } from "@/modules/user/types";
 import Menu from "@/data/menu";
-import Util from "@/util";
+import { toggleFullScreen } from "@/util";
 import { EVENTS } from "@/constants/index";
 
 export default {
@@ -143,7 +137,7 @@ export default {
 
   methods: {
     handleFullScreen() {
-      Util.toggleFullScreen();
+      toggleFullScreen();
     },
     onResponsiveInverted() {
       if (window.innerWidth < 991) {

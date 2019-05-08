@@ -17,7 +17,7 @@
         </v-btn>
       </v-list-tile>
       <v-divider/>
-      <template v-for="(item, i) in links">
+      <template v-for="(item, index) in links">
         <template>
           <template
             v-if="
@@ -33,7 +33,7 @@
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
           >
-            <v-list-tile class="left-menu__icons" :key="i" :to="item.router">
+            <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>
@@ -78,7 +78,7 @@ import Menu from "@/data/menu";
     // try reload profile data on page refresh
     if (this.isAuthenticated && !this.profile) {
       this.$store.dispatch("user/userRequest").then(() => {
-        this.$router.push("/");
+        //this.$router.push("/");
       });
     }
     EventBus.$on("logged-in", (payLoad: any) => {});

@@ -1,21 +1,16 @@
-const toggleFullScreen = () => {
-  let doc = window.document;
-  let docEl = doc.documentElement;
+import screenfull from "screenfull";
+import defaultSettings from "@/config/default.json";
 
-  // @ts-ignore
-  let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  // @ts-ignore
-  let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-  // @ts-ignore
-  if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-    requestFullScreen.call(docEl);
-  } else {
-    cancelFullScreen.call(doc);
+export const toggleFullScreen = () => {
+  if (screenfull) {
+    screenfull.request();
   }
 };
 
-
-export default {
-  toggleFullScreen
+const title = defaultSettings.title;
+export const getPageTitle = (routeTitle?: string) => {
+  if (routeTitle) {
+    return `${routeTitle} - ${title}`;
+  }
+  return `${title}`;
 };

@@ -6,7 +6,8 @@ const routes: RouteConfig[] = [
     path: "/auth",
     name: "auth",
     meta: {
-      public: true,
+      title: "Login",
+      public: true
     },
     component: () => import(/* webpackChunkName: "auth" */ "@/modules/auth/Index.vue")
   },

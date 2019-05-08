@@ -6,7 +6,7 @@ export default {
     lighten1: "#fff"
   },
   secondary: "#0091FF",
-  tertiary: "#F5F9FC",
+  tertiary: "#B5D6EC",
   accent: "#82B1FF",
   error: "#f55a4e",
   info: "#273EAF",

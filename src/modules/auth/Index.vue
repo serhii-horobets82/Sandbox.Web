@@ -1,15 +1,13 @@
 <template>
-  <v-app id="login" class="primary">
+  <v-app id="login" class="tertiary">
     <v-content>
       <v-container fluid fill-height>
-        <v-layout >
+        <v-layout>
           <v-flex xs12 sm4 class="white">
-            <v-layout fluid fill-height align-center justify-center >
+            <v-layout fluid fill-height align-center justify-center>
               <v-card flat>
                 <v-card-title>
-                  <h2>
-                    {{$t('Auth.signIn')}}
-                  </h2>
+                  <h2>{{$t('Auth.signIn')}}</h2>
                 </v-card-title>
                 <v-form ref="form" v-model="valid" lazy-validation>
                   <v-card-text>
@@ -34,9 +32,7 @@
                       :rules="[requireRule]"
                       type="password"
                     >
-                      <template v-slot:append>
-                        <v-btn link
-                      </template>
+                      <template v-slot:append><v-btn link</template>
                     </v-text-field>
                     <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
                   </v-card-text>
@@ -49,13 +45,15 @@
                         <v-list-tile
                           v-for="(item, index) in $config.demo.users"
                           :key="index"
-                          @click="setDemoCredential(item)">
+                          @click="setDemoCredential(item)"
+                        >
                           <v-list-tile-title prepend-icon="person">{{ item.title }}</v-list-tile-title>
                         </v-list-tile>
                       </v-list>
                     </v-menu>
                     <v-spacer></v-spacer>
-                    <v-btn round color="primary" block :disabled="!valid" @click="handleSubmit">{{ $t('Auth.signInBtn')
+                    <v-btn round color="primary" block :disabled="!valid" @click="handleSubmit">
+                      {{ $t('Auth.signInBtn')
                       }}
                     </v-btn>
                   </v-card-actions>
@@ -76,9 +74,7 @@
                       <v-icon>{{ social.icon }}</v-icon>
                     </v-btn>
                   </v-card-actions>
-                  <v-alert :value="isError" type="error">
-                    {{ errorMessage }}
-                  </v-alert>
+                  <v-alert :value="isError" type="error">{{ errorMessage }}</v-alert>
                 </v-form>
               </v-card>
             </v-layout>
@@ -91,66 +87,68 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
-  import {Credentials} from "@/models/credentials.interface";
+import { Component, Vue } from "vue-property-decorator";
+import { Credentials } from "@/models/credentials.interface";
 
-  @Component
-  export default class LoginForm extends Vue {
-    private valid: boolean = true;
-    private isError: boolean = false;
-    private rememberMe: boolean = false;
+@Component
+export default class LoginForm extends Vue {
+  private valid: boolean = true;
+  private isError: boolean = false;
+  private rememberMe: boolean = false;
 
-    private isBusy: boolean = false;
-    private errorMessage: string = "";
-    private credentials = {} as Credentials;
+  private isBusy: boolean = false;
+  private errorMessage: string = "";
+  private credentials = {} as Credentials;
 
-    private socials: any = [
-      {
-        name: 'facebook',
-        icon: 'fab fa-facebook-f',
-        color: '#3b5998'
-      },
-      {
-        name: 'twitter',
-        icon: 'fab fa-twitter',
-        color: '#55acee'
-      },
-      {
-        name: 'linkedin',
-        icon: 'fab fa-linkedin',
-        color: '#0077b5'
-      },
-      {
-        name: 'instagram',
-        icon: 'fab fa-instagram',
-        color: '#e4405f'
-      },
-      {
-        name: 'github',
-        icon: 'fab fa-github',
-        color: '#00405d'
-      },
-      {
-        name: 'google',
-        icon: 'fab fa-google',
-        color: '#ea4335'
-      }
-    ];
-
-    // rule for require field
-    requireRule(value: string) {
-      return !!value || this.$t("Auth.requireField")
+  private socials: any = [
+    {
+      name: "facebook",
+      icon: "fab fa-facebook-f",
+      color: "#3b5998"
+    },
+    {
+      name: "twitter",
+      icon: "fab fa-twitter",
+      color: "#55acee"
+    },
+    {
+      name: "linkedin",
+      icon: "fab fa-linkedin",
+      color: "#0077b5"
+    },
+    {
+      name: "instagram",
+      icon: "fab fa-instagram",
+      color: "#e4405f"
+    },
+    {
+      name: "github",
+      icon: "fab fa-github",
+      color: "#00405d"
+    },
+    {
+      name: "google",
+      icon: "fab fa-google",
+      color: "#ea4335"
     }
+  ];
 
-    auth(provider: string) {
-      this.isBusy = true;
-      let vm = this;
-      this.$auth.authenticate(provider).then(function (token: any) {
+  // rule for require field
+  requireRule(value: string) {
+    return !!value || this.$t("Auth.requireField");
+  }
+
+  auth(provider: string) {
+    this.isBusy = true;
+    let vm = this;
+    this.$auth
+      .authenticate(provider)
+      .then(function(token: any) {
         vm.$store
           .dispatch("auth/OAuthRequest", token)
           .then(() => {
-            let {redirect} = vm.$route.query;
-            vm.$router.push(redirect as string || "/dashboard/home");
+            let { redirect } = vm.$route.query;
+            vm.$router.push((redirect as string) || "/dashboard/home");
           })
           .catch(err => {
             vm.errorMessage = err;
@@ -159,44 +157,45 @@
           .then(() => {
             vm.isBusy = false;
           });
-      }).catch(function (err: any) {
+      })
+      .catch(function(err: any) {
         vm.errorMessage = err;
         vm.isError = true;
-      })
-    }
+      });
+  }
 
-    // rule for email validation
-    emailRule(value: string) {
-      const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return pattern.test(value) || this.$t("Auth.invalidEmail");
-    }
+  // rule for email validation
+  emailRule(value: string) {
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return pattern.test(value) || this.$t("Auth.invalidEmail");
+  }
 
-    setDemoCredential(credentials: Credentials) {
-      this.credentials = credentials;
-    }
+  setDemoCredential(credentials: Credentials) {
+    this.credentials = credentials;
+  }
 
-    // get valid form object
-    get form() {
-      return this.$refs.form as Vue & { validate: () => boolean };
-    }
+  // get valid form object
+  get form() {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
 
-    private handleSubmit() {
-      if (this.form.validate()) {
-        this.isBusy = true;
-        this.$store
-          .dispatch("auth/authRequest", this.credentials)
-          .then(() => {
-            let {redirect} = this.$route.query;
-            this.$router.push(redirect as string || "/");
-          })
-          .catch(err => {
-            this.errorMessage = err;
-            this.isError = true;
-          })
-          .then(() => {
-            this.isBusy = false;
-          });
-      }
+  private handleSubmit() {
+    if (this.form.validate()) {
+      this.isBusy = true;
+      this.$store
+        .dispatch("auth/authRequest", this.credentials)
+        .then(() => {
+          let { redirect } = this.$route.query;
+          this.$router.push((redirect as string) || "/");
+        })
+        .catch(err => {
+          this.errorMessage = err;
+          this.isError = true;
+        })
+        .then(() => {
+          this.isBusy = false;
+        });
     }
   }
+}
 </script>
