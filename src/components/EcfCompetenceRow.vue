@@ -21,7 +21,15 @@
       </div>
       </v-layout>
     </v-flex> -->
-
+<!--
+  type CompetenceRow = {
+    id: string;
+    name: string;
+    levels: Array<{ level: number }>;
+    competenceLevel: number;
+    roleLevel: number;
+  }
+ -->
     <v-flex xs12>
       <v-layout class="align-center mt-1">
         <span class="body-1">{{competence.id}}  {{competence.name}}</span>

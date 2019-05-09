@@ -4,6 +4,7 @@ import ProjectEdit from './project/Project.edit.vue'
 import Positions from './position/Positions.vue'
 import PositionEdit from './position/Position.edit.vue'
 import TeamEdit from './project/Team.edit.vue'
+import PositionsGrade from './position/PositionsGrade.vue'
 
 const routes: RouteConfig[] = [{
   path: '/organization',
@@ -24,6 +25,12 @@ const routes: RouteConfig[] = [{
       path: 'project/:id',
       name: 'projectEdit',
       component: ProjectEdit
+    },
+
+    {
+      path: 'positions-grade',
+      name: 'positions-grade',
+      component: PositionsGrade
     },
 
     {

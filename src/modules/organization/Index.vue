@@ -3,6 +3,7 @@
     <v-toolbar height="35">
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat to="/organization/project">Projects</v-btn>
+        <v-btn flat to="/organization/positions-grade">Positions Grade</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
