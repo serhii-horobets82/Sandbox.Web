@@ -1,5 +1,5 @@
 <template>
-  <v-app id="login" class="tertiary">
+  <v-app id="login" class="primary">
     <v-content>
       <v-container fluid fill-height>
         <v-layout>
@@ -31,9 +31,7 @@
                       required
                       :rules="[requireRule]"
                       type="password"
-                    >
-                      <template v-slot:append><v-btn link</template>
-                    </v-text-field>
+                    ></v-text-field>
                     <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
                   </v-card-text>
                   <v-card-actions>

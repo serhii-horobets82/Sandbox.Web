@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Router, { Route, RouteRecord } from "vue-router";
+import Router, { Route, RouteRecord, RouteConfig, RouterOptions } from "vue-router";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 import store from "./store";
@@ -18,10 +18,25 @@ NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 Vue.use(Router);
 
+const ConstantRoutes: RouteConfig[] = [
+  {
+    path: "/404",
+    component: () => import("@/views/error-page/404.vue"),
+    meta: {
+      title: "Not found",
+      public: true
+    }
+  }
+];
+
+const errorRoute: RouteConfig = { path: "*", redirect: "/404" };
+
 const router: Router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
+  scrollBehavior: () => <any>{ y: 0 },
   routes: [
+    ...ConstantRoutes,
     ...AuthRoutes,
     ...UserRoutes,
     ...AdminRoutes,
@@ -30,7 +45,8 @@ const router: Router = new Router({
     ...OrganizationRoutes,
     ...AdministrationRoutes,
     ...EvaluationRoutes,
-    ...OkrRoutes
+    ...OkrRoutes,
+    errorRoute
   ]
 });
 

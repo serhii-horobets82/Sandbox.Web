@@ -6,7 +6,7 @@ const routes: RouteConfig[] = [
     path: "/",
     name: "home",
     component: Home,
-    meta: { requiresAuth: true }
+    meta: { title: "Home" }
   },
   {
     path: "/dashboard/home",

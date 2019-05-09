@@ -4,31 +4,25 @@
     color="primary lighten-1"
     app
     fixed
+    dense
     extended
+    card
     extension-height="100px"
   >
-    <template v-slot:extension v-if="isAuthenticated">
+    <template v-slot:extension v-if="isAuthenticated && profile">
       <v-toolbar-title>
-        <v-badge overlap class="ma-3">
-          <template v-slot:badge>
-            <v-icon large dark color="yellow">tag_faces</v-icon>
-          </template>
-          <v-avatar size="90">
-            <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile">
-          </v-avatar>
-        </v-badge>
+        <v-avatar size="90">
+          <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile">
+        </v-avatar>
       </v-toolbar-title>
       <v-toolbar-title>
         <h3>{{profile.fullName}}</h3>
         <div class="caption">User role</div>
-        <v-icon small style="vertical-align: baseline">star_border</v-icon>
+        <v-icon class="bl" color="yellow">star_border</v-icon>
         <span class="display-1 ml-1">4.04</span>
-      </v-toolbar-title>
-
-      <v-toolbar-items>
         <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
           <template #activator="data">
-            <v-avatar size="48" v-on="data.on">
+            <v-avatar class="ml-3 bl" color="accent" size="30" v-on="data.on">
               <v-icon>more_horiz</v-icon>
             </v-avatar>
           </template>
@@ -47,22 +41,24 @@
             </v-list-tile>
           </v-list>
         </v-menu>
-        <v-progress-linear color="secondary" height="10" value="15"></v-progress-linear>
-      </v-toolbar-items>
+      </v-toolbar-title>
 
-      <v-toolbar-items class="hidden-sm-and-down">
+      <v-toolbar-title>
+        <v-progress-linear color="secondary" height="10" value="15"></v-progress-linear>
+      </v-toolbar-title>
+      <!-- <v-toolbar-items>
         <v-btn flat to="/evaluation/employees-evaluation">Employees evaluation</v-btn>
         <v-btn flat to="/evaluation/schedule">Evaluation Schedule</v-btn>
         <v-btn flat to="/evaluation/360-team-view">360 Team Review</v-btn>
-      </v-toolbar-items>
+      </v-toolbar-items>-->
 
-      <v-list>
-        <v-list-tile class="left-menu__icons" :key="i" to="/">
+      <!-- <v-list>
+        <v-list-tile class="left-menu__icons" to="/">
           <v-list-tile-content>
             <v-list-tile-title>Profile</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-      </v-list>
+      </v-list>-->
     </template>
 
     <v-toolbar-title>

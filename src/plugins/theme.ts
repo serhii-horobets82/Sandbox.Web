@@ -7,7 +7,7 @@ export default {
   },
   secondary: "#0091FF",
   tertiary: "#B5D6EC",
-  accent: "#82B1FF",
+  accent: "#F5F9FC",
   error: "#f55a4e",
   info: "#273EAF",
   success: "#5cb860",
