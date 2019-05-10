@@ -2,7 +2,7 @@
   <v-app>
     <template v-if="!$route.meta.public && isAuthenticated">
       <core-toolbar/>
-      <core-drawer/>
+      <core-drawer v-if="userIsAdmin || userIsManager || userIsHR "/>
       <core-view/>
       <!-- Floating button for settings   -->
       <v-btn
@@ -80,7 +80,8 @@ export default {
     });
   },
   computed: {
-    ...mapGetters("auth", ["isAuthenticated"])
+    ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("user", ["userIsAdmin", "userIsManager", "userIsHR"])
   },
   methods: {
     openThemeSettings() {

@@ -4,7 +4,7 @@
       <h1>My Profile</h1>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs6>
+      <v-flex xs12 sm6>
         <v-card flat color="#F5F9FC">
           <v-card-title class="pa-0">
             <h3 class="subheading font-weight-bold">My OKR list</h3>
@@ -51,19 +51,24 @@
           </v-list>
         </v-card>
       </v-flex>
-      <v-flex xs6></v-flex>
+      <v-flex xs12 sm6></v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs6></v-flex>
+      <v-flex xs6>
+        <h1>Just image for comparison</h1>
+        <v-img :src="okr1"/>
+      </v-flex>
       <v-flex xs6></v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import img from "../../assets/img/okr1.png";
 export default {
   data() {
     return {
+      okr1: img,
       items: [
         {
           action: "check",

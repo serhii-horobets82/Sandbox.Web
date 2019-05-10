@@ -147,7 +147,7 @@ import { EVENTS } from "@/constants/index";
 export default {
   data: () => ({
     title: null,
-    showProgressTooltip: true,
+    showProgressTooltip: false,
     responsive: false,
     responsiveInput: false,
     toolbarLinks: [
@@ -197,25 +197,14 @@ export default {
   },
 
   mounted() {
-    this.onResponsiveInverted();
-    window.addEventListener("resize", this.onResponsiveInverted);
+    if (this.isAuthenticated && !this.profile)
+      this.$store.dispatch("user/userRequest");
   },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.onResponsiveInverted);
-  },
+  beforeDestroy() {},
 
   methods: {
     handleFullScreen() {
       toggleFullScreen();
-    },
-    onResponsiveInverted() {
-      if (window.innerWidth < 991) {
-        this.responsive = true;
-        this.responsiveInput = false;
-      } else {
-        this.responsive = false;
-        this.responsiveInput = true;
-      }
     }
   }
 };
