@@ -1,52 +1,110 @@
 <template>
-  <v-toolbar id="core-toolbar" color="primary" app dark fixed extension-height="148">
-
-    <template v-slot:extension v-if="isAuthenticated">
-      <v-toolbar-title>
-        <v-badge overlap class="ma-3">
-          <template v-slot:badge>
-            <v-icon large dark color="yellow">tag_faces</v-icon>
-          </template>
-          <v-avatar size="100">
-            <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile"/>
-          </v-avatar>
-        </v-badge>
-      </v-toolbar-title>
-      <v-toolbar-title>
-        <h3>{{profile.fullName}}</h3>
-        <div class="caption">User role</div>
-        <v-icon small style="vertical-align: baseline">star_border</v-icon>
-        <span class="display-1 ml-1">4.04</span>
-      </v-toolbar-title>
-
-      <v-toolbar-items class="ml-2">
-        <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
-          <template #activator="data">
-            <v-avatar size="48" v-on="data.on" color="#3047B1">
-              <v-icon>more_horiz</v-icon>
-            </v-avatar>
-          </template>
-          <v-list>
-            <v-list-tile
-              v-for="(item, index) in personalNavigationAuth"
+  <v-toolbar
+    id="core-toolbar"
+    color="primary lighten-1"
+    app
+    fixed
+    flat
+    dense
+    extension-height="144px"
+  >
+    <template v-slot:extension v-if="isAuthenticated && profile">
+      <v-container fluid class="ma-0 mt-0 pa-0 pl-4">
+        <v-layout row>
+          <v-flex shrink>
+            <!-- Avatar -->
+            <v-toolbar-title>
+              <v-avatar size="90">
+                <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile">
+              </v-avatar>
+            </v-toolbar-title>
+          </v-flex>
+          <v-flex shrink>
+            <!-- Profile info -->
+            <v-toolbar-title class="ml-3">
+              <h3>{{profile.fullName}}</h3>
+              <div class="caption">User role</div>
+              <v-icon class="bl" color="yellow">star_border</v-icon>
+              <span class="display-1 ml-1">{{profile.userScore}}</span>
+              <v-menu
+                bottom
+                rigth
+                offset-y
+                content-class="dropdown-menu"
+                transition="slide-y-transition"
+              >
+                <template #activator="data">
+                  <v-avatar class="ml-3 bl" color="accent" size="30" v-on="data.on">
+                    <v-icon>more_horiz</v-icon>
+                  </v-avatar>
+                </template>
+                <v-list>
+                  <v-list-tile
+                    v-for="(item, index) in personalNavigationAuth"
+                    :key="index"
+                    :to="item.router"
+                  >
+                    <v-list-tile-action>
+                      <v-icon color="secondary">{{ item.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-text="item.title"/>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+            </v-toolbar-title>
+          </v-flex>
+          <v-flex shrink>
+            <v-toolbar-title class="ml-5 toolbar-list">
+              <v-tooltip v-model="showProgressTooltip" up fixed>
+                <template v-slot:activator="{ on }">
+                  <v-progress-linear v-on="on" color="secondary" height="10" value="15"></v-progress-linear>
+                </template>
+                <div class="subheading text-uppercase">
+                  your level
+                  <span class="pl-5 headline font-weight-bold">B1</span>
+                </div>
+                <div class="caption">How i can grow</div>
+              </v-tooltip>
+              <v-layout row no-wrap>
+                <template v-for="(item, index) in toolbarItems">
+                  <v-flex :key="'f1' + index">
+                    <v-chip :color="item.color + ' lighten-4'" class="py-4 px-0" label small>
+                      <v-icon medium :color="item.color">{{item.icon}}</v-icon>
+                    </v-chip>
+                  </v-flex>
+                  <v-flex :key="'f2' + index">
+                    <v-list>
+                      <v-list-tile>
+                        <v-list-tile-content>
+                          <v-list-tile-title class="title">{{item.title}}</v-list-tile-title>
+                          <v-list-tile-sub-title class="caption">{{item.subtitle}}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-flex>
+                </template>
+              </v-layout>
+            </v-toolbar-title>
+          </v-flex>
+        </v-layout>
+        <v-layout row class="pa-0 ma-0">
+          <v-toolbar-items>
+            <v-btn
+              class="py-2 subheading"
+              flat
+              v-for="(link, index) in toolbarLinks"
+              :to="link.to"
               :key="index"
-              :to="item.router"
-            >
-              <v-list-tile-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title v-text="item.title"/>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </v-toolbar-items>
+            >{{link.title}}</v-btn>
+          </v-toolbar-items>
+        </v-layout>
+      </v-container>
     </template>
 
-    <v-toolbar-side-icon @click.stop="handleDrawerToggle"></v-toolbar-side-icon>
     <v-toolbar-title>
-      <v-img src="/img/logo.svg" width="100px"></v-img>
+      <v-img color="secondary" src="/img/logo.svg" width="100px" @click.stop="$router.push('/')"></v-img>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
@@ -73,70 +131,97 @@
       <v-btn icon to="/auth" v-show="!isAuthenticated">
         <v-icon>lock</v-icon>
       </v-btn>
-
-
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
 <script>
-  import { mapMutations, mapGetters } from 'vuex'
-  import { EventBus } from '@/event-bus'
-  import { NavigationItem, NavigationGroup } from '@/models/navigation.interface'
-  import { UserProfile } from '@/modules/user/types'
-  import Menu from '@/data/menu'
-  import Util from '@/util'
-  import { EVENTS } from '@/constants/index'
+import { mapMutations, mapGetters } from "vuex";
+import { EventBus } from "@/event-bus";
+import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
+import { UserProfile } from "@/modules/user/types";
+import Menu from "@/data/menu";
+import { toggleFullScreen } from "@/util";
+import { EVENTS } from "@/constants/index";
 
-  export default {
-    data: () => ({
-      title: null,
-      responsive: false,
-      responsiveInput: false
-    }),
-    computed: {
-      ...mapGetters('auth', ['isAuthenticated']),
-      ...mapGetters('user', ['profile', 'userIsAdmin', 'userIsManager']),
-      personalNavigationAuth () {
-        return Menu.filter(i => i.group === NavigationGroup.Personal && i.authRequired)
-      }
-    },
-    watch: {
-      $route (val) {
-        this.title = val.name
-      }
-    },
-
-    mounted () {
-      this.onResponsiveInverted()
-      window.addEventListener('resize', this.onResponsiveInverted)
-    },
-    beforeDestroy () {
-      window.removeEventListener('resize', this.onResponsiveInverted)
-    },
-
-    methods: {
-      handleDrawerToggle () {
-        this.$store.dispatch('toggleSideBar')
+export default {
+  data: () => ({
+    title: null,
+    showProgressTooltip: true,
+    responsive: false,
+    responsiveInput: false,
+    toolbarLinks: [
+      { title: "My profile", to: "/personal/profile" },
+      { title: "360", to: "/evaluation/360-team-view" },
+      { title: "Latest summary", to: "/personal/summary" },
+      { title: "PDP", to: "/personal/pdp" }
+    ],
+    toolbarItems: [
+      {
+        icon: "rate_review",
+        color: "orange",
+        title: "127",
+        subtitle: "Reviews"
       },
-      handleFullScreen () {
-        Util.toggleFullScreen()
+      {
+        icon: "book",
+        color: "blue",
+        title: "4",
+        subtitle: "Courses"
       },
-      onResponsiveInverted () {
-        if (window.innerWidth < 991) {
-          this.responsive = true
-          this.responsiveInput = false
-        } else {
-          this.responsive = false
-          this.responsiveInput = true
-        }
+      {
+        icon: "trending_up",
+        color: "green",
+        title: "12",
+        subtitle: "Trainings"
+      }
+    ]
+  }),
+  computed: {
+    ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"]),
+    personalNavigationAuth() {
+      let personal = Menu.filter(
+        i => i.group === NavigationGroup.Personal && i.authRequired
+      );
+      return personal.filter(
+        i => (i.adminRoleRequired && this.userIsAdmin) || !i.adminRoleRequired
+      );
+    }
+  },
+  watch: {
+    $route(val) {
+      this.title = val.name;
+    }
+  },
+
+  mounted() {
+    this.onResponsiveInverted();
+    window.addEventListener("resize", this.onResponsiveInverted);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResponsiveInverted);
+  },
+
+  methods: {
+    handleFullScreen() {
+      toggleFullScreen();
+    },
+    onResponsiveInverted() {
+      if (window.innerWidth < 991) {
+        this.responsive = true;
+        this.responsiveInput = false;
+      } else {
+        this.responsive = false;
+        this.responsiveInput = true;
       }
     }
   }
+};
 </script>
 
 <style>
-  #core-toolbar a {
-    text-decoration: none;
-  }
+#core-toolbar a {
+  text-decoration: none;
+}
 </style>

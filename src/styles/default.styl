@@ -1,52 +1,111 @@
-/*------------------------------------------------------------------
+/* ------------------------------------------------------------------
 [Table of contents]
 /*
 # overwrite some style of stylus */
-
-/*------------------------------------------------------------------
+/* ------------------------------------------------------------------
 [FontAwesome]
 */
-
-/*------------------------------------------------------------------
+/* ------------------------------------------------------------------
 [Global]
 */
-$button-text-transform = none
-$body-font-family = 'Montserrat'
-$body-bg-light := #3C88B5
+$button-text-transform = none;
+$body-font-family = 'Montserrat';
+$light-color = #F5F9FC;
+$secondary-color = #0091FF;
+$button-border-radius = 2px;
 
-// $main-color = #3C88B5
+@import '~vuetify/src/stylus/main.styl';
 
-@import '~vuetify/src/stylus/main.styl'
-// * 
-//   color: #3C88B5
+// *
+// color: #3C88B5
+body {
+  font-family: $body-font-family;
+  font-size: $font-size-root;
+  font-weight: $font-weights.regular;
+  line-height: $line-height-root;
+}
 
-body
-  font-family: $body-font-family
-  font-size: $font-size-root
-  font-weight: $font-weights.regular
-  line-height: $line-height-root
+h2 {
+  color: #3C88B5;
+  font-size: 36px;
+  font-family: Montserrat;
+  letter-spacing: -0.5;
+}
 
-h2
-  color: #3C88B5
-  font-size: 36px
-  font-family: Montserrat
-  letter-spacing: -0.5
-
-/*------------------------------------------------------------------
+/* ------------------------------------------------------------------
 [Components / Toolbar]
 */
+.toolbar-list {
+  .v-list__tile {
+    padding-left: 3px;
+    padding-right: 24px;
+  }
+}
 
-.theme
-  &--dark
-    .v-list
-      background: #3047B1
-    &.v-navigation-drawer
-      background-color #3047B1
+#core-toolbar {
+  .v-toolbar__items {
+    .v-btn--active:focus, .v-btn:hover {
+      background-color: $light-color;
+    }
 
-.v-toolbar
-  &__items
-    .v-avatar
-      align-self: center
-  &__extension
-    > .v-toolbar__title
-      margin-left: 36px
+    .v-btn--active:before {
+      background-color: white;
+    }
+
+    .v-btn--active {
+      font-weight: bold;
+      border-bottom: 3px solid $secondary-color;
+    }
+  }
+}
+
+.v-tooltip__content {
+  background-color: $secondary-color;
+}
+
+.primary--text .v-list__tile--active {
+  color: black !important;
+}
+
+.theme--light.v-list {
+  .v-list__tile--link:hover {
+    background: $light-color;
+  }
+}
+
+.bl {
+  vertical-align: baseline;
+}
+
+.left-menu {
+  padding-top: 0px;
+
+  .v-list__tile {
+    padding-left: 8px;
+    border-radius: 0;
+  }
+
+  &__switch {
+    background-color: #F5F9FC;
+    min-width: 64px;
+    min-height: 64px;
+    padding-top: 8px;
+  }
+
+  &__icons {
+    .v-list__tile:not(.v-list__tile--active) {
+      .theme--light.v-icon {
+        color: rgba(0, 145, 255, 0.6) !important;
+      }
+    }
+
+    // active menu icon
+    .v-list__tile--active {
+      border-right: 2px solid $secondary-color;
+
+      .theme--light.v-icon {
+        color: $secondary-color !important;
+      }
+    }
+  }
+}

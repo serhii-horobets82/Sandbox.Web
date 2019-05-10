@@ -1,14 +1,14 @@
-import {MutationTree} from "vuex";
-import {UserProfileState, UserProfile} from "./types";
-import {getDefaultState} from "./index";
-import {EVENTS, ROLES} from "@/constants";
-import {EventBus} from "@/event-bus";
+import { MutationTree } from "vuex";
+import { UserProfileState, UserProfile } from "./types";
+import { getDefaultState } from "./index";
+import { EVENTS, ROLES } from "@/constants";
+import { EventBus } from "@/event-bus";
 
 // mutation constants
-export const RESET_PROFILE = 'RESET_PROFILE';
-export const REQUEST_PROFILE = 'REQUEST_PROFILE';
-export const REQUEST_PROFILE_SUCCESS = 'REQUEST_PROFILE_SUCCESS';
-export const REQUEST_PROFILE_ERROR = 'REQUEST_PROFILE_ERROR';
+export const RESET_PROFILE = "RESET_PROFILE";
+export const REQUEST_PROFILE = "REQUEST_PROFILE";
+export const REQUEST_PROFILE_SUCCESS = "REQUEST_PROFILE_SUCCESS";
+export const REQUEST_PROFILE_ERROR = "REQUEST_PROFILE_ERROR";
 
 export const mutations: MutationTree<UserProfileState> = {
   [REQUEST_PROFILE]: state => {
@@ -17,7 +17,8 @@ export const mutations: MutationTree<UserProfileState> = {
     state.isError = false;
   },
   [REQUEST_PROFILE_SUCCESS](state, payload: UserProfile) {
-    state.profile = payload;
+    // TODO
+    state.profile = { userScore: "4.04", ...payload };
     // check roles
     if (payload.roles) {
       state.userIsAdmin = payload.roles.includes(ROLES.Admin);
@@ -35,6 +36,6 @@ export const mutations: MutationTree<UserProfileState> = {
     // set state as default
     Object.assign(state, getDefaultState());
     // Show snackbar
-    EventBus.$emit(EVENTS.SHOW_SNACKBAR, {text: "Logout successfully"});
+    EventBus.$emit(EVENTS.SHOW_SNACKBAR, { text: "Logout successfully" });
   }
 };

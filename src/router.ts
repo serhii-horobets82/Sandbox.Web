@@ -1,6 +1,9 @@
 import Vue from "vue";
-import Router, {Route, RouteRecord} from "vue-router";
+import Router, { Route, RouteRecord, RouteConfig, RouterOptions } from "vue-router";
+import NProgress from "nprogress"; // progress bar
+import "nprogress/nprogress.css"; // progress bar style
 import store from "./store";
+import { getPageTitle } from "@/util/index";
 import AuthRoutes from "./modules/auth/router";
 import UserRoutes from "./modules/user/router";
 import AdminRoutes from "./modules/admin/router";
@@ -11,12 +14,29 @@ import OkrRoutes from "./modules/okr/router";
 import PersonalRoutes from "./modules/personal/router";
 import AdministrationRoutes from "./modules/administration/router";
 
+NProgress.configure({ showSpinner: false }); // NProgress Configuration
+
 Vue.use(Router);
+
+const ConstantRoutes: RouteConfig[] = [
+  {
+    path: "/404",
+    component: () => import("@/views/error-page/404.vue"),
+    meta: {
+      title: "Not found",
+      public: true
+    }
+  }
+];
+
+const errorRoute: RouteConfig = { path: "*", redirect: "/404" };
 
 const router: Router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
+  scrollBehavior: () => <any>{ y: 0 },
   routes: [
+    ...ConstantRoutes,
     ...AuthRoutes,
     ...UserRoutes,
     ...AdminRoutes,
@@ -25,28 +45,50 @@ const router: Router = new Router({
     ...OrganizationRoutes,
     ...AdministrationRoutes,
     ...EvaluationRoutes,
-    ...OkrRoutes
+    ...OkrRoutes,
+    errorRoute
   ]
 });
 
 router.beforeEach((to: Route, from: Route, next: any) => {
-  if (to.matched.some((record: RouteRecord) => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in if not, redirect to login page.
-    const isAuthenticated = store.getters["auth/isAuthenticated"];
-    const userIsAdmin = store.getters["user/userIsAdmin"];
-    const userIsManager = store.getters["user/userIsManager"];
-    const userIsHR = store.getters["user/userIsHR"];
+  // start progress bar
+  NProgress.start();
 
-    if (!isAuthenticated) {
-      next({path: "/auth", query: {redirect: to.fullPath}});
-    } else {
-      if (to.matched.some((record: RouteRecord) => record.meta.requiresAdminRole) && !userIsAdmin) {
-        next({path: "/403", query: {redirect: "/403"}});
-      } else next();
+  // set page title
+  document.title = getPageTitle(to.meta.title);
+
+  const isAuthenticated = store.getters["auth/isAuthenticated"];
+
+  if (isAuthenticated) {
+    if (to.path === "/auth") {
+      // if is logged in, redirect to the home page
+      next({ path: "/" });
+      NProgress.done();
     }
+
+    const userIsAdmin = store.getters["user/userIsAdmin"];
+    //const userIsManager = store.getters["user/userIsManager"];
+    //const userIsHR = store.getters["user/userIsHR"];
+
+    const requiresAdminRole = to.matched.some(
+      (record: RouteRecord) => record.meta.requiresAdminRole
+    );
+    if (requiresAdminRole && !userIsAdmin) {
+      next({ path: "/403", query: { redirect: "/403" } });
+    } else next();
   } else {
-    next();
+    // skip auth to prevent loop
+    if (to.path === "/auth") next();
+    else {
+      next({ path: "/auth", query: { redirect: to.fullPath } });
+      NProgress.done();
+    }
   }
+});
+
+router.afterEach(() => {
+  // finish progress bar
+  NProgress.done();
 });
 
 export default router;

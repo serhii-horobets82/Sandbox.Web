@@ -1,7 +1,6 @@
-import {NavigationGroup, NavigationItem} from "@/models/navigation.interface";
+import { NavigationGroup, NavigationItem } from "@/models/navigation.interface";
 
 const Menu: Array<NavigationItem> = [
-  {header: "Main"},
   {
     title: "Home",
     icon: "home",
@@ -37,7 +36,6 @@ const Menu: Array<NavigationItem> = [
     icon: "info",
     router: "/about"
   },
-  {header: "Personal"},
   {
     title: "Account",
     icon: "person",
@@ -72,6 +70,5 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   }
 ];
-
 
 export default Menu;
