@@ -7,6 +7,7 @@ export interface UserProfile {
   fullName: string;
   pictureUrl: string;
   roles?: Array<string>;
+  userScore?: string;
 }
 
 // Vuex state for user profile

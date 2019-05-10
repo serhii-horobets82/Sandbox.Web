@@ -35,6 +35,34 @@ h2 {
 /* ------------------------------------------------------------------
 [Components / Toolbar]
 */
+.toolbar-list {
+  .v-list__tile {
+    padding-left: 3px;
+    padding-right: 24px;
+  }
+}
+
+#core-toolbar {
+  .v-toolbar__items {
+    .v-btn--active:focus, .v-btn:hover {
+      background-color: $light-color;
+    }
+
+    .v-btn--active:before {
+      background-color: white;
+    }
+
+    .v-btn--active {
+      font-weight: bold;
+      border-bottom: 3px solid $secondary-color;
+    }
+  }
+}
+
+.v-tooltip__content {
+  background-color: $secondary-color;
+}
+
 .primary--text .v-list__tile--active {
   color: black !important;
 }
