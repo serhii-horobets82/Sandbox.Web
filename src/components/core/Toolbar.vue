@@ -9,7 +9,7 @@
     extension-height="144px"
   >
     <template v-slot:extension v-if="isAuthenticated && profile">
-      <v-container fluid class="ma-0 mt-0 pa-0 pl-4">
+      <v-container class="ma-0 mt-0 pa-0 pl-4 toolbar-ext" fluid>
         <v-layout row>
           <v-flex shrink>
             <!-- Avatar -->
@@ -114,11 +114,11 @@
 
       <!-- Fullscreen icon -->
       <v-btn icon @click="handleFullScreen()">
-        <v-icon>fullscreen</v-icon>
+        <v-icon color="secondary">fullscreen</v-icon>
       </v-btn>
 
       <v-btn icon to="/">
-        <v-icon>dashboard</v-icon>
+        <v-icon color="secondary">dashboard</v-icon>
       </v-btn>
 
       <!-- Language switch -->
@@ -151,6 +151,7 @@ export default {
     responsive: false,
     responsiveInput: false,
     toolbarLinks: [
+      { title: "Dashboard", to: "/" },
       { title: "My profile", to: "/personal/profile" },
       { title: "360", to: "/evaluation/360-team-view" },
       { title: "Latest summary", to: "/personal/summary" },
@@ -219,9 +220,3 @@ export default {
   }
 };
 </script>
-
-<style>
-#core-toolbar a {
-  text-decoration: none;
-}
-</style>
