@@ -1,28 +1,14 @@
 <template>
-  <v-menu
-    bottom
-    left
-    offset-y
-    content-class="dropdown-menu"
-    transition="slide-y-transition">
-    <v-btn icon
-           slot="activator"
-           class="toolbar-items">
-      <v-badge
-        color="error"
-        overlap
-      >
-        <template slot="badge">
-          {{ count }}
-        </template>
-        <v-icon>notifications</v-icon>
+  <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
+    <v-btn icon slot="activator" class="toolbar-items">
+      <v-badge color="error" overlap>
+        <template slot="badge">{{ count }}</template>
+        <v-icon color="secondary">notifications</v-icon>
       </v-badge>
     </v-btn>
 
     <v-card>
-      <v-card-title>
-        Notification
-      </v-card-title>
+      <v-card-title>Notification</v-card-title>
       <v-divider></v-divider>
       <v-card-text class="pa-0">
         <v-list two-line class="pa-0">
@@ -36,9 +22,7 @@
               <v-list-tile-content>
                 <v-list-tile-sub-title v-html="item.title"></v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-list-tile-action class="caption">
-                {{item.timeLabel}}
-              </v-list-tile-action>
+              <v-list-tile-action class="caption">{{item.timeLabel}}</v-list-tile-action>
             </v-list-tile>
           </template>
         </v-list>
@@ -51,17 +35,15 @@
 </template>
 
 <script>
-  import notes from '@/data/notification'
+import notes from "@/data/notification";
 
-  export default {
-    data: () => ({
-      items: notes,
-      count: notes.filter(i => i.title).length
-    }),
-    methods: {
-      handleClick: (e) => {
-      }
-    },
-
+export default {
+  data: () => ({
+    items: notes,
+    count: notes.filter(i => i.title).length
+  }),
+  methods: {
+    handleClick: e => {}
   }
+};
 </script>
