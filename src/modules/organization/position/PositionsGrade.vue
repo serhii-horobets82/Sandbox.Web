@@ -18,7 +18,6 @@
             </span>
           </v-tooltip>
         </h2>
-        <span class="red--text">(DEMO!!! Data is not saved anywhere!! only on the front end)</span>
       </v-flex>
       <v-flex class="text-xs-right">
         <v-spacer></v-spacer>
