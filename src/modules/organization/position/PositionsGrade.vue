@@ -22,7 +22,7 @@
       </v-flex>
       <v-flex class="text-xs-right">
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="roleDialog.open = true">Add Role</v-btn>
+        <v-btn color="primary" @click="openEditRoleDialog()">Add Role</v-btn>
       </v-flex>
       <v-flex xs12 class=" mb-4">
 
@@ -31,9 +31,12 @@
 
     <v-layout row wrap v-for="role in roles" :key="role.id" class="mb-3">
       <v-flex xs12 class="mb-1">
-        <span class="subheading">{{ role.name }}</span>
+        <span class="subheading">{{ role.type }}</span>
 
-        <v-btn small @click="expandCollapseRole(role)">Expand Skills</v-btn>
+        <v-btn icon small class="mr-0" @click="openEditRoleDialog(role)"><v-icon small>edit</v-icon></v-btn>
+        <v-btn icon small class="ml-0" @click="removeRole(role)"><v-icon small>clear</v-icon></v-btn>
+
+        <v-btn small @click="expandCollapseRole(role)">{{role.expanded ? 'Collapse' : 'Expand'}} Skills</v-btn>
         <v-btn small @click="gradeDialog.role = role; gradeDialog.open = true" color="primary" >Add Grade</v-btn>
       </v-flex>
 
@@ -43,13 +46,32 @@
         <v-layout row align-content-center :class="{'horiz-scroll': role.expanded}">
           <!-- fix key -->
           <!-- v-bind="{ [`xs${role.expanded ? 5 : 2}`]: true }" -->
-          <v-flex v-bind="!role.expanded ? { [`xs2`]: true } : {}" v-for="grade in role.grades" :key="grade.name" class="mr-2">
+          <v-flex v-bind="!role.expanded ? { [`xs2`]: true } : {}" v-for="grade in role.roleGrade" :key="grade.name" class="mr-2">
             <v-card>
-              <v-card-title>
-              {{ grade.name }}
+              <v-card-title class="pr-2">
+                <v-layout>
+                {{ grade.name }}
+                <v-spacer></v-spacer>
+                <v-btn icon small class="ma-0"><v-icon small>edit</v-icon></v-btn>
+                <!-- <v-btn icon small class="ma-0"><v-icon small>clear</v-icon></v-btn> -->
+                </v-layout>
               </v-card-title>
+              <!--
+                type {
+                  id: any;
+                  name: string;
+                  levels: int[];  // has length 5, values are true/false-ish
+                  competenceLevel: int; // index of the levels array
+                }
+               -->
               <v-card-text v-if="role.expanded">
-                <table class="skillHeaderRow" >
+                <span class="caption grey--text"
+                  v-if="!getCompetenceRows(role, grade).length"
+                  >
+                  No skills yet...
+                </span>
+                <table class="skillHeaderRow"
+                  v-else>
                   <tbody>
                     <tr>
                       <td style="width: 50%">
@@ -62,7 +84,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <table class="skillRow" v-for="competence in grade.competences" :key="competence.id">
+                <table class="skillRow" v-for="competence in getCompetenceRows(role, grade)" :key="competence.id">
                   <tbody>
                     <tr>
                       <td style="width: 50%">
@@ -72,9 +94,9 @@
                         class="competenceLevelFill text-xs-center"
                         style="width: 10%"
                         :class="{
-                          'required': competence.roleLevel === i,
-                          'available': competence.levels[i],// && i < competence.roleLevel
-                          'selected': i == competence.roleLevel
+                          'required': competence.competenceLevel === i,
+                          'available': competence.levels[i],// && i < competence.competenceLevel
+                          'selected': i == competence.competenceLevel
                         }"
                         >
                         <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i]">block</v-icon>
@@ -101,8 +123,8 @@
     >
       <v-card>
         <v-card-title class="headline">
-          Role name
-          <v-text-field v-model="roleDialog.name"></v-text-field>
+          {{ roleDialog.role.id ? "Edit Role Name" : "Create new Role"}}
+          <v-text-field v-model="roleDialog.role.type"></v-text-field>
         </v-card-title>
 
       <v-divider></v-divider>
@@ -110,7 +132,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="roleDialog.open = false">Cancel</v-btn>
-        <v-btn @click="addRole()">Add</v-btn>
+        <v-btn @click="saveRole()">Save</v-btn>
       </v-card-actions>
       </v-card>
     </v-dialog>
@@ -122,7 +144,7 @@
     >
       <v-card v-if="gradeDialog.open">
         <v-card-title class="headline">
-          Grade name (Role: {{gradeDialog.role.name}})
+          Grade name (Role: {{gradeDialog.role.type}})
           <v-text-field v-model="gradeDialog.name"></v-text-field>
         </v-card-title>
 
@@ -181,13 +203,13 @@
                   class="competenceLevelFill text-xs-center"
                   style="width: 10%"
                   :class="{
-                    'required': competence.roleLevel === i,
-                    'available': competence.levels[i],// && i < competence.roleLevel
-                    'selected': i == competence.roleLevel
+                    'required': competence.competenceLevel === i,
+                    'available': competence.levels[i - 1],// && i < competence.competenceLevel
+                    'selected': i == competence.competenceLevel
                   }"
-                  @click="competence.roleLevel = i; !skillsDialog.selected.includes(competence.id) && skillsDialog.selected.push(competence.id)"
+                  @click="competence.competenceLevel = i; !skillsDialog.selected.includes(competence.id) && skillsDialog.selected.push(competence.id)"
                   >
-                  <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i]">block</v-icon>
+                  <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i - 1]">block</v-icon>
                 </td>
               </tr>
             </tbody>
@@ -218,7 +240,8 @@ export default {
   data: () => ({
     roleDialog: {
       open: false,
-      name: null,
+      role: {},
+      link: null,
     },
     gradeDialog: {
       open: false,
@@ -227,76 +250,77 @@ export default {
     },
     skillsDialog: {
       open: false,
+      role: null,
       grade: null,
       allSkills: null,
       filteredSkills: null,
       selected: [],
       showAll: false
     },
-    roles: [
-      {
-        id: 1,
-        name: 'Developer',
-        grades: [
-          {name: 'Junior Developer', order: 1, competences: []},
-          {name: 'Middle Developer', order: 2, competences: []},
-          {name: 'Senior Developer', order: 3, competences: []},
-          {name: 'Team/Tech Lead', order: 4, competences: []},
-          {name: 'Architect', order: 5, competences: []},
-        ]
-      },
-      {
-        id: 2,
-        name: 'QA',
-        grades: [
-          {name: 'Junior QA', order: 1, competences: []},
-          {name: 'Middle QA', order: 2, competences: []},
-          {name: 'Senior QA', order: 3, competences: []},
-          {name: 'Team/Tech Lead QA', order: 4, competences: []},
-        ]
-      },
-      {
-        id: 3,
-        name: 'QA Automation',
-        grades: [
-          {name: 'Junior QA Automation', order: 1, competences: []},
-          {name: 'Middle QA Automation', order: 2, competences: []},
-          {name: 'Senior QA Automation', order: 3, competences: []},
-          {name: 'Team/Tech Lead Automation QA', order: 4, competences: []},
-        ]
-      },
-      {
-        id: 4,
-        name: 'Manager',
-        grades: [
-          {name: 'Project Coordinator', order: 1, competences: []},
-          {name: 'Project Manager', order: 2, competences: []},
-          {name: 'Product Manager', order: 3, competences: []},
-          {name: 'Portfolio Manager', order: 4, competences: []},
-        ]
-      }
-    ]
+    roles: [],
+    roleGradeCompetences: {}
   }),
 
   async created(){
-
+    const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
+    this.roles = res.data;
   },
 
   methods: {
-    expandCollapseRole(role){
+    async expandCollapseRole(role){
       this.$set(role, "expanded", !role.expanded);// {expanded: !role.expanded });
+      if (role.expanded && !this.roleGradeCompetences[role.id]) {
+        const res = await axios.get(this.$backendUrl + `api/RoleGrades/${role.id}/competences`);
+        this.$set(this.roleGradeCompetences, role.id, res.data)
+        // this.roleGradeCompetences[role.id] = res.data;
+      }
     },
-    addRole() {
-      this.roles.push({name: this.roleDialog.name, id: this.roles[this.roles.length-1].id + 1, grades: []})
-      this.roleDialog.name = ''
+    async removeRole(role) {
+      if (role.roleGrade && role.roleGrade.length) {
+        alert(`The Role ${role.type} has grades, first remove all the grades to remove this role...`);
+        return;
+      }
+      if (confirm(`Are you sure you want to remove an organization role - ${role.type}?`)) {
+        const res = await axios.delete(this.$backendUrl + `api/RoleGrades/role/${role.id}`);
+        this.roles.splice(this.roles.indexOf(role), 1);
+      }
+    },
+    openEditRoleDialog(role) {
+      const r = role || {};
+      this.roleDialog.link = role;
+      this.roleDialog.role = { id: r.id, type: r.type };
+      this.roleDialog.open = true;
+    },
+    async saveRole() {
+      const data = { ...this.roleDialog.role };
+      const res = data.id
+        ? await axios.put(this.$backendUrl + `api/RoleGrades/role/${data.id}`, data)
+        : await axios.post(this.$backendUrl + `api/RoleGrades/role`, data);
+
       this.roleDialog.open = false;
+
+      if (data.id) {
+        this.roleDialog.link.type = data.type;
+      } else {
+        this.roles.push(res.data)
+      }
     },
-    addGrade(){
-      this.gradeDialog.role.grades.push({name: this.gradeDialog.name});
+    async addGrade(){
+      const role = this.gradeDialog.role;
+      const data = {
+        name: this.gradeDialog.name,
+        employeeTypeId: role.id,
+        order: role.roleGrade.length + 1
+      }
+      const res = await axios.post(this.$backendUrl + `api/RoleGrades`, data);
+
       this.gradeDialog.name = '';
       this.gradeDialog.open = false;
+
+      role.roleGrade.push(res.data);
     },
     async openSkillsConfigurationDialog(role, grade) {
+      this.skillsDialog.role = role;
       this.skillsDialog.grade = grade;
       this.skillsDialog.open = true;
 
@@ -304,24 +328,47 @@ export default {
       this.skillsDialog.allSkills = res.data;
       this.skillsDialog.filteredSkills = this.skillsDialog.allSkills;
 
-      const competences = grade.competences.length || grade.order == 1
-        ? grade.competences
-        : role.grades.filter(g => g.order == grade.order-1)[0].competences;
+      const competenceRows = this.getCompetenceRows(role, grade);
+      const competences = competenceRows.length || grade.order == 1
+          ? competenceRows
+          : this.getCompetenceRows(role, role.roleGrade.filter(g => g.order == grade.order-1)[0]);
       this.skillsDialog.selected = competences.map(c => c.id)
       this.skillsDialog.allSkills.forEach(c => {
         if (this.skillsDialog.selected.includes(c.id)) {
-          c.roleLevel = competences.filter(gc => gc.id == c.id)[0].roleLevel
+          c.competenceLevel = competences.filter(gc => gc.id == c.id)[0].competenceLevel
         }
       })
+    },
+    getCompetenceRows(role, grade) {
+      const t = this.roleGradeCompetences[role.id];
+      return t
+        ? t[grade.id].rows
+        : [];
     },
     showSelected(checked) {
       this.skillsDialog.filteredSkills = checked
         ? this.skillsDialog.allSkills.filter(c => this.skillsDialog.selected.includes(c.id))
         : this.skillsDialog.allSkills;
     },
-    saveSkills(){
-      this.skillsDialog.grade.competences = this.skillsDialog.allSkills.filter(c => this.skillsDialog.selected.includes(c.id))
-      // this.skillsDialog.grade.competences = this.skillsDialog.selected;
+    async saveSkills(){
+      const selected = this.skillsDialog.allSkills.filter(c => this.skillsDialog.selected.includes(c.id));
+      const gradeRows = this.getCompetenceRows(this.skillsDialog.role, this.skillsDialog.grade);
+      const byId = {}
+      gradeRows.forEach(r => {
+        byId[r.id] = r.roleGradeCompetenceId
+      })
+      const data = selected.map(s => ({
+        id: byId[s.id] ? byId[s.id].roleGradeCompetenceId : 0,
+        roleGradeId: this.skillsDialog.grade.id,
+        competenceId: s.id,
+        competenceLevelMark: s.competenceLevel
+      }))
+
+      const res = await axios.post(this.$backendUrl + `api/RoleGrades/${this.skillsDialog.role.id}/competences`, data);
+
+      const rows = this.getCompetenceRows(this.skillsDialog.role, this.skillsDialog.grade);
+      rows.length = 0;
+      Array.prototype.push.apply(rows, res.data)
       this.skillsDialog.open = false
     },
     async save(){
