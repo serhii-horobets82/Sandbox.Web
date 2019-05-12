@@ -87,7 +87,11 @@
                   <tbody>
                     <tr>
                       <td style="width: 50%">
-                        {{ competence.name }}
+                        <v-layout>
+                          {{ competence.name }}
+                          <v-spacer></v-spacer>
+                          <CompetenceInfo :competence="competence"></CompetenceInfo>
+                        </v-layout>
                       </td>
                       <td v-for="i in [1,2,3,4,5]" :key="i"
                         class="competenceLevelFill text-xs-center"
@@ -160,7 +164,7 @@
     <v-dialog
       v-model="skillsDialog.open"
       @keydown.esc="skillsDialog.open = false"
-      max-width="650"
+      max-width="800"
       scrollable
     >
       <v-card v-if="skillsDialog.open">
@@ -176,10 +180,10 @@
           <table class="skillHeaderRow" >
             <tbody>
               <tr>
-                <td style="width: 50%">
+                <td style="">
 
                 </td>
-                <td v-for="i in [1,2,3,4,5]" :key="i"
+                <td v-for="i in [1,2,3,4,5]" :key="i" style="width: 60px;"
                   class="text-xs-center">
                   {{ `E${i}` }}
                 </td>
@@ -189,18 +193,23 @@
           <table class="skillRow" v-for="competence in skillsDialog.filteredSkills" :key="competence.id">
             <tbody>
               <tr>
-                <td style="width: 50%">
-                  <v-checkbox
-                    v-model="skillsDialog.selected"
-                    :value="competence.id"
-                    :hide-details="true"
-                    :label="competence.name"
-                    :disabled="!skillsDialog.selected.includes(competence.id)"></v-checkbox>
-                  <!-- {{ competence.name }} -->
+                <td style="">
+                  <v-layout>
+                    <v-checkbox
+                      v-model="skillsDialog.selected"
+                      :value="competence.id"
+                      :hide-details="true"
+                      :label="competence.name"
+                      :disabled="!skillsDialog.selected.includes(competence.id)"></v-checkbox>
+
+                    <v-spacer></v-spacer>
+                    <CompetenceInfo :competence="competence"></CompetenceInfo>
+                    <!-- {{ competence.name }} -->
+                  </v-layout>
                 </td>
                 <td v-for="i in [1,2,3,4,5]" :key="i"
                   class="competenceLevelFill text-xs-center"
-                  style="width: 10%"
+                  style="width: 60px;"
                   :class="{
                     'required': competence.competenceLevel === i,
                     'available': competence.levels[i - 1],// && i < competence.competenceLevel
@@ -230,11 +239,11 @@
 
 <script>
 import axios from 'axios'
-import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
+import CompetenceInfo from './CompetenceInfo.vue'
 
 export default {
   components: {
-    EcfCompetenceRow
+    CompetenceInfo
   },
   data: () => ({
     roleDialog: {
@@ -268,10 +277,14 @@ export default {
   methods: {
     async expandCollapseRole(role){
       this.$set(role, "expanded", !role.expanded);// {expanded: !role.expanded });
-      if (role.expanded && !this.roleGradeCompetences[role.id]) {
+      if (role.expanded) {
+        await this.loadGradeCompetences(role);
+      }
+    },
+    async loadGradeCompetences(role) {
+      if (!this.roleGradeCompetences[role.id]) {
         const res = await axios.get(this.$backendUrl + `api/RoleGrades/${role.id}/competences`);
         this.$set(this.roleGradeCompetences, role.id, res.data)
-        // this.roleGradeCompetences[role.id] = res.data;
       }
     },
     async removeRole(role) {
@@ -323,6 +336,7 @@ export default {
       this.skillsDialog.grade = grade;
       this.skillsDialog.open = true;
 
+      await this.loadGradeCompetences(role);
       const res = await axios.get(this.$backendUrl + `api/Competences/rows`);
       this.skillsDialog.allSkills = res.data;
       this.skillsDialog.filteredSkills = this.skillsDialog.allSkills;
