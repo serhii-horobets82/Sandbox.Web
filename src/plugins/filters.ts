@@ -7,6 +7,11 @@ Vue.filter("formatDate", (value: any) => {
   }
 });
 
+Vue.filter("formatNumber", (value: number) => {
+  if (value) {
+    return value.toFixed(1);
+  }
+});
 
 Vue.filter("splitStr", (value: string, delimiter: string = " ", index: number = 0) => {
   if (value) {

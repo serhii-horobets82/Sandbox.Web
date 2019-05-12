@@ -9,7 +9,7 @@ export default {
   tertiary: "#B5D6EC",
   accent: "#F5F9FC",
   error: "#f55a4e",
-  info: "#273EAF",
+  info: "#3C88B5",
   success: "#5cb860",
   warning: "#ffa21a"
 };

@@ -192,3 +192,9 @@ export default class LoginForm extends Vue {
   }
 }
 </script>
+
+<style scoped>
+h2 {
+  font-size: 36px;
+}
+</style>
