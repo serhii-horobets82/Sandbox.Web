@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <v-card flat color="accent">
-      <v-card-title class="pa-0 pb-2">
-        <h2>{{$t('OKR.myListTitle')}}</h2>
-        <v-spacer></v-spacer>
-        <v-btn color="info--text">
-          <v-icon left>visibility</v-icon>
-          {{$t('OKR.companyOKR')}}
-        </v-btn>
-        <v-btn color="primary">
-          <v-icon left>add</v-icon>
-          {{$t('OKR.addOKR')}}
-        </v-btn>
-      </v-card-title>
-    </v-card>
+  <v-card flat color="accent">
+    <v-card-title class="pa-0 pb-2">
+      <h2>{{$t('OKR.myListTitle')}}</h2>
+      <v-spacer></v-spacer>
+      <v-btn color="info--text">
+        <v-icon left>visibility</v-icon>
+        {{$t('OKR.companyOKR')}}
+      </v-btn>
+      <v-btn color="primary">
+        <v-icon left>add</v-icon>
+        {{$t('OKR.addOKR')}}
+      </v-btn>
+    </v-card-title>
     <v-card flat>
       <v-expansion-panel class="elevation-0" elevation-0 v-for="(item, index) in data" :key="index">
         <v-expansion-panel-content class="pa-0">
@@ -85,20 +83,15 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-card>
-  </div>
+  </v-card>
 </template>
 
 <script>
 export default {
-  computed: {
-    calcColorClass: function() {
-      return { secondary: this.item.value };
-    }
-  },
   data() {
     return {
       thresholdValue: 0.7,
-      panel: [true],
+      selectedPanel: 0,
       data: [
         {
           action: "check",

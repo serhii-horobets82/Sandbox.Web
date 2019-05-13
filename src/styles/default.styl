@@ -18,6 +18,14 @@ $button-border-radius = 2px;
 
 // *
 // color: #3C88B5
+.v-text-field {
+  &--outline {
+    & > .v-input__control > .v-input__slot {
+      border: 2px solid $light-color !important;
+    }
+  }
+}
+
 body {
   font-family: $body-font-family;
   font-size: $font-size-root;

@@ -3,5 +3,7 @@
   "companyOKR": "View company OKR",
   "addOKR": "Add OKR",
   "objeciveLabel": "objecive",
-  "krLabel": "KRs"
+  "krLabel": "KRs",
+  "chartTitle": "Historical OKR completion",
+  "chartReset": "Reset"
 }
