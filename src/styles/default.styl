@@ -18,6 +18,14 @@ $button-border-radius = 2px;
 
 // *
 // color: #3C88B5
+.v-text-field {
+  &--outline {
+    & > .v-input__control > .v-input__slot {
+      border: 2px solid $light-color !important;
+    }
+  }
+}
+
 body {
   font-family: $body-font-family;
   font-size: $font-size-root;
@@ -27,7 +35,6 @@ body {
 
 h2 {
   color: #3C88B5;
-  font-size: 36px;
   font-family: Montserrat;
   letter-spacing: -0.5;
 }
@@ -59,6 +66,7 @@ h2 {
     .v-btn--active {
       font-weight: bold;
       border-bottom: 3px solid $secondary-color;
+      margin-bottom: -3px !important;
     }
   }
 }
