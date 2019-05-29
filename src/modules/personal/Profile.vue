@@ -6,18 +6,28 @@
       </v-layout> -->
 
       <v-layout row wrap>
-        <v-flex xs6>
-          <v-card>
-            <v-card-title class="headline" v-if="employee">
+        <v-flex xs12 class="my-3">
+          <!-- <v-card>
+            <v-layout>
+              <v-flex> -->
+                <v-avatar class="mr-2">
+                  <img src="https://picsum.photos/60/60/?random" alt="">
+                </v-avatar>
+                <!-- <v-icon style="font-size: 60px" color="teal darken-2">perm_identity</v-icon> -->
+                <span class="headline">Good morning, Vietnam!</span>
+              <!-- </v-flex>
+            </v-layout> -->
+
+            <!-- <v-card-title class="headline" v-if="employee">
               {{ employee.nameTemp }} ({{ employee.employeeType.type }})
             </v-card-title>
             <v-card-text style="height: 150px" class="text-xs-center">
               <v-icon style="font-size: 100px" color="teal darken-2">perm_identity</v-icon>
-            </v-card-text>
-          </v-card>
+            </v-card-text> -->
+          <!-- </v-card> -->
         </v-flex>
 
-        <v-flex xs6>
+        <!-- <v-flex xs6>
           <v-card>
             <v-card-title>
               Teams/Projects
@@ -39,11 +49,37 @@
               </v-card>
             </v-card-text>
           </v-card>
+        </v-flex> -->
+
+        <v-flex xs8 class="mt-4">
+          <Certifications></Certifications>
         </v-flex>
 
-        <ProfileEvaluation></ProfileEvaluation>
+        <v-flex xs12 class="mt-4">
+          <Pdp></Pdp>
+        </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs12 class="mt-4">
+          <!-- <Pdp></Pdp> -->
+          <span class="title">
+            <v-icon >bug_report</v-icon>
+            Ideas Platform</span>
+        </v-flex>
+
+        <v-flex xs12 class="mt-4">
+          <Review360></Review360>
+        </v-flex>
+
+        <v-flex xs12 class="mt-4">
+          <Technologies></Technologies>
+        </v-flex>
+
+        <v-flex xs12 class="mt-4">
+          <ProfileEvaluation></ProfileEvaluation>
+        </v-flex>
+
+
+        <!-- <v-flex xs6>
           <v-card>
             <v-card-title>
               OKR
@@ -63,7 +99,7 @@
 
             </v-card-text>
           </v-card>
-        </v-flex>
+        </v-flex> -->
       </v-layout>
     <!-- </v-layout> -->
   </v-container>
@@ -73,11 +109,19 @@
 import axios from 'axios'
 import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
 import ProfileEvaluation from './profile/ProfileEvaluation.vue'
+import Certifications from './profile/Certifications.vue'
+import Pdp from './profile/Pdp.vue'
+import Technologies from './profile/Technologies.vue'
+import Review360 from './profile/360.vue'
 
 export default {
   components: {
     EcfCompetenceRow,
-    ProfileEvaluation
+    ProfileEvaluation,
+    Certifications,
+    Pdp,
+    Technologies,
+    Review360
   },
   data: () => ({
     employee: null,
