@@ -135,7 +135,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="roleDialog.open = false">Cancel</v-btn>
-        <v-btn @click="saveRole()">Save</v-btn>
+        <v-btn @click="saveRole()" color="primary">Save</v-btn>
       </v-card-actions>
       </v-card>
     </v-dialog>
@@ -156,7 +156,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="gradeDialog.open = false">Cancel</v-btn>
-        <v-btn @click="addGrade()">Add</v-btn>
+        <v-btn @click="addGrade()" color="primary">Add</v-btn>
       </v-card-actions>
       </v-card>
     </v-dialog>
@@ -229,7 +229,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="skillsDialog.open = false">Cancel</v-btn>
-          <v-btn primary @click="saveSkills()">Save</v-btn>
+          <v-btn primary @click="saveSkills()" color="primary">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -239,7 +239,7 @@
 
 <script>
 import axios from 'axios'
-import CompetenceInfo from './CompetenceInfo.vue'
+import CompetenceInfo from '@/components/CompetenceInfo.vue'
 
 export default {
   components: {

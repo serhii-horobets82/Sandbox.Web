@@ -4,7 +4,9 @@
     <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat to="/administration/employees">Employees</v-btn>
         <v-btn flat to="/administration/360-questionarie">360 Questionarie</v-btn>
-        <v-btn flat to="/administration/position">Positions (Cross-Project)</v-btn>
+        <!-- TODO: remove this and related code -->
+        <!-- <v-btn flat to="/administration/position">Positions (Cross-Project)</v-btn> -->
+        <v-btn flat to="/administration/positions-grade">Positions Grade</v-btn>
       </v-toolbar-items>
   </v-toolbar>
   <router-view></router-view>

@@ -70,7 +70,7 @@ export default {
         type: res.data.employeeType
       };
     }
-    const resTypes = await axios.get(this.$backendUrl + 'api/employees/types')
+    const resTypes = await axios.get(this.$backendUrl + 'api/employees/roles')
     this.employeeTypes = resTypes.data;
   },
 

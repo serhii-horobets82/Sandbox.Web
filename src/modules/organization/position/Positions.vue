@@ -1,14 +1,69 @@
 <template>
   <v-container>
-  <v-layout row wrap class="align-center">
-    <v-flex xs6>
-      <h1>Positions for Project: {{ project.name }}</h1>
-    </v-flex>
-    <v-flex xs6 text-xs-right>
-      <v-btn color="success" :to="{name: 'project-positionEdit', params: {id: 0, projectId: $route.params.projectId }}">Create position</v-btn>
-    </v-flex>
-  </v-layout>
-  <v-card>
+    <v-layout row wrap class="align-center">
+      <v-flex xs6>
+        <h1>Positions for Project: {{ project.name }}</h1>
+      </v-flex>
+      <v-flex xs6 text-xs-right>
+        <v-btn @click="openRoleDialog()">Add Project Role</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout>
+      <v-flex >
+        <v-layout v-for="role in positionsByRole" :key="role.id">
+          <v-flex>
+            <v-card>
+              <v-card-title>{{ role.type }}</v-card-title>
+              <v-card-text>
+                <v-layout>
+                  <v-flex v-for="grade in role.roleGrade" :key="grade.name" class="mr-2">
+                    <v-card>
+                      <v-card-title>{{ grade.name }}</v-card-title>
+                      <v-card-text></v-card-text>
+                    </v-card>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+
+    <v-dialog
+      v-model="roleDialog.open"
+      @keydown.esc="roleDialog.open = false"
+      max-width="300"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          Add project role
+        </v-card-title>
+
+        <v-card-text>
+          <v-select
+            :items="roleDialog.availableRoles"
+            v-model="roleDialog.roleId"
+            label="Select..."
+            :hide-details="true"
+            item-text="type"
+            item-value="id"
+            solo
+          ></v-select>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="roleDialog.open = false">Cancel</v-btn>
+          <v-btn @click="addRole()" color="primary">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  <!-- <v-card>
+
       <v-container
         fluid
         grid-list-lg
@@ -19,7 +74,6 @@
               <v-card-title primary-title>
 
                 <div class="headline">{{ position.name }}</div>
-                <!-- <span>ID: {{ position.id }}</span> -->
                 <v-spacer></v-spacer>
                 <v-btn icon flat color="white" v-if="false" :to="{name: 'project-positionEdit', params: {id: position.id, projectId: $route.params.projectId }}">
                   <v-icon>edit</v-icon>
@@ -45,63 +99,70 @@
                       :competence="competence"
                       :competenceLevels="competence.levels"
                       ></EcfCompetenceRow>
-                      <!-- <v-list dense>
-                        <v-list-tile
-                          v-for="competence in item.role.ecfRoleCompetence"
-                          :key="competence.id"
-                        >
-
-                          <v-list-tile-content>
-                            <v-list-tile-title>{{ competence.competence.name }}</v-list-tile-title>
-                          </v-list-tile-content>
-
-                          <v-list-tile-action>
-                            {{ competence.competenceLevel }}
-                          </v-list-tile-action>
-                        </v-list-tile>
-                      </v-list> -->
-
                   </v-card-text>
                 </v-card>
 
               </v-card-text>
-              <!-- <v-card-actions>
-                <v-btn flat dark>Listen now</v-btn>
-              </v-card-actions> -->
             </v-card>
           </v-flex>
         </v-layout>
       </v-container>
-    </v-card>
+    </v-card> -->
 
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
-import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
+// import EcfCompetenceRow from '@/components/EcfCompetenceRow.vue'
 
 export default {
   components: {
-    EcfCompetenceRow
+    // EcfCompetenceRow
   },
 
   data() {
     return {
       positions: null,
       project: {},
+      roles: [],
+      roleDialog: {
+        open: false,
+        // roles: [],
+        availableRoles: []
+      },
+      gradesByRoleId: {} // { [key: string] : any[] }
     }
   },
 
   async created() {
     const projectId = this.$route.params.projectId;
-    const res = await axios.get(this.$backendUrl + `api/projects/${projectId}`);
-    this.project = res.data;
-    const response = await axios.get(this.$backendUrl + `api/positions/project/${projectId}`)
-    this.positions = response.data;
+    const roleRes = await axios.get(this.$backendUrl + `api/Employees/roles`);
+
+    const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
+    const byId = {}
+    res.data.forEach(d => {
+      byId[d.id] = d.roleGrade
+    })
+    this.gradesByRoleId = byId;
+    // const res = await axios.get(this.$backendUrl + `api/projects/${projectId}`);
+    // this.project = res.data;
+    // const response = await axios.get(this.$backendUrl + `api/positions/project/${projectId}`)
+    // this.positions = response.data;
   },
 
   methods: {
+    async openRoleDialog() {
+      this.roleDialog.open = true;
+      const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
+      this.roleDialog.availableRoles = res.data;
+    },
+    async addRole() {
+
+      // const res = await axios.get(this.$backendUrl + `api/`);
+      this.roles.push = this.roleDialog.availableRoles.filter(r => r.id == this.roleDialog.roleId)[0]
+      this.roleDialog.open = false;
+    },
     getRoleCompetences(role){
       const competences = []
       for (let c of role.ecfRoleCompetence) {
