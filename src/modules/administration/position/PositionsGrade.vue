@@ -98,11 +98,19 @@
                         style="width: 10%"
                         :class="{
                           'required': competence.competenceLevel === i,
-                          'available': competence.levels[i],// && i < competence.competenceLevel
+                          'available': competence.levels[i - 1],// && i < competence.competenceLevel
                           'selected': i == competence.competenceLevel
                         }"
                         >
-                        <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i]">block</v-icon>
+                        <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i - 1]">block</v-icon>
+                        <v-tooltip bottom v-if="competence.levels[i - 1] && competence.levels[i - 1].certificates">
+                          <template v-slot:activator="{ on }">
+                            <v-icon
+                              small
+                              v-on="on">assignment</v-icon>
+                          </template>
+                          <span>{{competence.levels[i-1].certificates.map(c=>c.name).join('; ')}}</span>
+                        </v-tooltip>
                       </td>
                     </tr>
                   </tbody>
