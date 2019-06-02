@@ -3,6 +3,7 @@
     id="app-drawer"
     v-model="drawerModel"
     app
+    hide-overlay
     mini-variant-width="64"
     :mini-variant="mini"
     class="primary lighten-1"
@@ -10,17 +11,42 @@
     persistent
     width="250"
   >
-    <v-layout tag="v-list" column class="left-menu">
-      <v-list-tile class="left-menu__switch">
-        <v-btn icon @click.stop="mini = !mini">
-          <v-icon color="secondary" size="36">notes</v-icon>
-        </v-btn>
-      </v-list-tile>
-      <v-divider/>
-      <template v-for="(item, index) in links">
-        <template>
-          <template
-            v-if="
+    <v-card flat>
+      <v-card-title>
+        <v-layout align-center justify-center>
+          <v-img
+            color="secondary"
+            :src="mini ? '/img/logo-small.svg' : '/img/logo.svg'"
+            @click.stop="mini = !mini"
+          ></v-img>
+        </v-layout>
+      </v-card-title>
+      <v-card-title>
+        <v-layout align-center justify-center>
+          <v-badge bottom color="primary lighten-1">
+            <template v-slot:badge>
+              <v-btn icon @click.stop="$router.push('/')" color="accent" class="ma-0" v-if="!mini">
+                <v-icon color="secondary" size="24">edit</v-icon>
+              </v-btn>
+            </template>
+            <v-avatar :size="mini ? 40 : 150">
+              <img
+                :src="profile.pictureUrl"
+                :alt="profile.fullName"
+                v-if="profile"
+                @click.stop="mini = !mini"
+              >
+            </v-avatar>
+          </v-badge>
+        </v-layout>
+      </v-card-title>
+      <v-spacer></v-spacer>
+      <v-layout tag="v-list" column class="left-menu">
+        <v-divider/>
+        <template v-for="(item, index) in links">
+          <template>
+            <template
+              v-if="
                 !item.autoHide ||
                   (item.unauthRequired && !isAuthenticated) ||
                   (item.authRequired &&
@@ -32,19 +58,20 @@
                     isAuthenticated &&
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
-          >
-            <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
-              <v-list-tile-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+            >
+              <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
+                <v-list-tile-action>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
           </template>
         </template>
-      </template>
-    </v-layout>
+      </v-layout>
+    </v-card>
   </v-navigation-drawer>
 </template>
 <script lang="ts">
@@ -86,7 +113,7 @@ import Menu from "@/data/menu";
 })
 export default class AppDrawer extends Vue {
   responsive: boolean = false;
-  mini: boolean = true;
+  mini: boolean = false;
   links: Array<NavigationItem> = Menu;
 
   get personalNavigation(): Array<NavigationItem> {
