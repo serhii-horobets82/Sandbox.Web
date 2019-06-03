@@ -1,14 +1,14 @@
 <template>
   <v-navigation-drawer
     id="app-drawer"
-    v-model="drawerModel"
     app
+    stateless
     hide-overlay
-    mini-variant-width="64"
+    mini-variant-width="76"
     :mini-variant="mini"
     class="primary lighten-1"
-    floating
-    persistent
+    fixed
+    permanent
     width="250"
   >
     <v-card flat>
@@ -16,6 +16,7 @@
         <v-layout align-center justify-center>
           <v-img
             color="secondary"
+            max-width="120"
             :src="mini ? '/img/logo-small.svg' : '/img/logo.svg'"
             @click.stop="mini = !mini"
           ></v-img>
@@ -23,30 +24,47 @@
       </v-card-title>
       <v-card-title>
         <v-layout align-center justify-center>
-          <v-badge bottom color="primary lighten-1">
-            <template v-slot:badge>
-              <v-btn icon @click.stop="$router.push('/')" color="accent" class="ma-0" v-if="!mini">
-                <v-icon color="secondary" size="24">edit</v-icon>
-              </v-btn>
-            </template>
-            <v-avatar :size="mini ? 40 : 150">
-              <img
-                :src="profile.pictureUrl"
-                :alt="profile.fullName"
-                v-if="profile"
-                @click.stop="mini = !mini"
-              >
-            </v-avatar>
-          </v-badge>
+          <v-progress-circular :rotate="135" :size="170" :width="6" value="20" color="secondary">
+            <v-badge bottom color="primary lighten-1">
+              <template v-slot:badge>
+                <v-btn
+                  icon
+                  @click.stop="$router.push('/profile')"
+                  color="accent"
+                  class="ma-0"
+                  v-if="!mini"
+                >
+                  <v-icon color="secondary" size="24">edit</v-icon>
+                </v-btn>
+              </template>
+              <v-avatar :size="mini ? 50 : 150">
+                <img
+                  :src="profile.pictureUrl"
+                  :alt="profile.fullName"
+                  v-if="profile"
+                  @click.stop="mini = !mini"
+                >
+              </v-avatar>
+            </v-badge>
+          </v-progress-circular>
         </v-layout>
       </v-card-title>
-      <v-spacer></v-spacer>
-      <v-layout tag="v-list" column class="left-menu">
-        <v-divider/>
-        <template v-for="(item, index) in links">
-          <template>
-            <template
-              v-if="
+      <v-layout align-center justify-center v-if="!mini">
+        <v-toolbar-title class="ml-3" v-if="isAuthenticated && profile">
+          <h3>{{profile.fullName}}</h3>
+          <div class="caption text-xs-center">User Role</div>
+          <v-icon class="bl" color="secondary">star_border</v-icon>
+          <span class="display-1 ml-1">{{profile.userScore}}</span>
+          <span class="subheading ml-1">4.02</span>
+        </v-toolbar-title>
+      </v-layout>
+      <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
+        <v-layout tag="v-list" column class="left-menu mt-2">
+          <v-divider/>
+          <template v-for="(item, index) in mainNavigation">
+            <template>
+              <template
+                v-if="
                 !item.autoHide ||
                   (item.unauthRequired && !isAuthenticated) ||
                   (item.authRequired &&
@@ -58,19 +76,20 @@
                     isAuthenticated &&
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
-            >
-              <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
-                <v-list-tile-action>
-                  <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              >
+                <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
+                  <v-list-tile-action>
+                    <v-icon>{{ item.icon }}</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </template>
             </template>
           </template>
-        </template>
-      </v-layout>
+        </v-layout>
+      </vue-perfect-scrollbar>
     </v-card>
   </v-navigation-drawer>
 </template>
@@ -80,41 +99,33 @@ import { mapGetters, mapState, mapMutations } from "vuex";
 import { EventBus } from "@/event-bus";
 import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
 import { UserProfile } from "@/modules/user/types";
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Menu from "@/data/menu";
 
 @Component({
   computed: {
     ...mapState(["title", "image", "color", "drawer", "version"]),
     ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"]),
-    drawerModel: {
-      get() {
-        return this.$store.state.drawer;
-      },
-      set(val) {
-        this.$store.dispatch("showSidebar", val);
-      }
-    }
+    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
   },
-  methods: {
-    handleDrawerToggle() {
-      this.$store.dispatch("toggleSideBar");
-    }
+  components: {
+    VuePerfectScrollbar
   },
   created(): void {
     // try reload profile data on page refresh
     if (this.isAuthenticated && !this.profile) {
-      this.$store.dispatch("user/userRequest").then(() => {
-        //this.$router.push("/");
-      });
+      this.$store.dispatch("user/userRequest").then(() => {});
     }
     EventBus.$on("logged-in", (payLoad: any) => {});
   }
 })
 export default class AppDrawer extends Vue {
-  responsive: boolean = false;
   mini: boolean = false;
   links: Array<NavigationItem> = Menu;
+
+  get mainNavigation(): Array<NavigationItem> {
+    return this.links.filter(i => i.group === NavigationGroup.Main);
+  }
 
   get personalNavigation(): Array<NavigationItem> {
     return this.links.filter(i => i.group === NavigationGroup.Personal);
@@ -125,6 +136,9 @@ export default class AppDrawer extends Vue {
       i => i.group === NavigationGroup.Personal && i.authRequired
     );
   }
+  scrollSettings: any = {
+    maxScrollbarLength: 160
+  };
 
   // methods
   private logOut() {
@@ -138,3 +152,14 @@ export default class AppDrawer extends Vue {
   }
 }
 </script>
+
+<style lang="stylus">
+#app-drawer {
+  overflow: hidden;
+
+  .drawer-menu--scroll {
+    height: calc(100vh - 200px);
+    overflow: auto;
+  }
+}
+</style>

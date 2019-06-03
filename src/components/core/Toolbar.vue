@@ -8,7 +8,7 @@
     dense
     extension-height="144px"
   >
-    <template v-slot:extension v-if="isAuthenticated && profile">
+    <template v-slot:extension v-if="false">
       <v-container class="ma-0 mt-0 pa-0 pl-4 toolbar-ext" fluid>
         <v-layout row>
           <v-flex shrink>
@@ -103,9 +103,7 @@
       </v-container>
     </template>
 
-    <v-toolbar-title>
-      <v-img color="secondary" src="/img/logo.svg" width="100px" @click.stop="$router.push('/')"></v-img>
-    </v-toolbar-title>
+    <v-toolbar-title></v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
       <v-toolbar-items>
@@ -130,6 +128,11 @@
       <!-- Sign in-->
       <v-btn icon to="/auth" v-show="!isAuthenticated">
         <v-icon>lock</v-icon>
+      </v-btn>
+
+      <!-- Sign out-->
+      <v-btn icon to="/logout" v-show="isAuthenticated">
+        <v-icon>exit_to_app</v-icon>
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
