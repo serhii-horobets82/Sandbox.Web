@@ -4,7 +4,7 @@
     app
     stateless
     hide-overlay
-    mini-variant-width="76"
+    mini-variant-width="78"
     :mini-variant="mini"
     class="primary lighten-1"
     fixed
@@ -16,7 +16,7 @@
         <v-layout align-center justify-center>
           <v-img
             color="secondary"
-            max-width="120"
+            :max-width="mini ? 30: 120"
             :src="mini ? '/img/logo-small.svg' : '/img/logo.svg'"
             @click.stop="mini = !mini"
           ></v-img>
@@ -58,13 +58,14 @@
           <span class="subheading ml-1">4.02</span>
         </v-toolbar-title>
       </v-layout>
-      <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
-        <v-layout tag="v-list" column class="left-menu mt-2">
-          <v-divider/>
-          <template v-for="(item, index) in mainNavigation">
-            <template>
-              <template
-                v-if="
+    </v-card>
+    <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
+      <v-layout tag="v-list" column class="left-menu mt-3">
+        <v-divider/>
+        <template v-for="(item, index) in mainNavigation">
+          <template>
+            <template
+              v-if="
                 !item.autoHide ||
                   (item.unauthRequired && !isAuthenticated) ||
                   (item.authRequired &&
@@ -76,21 +77,20 @@
                     isAuthenticated &&
                     item.managerRoleRequired &&
                     (userIsManager || userIsAdmin))"
-              >
-                <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
-                  <v-list-tile-action>
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-              </template>
+            >
+              <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
+                <v-list-tile-action>
+                  <v-icon medium class="material-icons-outlined">{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title class="subheading font-weight-bold">{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
             </template>
           </template>
-        </v-layout>
-      </vue-perfect-scrollbar>
-    </v-card>
+        </template>
+      </v-layout>
+    </vue-perfect-scrollbar>1
   </v-navigation-drawer>
 </template>
 <script lang="ts">

@@ -103,7 +103,15 @@
       </v-container>
     </template>
 
-    <v-toolbar-title></v-toolbar-title>
+    <v-toolbar-title>
+      <v-text-field
+        flat
+        hide-details
+        prepend-inner-icon="search"
+        label="Search"
+        class="hidden-sm-and-down"
+      ></v-text-field>
+    </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
       <v-toolbar-items>
@@ -132,7 +140,7 @@
 
       <!-- Sign out-->
       <v-btn icon to="/logout" v-show="isAuthenticated">
-        <v-icon>exit_to_app</v-icon>
+        <v-icon color="secondary">exit_to_app</v-icon>
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>

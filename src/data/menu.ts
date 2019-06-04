@@ -69,7 +69,12 @@ const Menu: Array<NavigationItem> = [
     autoHide: true,
     group: NavigationGroup.Personal
   },
-  { title: "My profile", icon: "person", router: "/personal/profile", group: NavigationGroup.Main },
+  {
+    title: "My profile",
+    icon: "person",
+    router: "/personal/profile",
+    group: NavigationGroup.Main
+  },
   {
     title: "360",
     icon: "local_play",
