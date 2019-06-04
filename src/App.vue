@@ -2,7 +2,7 @@
   <v-app>
     <template v-if="!$route.meta.public && isAuthenticated">
       <core-toolbar/>
-      <core-drawer v-if="userIsAdmin || userIsManager || userIsHR "/>
+      <core-drawer/>
       <core-view/>
       <!-- Floating button for settings   -->
       <v-btn

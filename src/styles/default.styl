@@ -93,7 +93,7 @@ h2 {
   padding-top: 0px;
 
   .v-list__tile {
-    padding-left: 8px;
+    padding-right: 8px;
     border-radius: 0;
   }
 
@@ -113,7 +113,9 @@ h2 {
 
     // active menu icon
     .v-list__tile--active {
-      border-right: 2px solid $secondary-color;
+      border-left: 2px solid $secondary-color;
+      background: $light-color;
+      padding-left: 14px;
 
       .theme--light.v-icon {
         color: $secondary-color !important;

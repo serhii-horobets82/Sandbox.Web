@@ -22,6 +22,7 @@
     "vue-chartist": "^2.2.0",
     "vue-class-component": "^6.0.0",
     "vue-i18n": "^8.8.2",
+    "vue-perfect-scrollbar": "^0.1.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.14",

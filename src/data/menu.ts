@@ -68,6 +68,25 @@ const Menu: Array<NavigationItem> = [
     authRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
+  },
+  {
+    title: "My profile",
+    icon: "person",
+    router: "/personal/profile",
+    group: NavigationGroup.Main
+  },
+  {
+    title: "360",
+    icon: "local_play",
+    router: "/evaluation/360-team-view",
+    group: NavigationGroup.Main
+  },
+  { title: "PDP", icon: "book", router: "/personal/pdp", group: NavigationGroup.Main },
+  {
+    title: "Ideas platform",
+    icon: "lightbulb",
+    router: "/personal/summary",
+    group: NavigationGroup.Main
   }
 ];
 
