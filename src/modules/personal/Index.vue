@@ -5,7 +5,7 @@
     <!-- <v-layout> -->
     <!-- <v-flex> -->
 
-    <v-toolbar height="35">
+    <v-toolbar height="35" v-if="false">
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat v-for="item in items" :key="item.title" :to="{name: item.url}">{{ item.title }}</v-btn>
       </v-toolbar-items>

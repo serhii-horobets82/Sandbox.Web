@@ -9,7 +9,7 @@
     class="primary lighten-1"
     fixed
     permanent
-    width="250"
+    width="270"
   >
     <v-card flat>
       <v-card-title>
@@ -51,7 +51,7 @@
       </v-card-title>
       <v-layout align-center justify-center v-if="!mini">
         <v-toolbar-title class="ml-3" v-if="isAuthenticated && profile">
-          <h3>{{profile.fullName}}</h3>
+          <h4>{{profile.fullName}}</h4>
           <div class="caption text-xs-center">User Role</div>
           <v-icon class="bl" color="secondary">star_border</v-icon>
           <span class="display-1 ml-1">{{profile.userScore}}</span>

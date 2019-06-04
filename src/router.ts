@@ -13,6 +13,7 @@ import EvaluationRoutes from "./modules/evaluation/router";
 import OkrRoutes from "./modules/okr/router";
 import PersonalRoutes from "./modules/personal/router";
 import AdministrationRoutes from "./modules/administration/router";
+import ChatRoutes from "./modules/chat/router";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
@@ -46,6 +47,7 @@ const router: Router = new Router({
     ...AdministrationRoutes,
     ...EvaluationRoutes,
     ...OkrRoutes,
+    ...ChatRoutes,
     errorRoute
   ]
 });

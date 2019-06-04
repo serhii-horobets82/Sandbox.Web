@@ -38,3 +38,7 @@ export function debounce(func: any, wait: any, immediate: any) {
     }
   };
 }
+
+export const randomElement = (arr = []) => {
+  return arr[Math.floor(Math.random() * arr.length)];
+};

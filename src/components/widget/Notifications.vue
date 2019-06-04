@@ -1,6 +1,6 @@
 <template>
   <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
-    <v-btn icon slot="activator" class="toolbar-items">
+    <v-btn icon slot="activator" class="mx-3">
       <v-badge color="error" overlap>
         <template slot="badge">{{ count }}</template>
         <v-icon color="secondary">notifications</v-icon>
