@@ -4,7 +4,9 @@
       <v-layout>
         <v-flex>
           <span class="title">
-            <v-icon >bug_report</v-icon>
+            <span class="profileIcon mr-1">
+              <v-icon>bug_report</v-icon>
+            </span>
             My Review
           </span>
         </v-flex>

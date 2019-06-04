@@ -1,5 +1,5 @@
 <template>
-  <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
+  <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition" max-height="450">
     <template #activator="data">
       <v-btn v-on="data.on" flat @click="showEmployeeSelection()">
         {{ vueEmployee.nameTemp }} ({{ vueEmployee.employeeType.type }})
@@ -15,11 +15,12 @@
         :key="item.id"
         @click="selectEmployee(item)"
       >
-        <v-list-tile-action>
-          <v-icon v-if="item.id == vueEmployee.id">done</v-icon>
-        </v-list-tile-action>
+        <v-list-tile-avatar size="30" style="min-width: 40px">
+          <v-icon v-if="item.id == vueEmployee.id" color="primary">done</v-icon>
+        </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title>{{ item.nameTemp }} ({{ item.employeeType.type }})</v-list-tile-title>
+          <!-- <v-list-tile-title></v-list-tile-title> -->
+          <v-list-tile-sub-title>{{ item.nameTemp }} ({{ item.employeeType.type }})</v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>

@@ -5,7 +5,7 @@
         Employee name
       </v-layout> -->
 
-      <v-layout row wrap>
+      <v-layout row wrap align-center>
         <v-flex xs12 class="my-3">
           <!-- <v-card>
             <v-layout>
@@ -62,8 +62,11 @@
         <v-flex xs12 class="mt-4">
           <!-- <Pdp></Pdp> -->
           <span class="title">
-            <v-icon >bug_report</v-icon>
-            Ideas Platform</span>
+            <span class="profileIcon mr-1">
+              <v-icon>bug_report</v-icon>
+            </span>
+            Ideas Platform
+          </span>
         </v-flex>
 
         <v-flex xs12 class="mt-4">
@@ -164,6 +167,22 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  .title {
+    font-size: 18px !important;
+  }
+  .profileIcon {
+    display: inline-block;
+    background-color: rgba(61, 179, 237, 0.21);
 
+    width: 42px;
+    height: 42px;
+    border-radius: 42px;
+    line-height: 42px;
+    text-align: center;
+
+    .v-icon {
+      color: #3DB3ED;
+    }
+  }
 </style>

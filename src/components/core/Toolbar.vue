@@ -8,7 +8,7 @@
     dense
     extension-height="144px"
   >
-    <template v-slot:extension v-if="isAuthenticated && profile">
+    <template v-slot:extension22 v-if="isAuthenticated && profile">
       <v-container class="ma-0 mt-0 pa-0 pl-4 toolbar-ext" fluid>
         <v-layout row>
           <v-flex shrink>
