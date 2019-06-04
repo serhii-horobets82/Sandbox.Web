@@ -62,9 +62,9 @@
         <v-flex xs12 class="mt-4">
           <!-- <Pdp></Pdp> -->
           <span class="title">
-            <span class="profileIcon mr-1">
+            <!-- <span class="profileIcon mr-1">
               <v-icon>bug_report</v-icon>
-            </span>
+            </span> -->
             Ideas Platform
           </span>
         </v-flex>
@@ -167,9 +167,14 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
+  * {
+    color: #3C88B5;
+  }
   .title {
     font-size: 18px !important;
+    font-weight: 600;
+    font-family: 'Montserrat';
   }
   .profileIcon {
     display: inline-block;
