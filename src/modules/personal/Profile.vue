@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="text">
     <!-- <v-layout> -->
     <!-- <v-layout row>
         Employee name
@@ -10,15 +10,23 @@
         <!-- <v-card>
             <v-layout>
         <v-flex>-->
-        <v-avatar class="mr-2" color="accent darken-5">
-          <v-icon large class="material-icons-outlined" color="blue darken-2">lightbulb</v-icon>
-        </v-avatar>
+        <v-list subheader two-line v-if="isAuthenticated && profile" class="accent">
+          <v-list-tile>
+            <v-list-tile-avatar class="mr-2" size="50" color="blue lighten-4">
+              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-sub-title class="title">Good morning,</v-list-tile-sub-title>
+              <v-list-tile-title
+                style="height: 30px"
+                class="headline font-weight-bold"
+              >{{profile.lastName}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+
         <!-- <v-icon style="font-size: 60px" color="teal darken-2">perm_identity</v-icon> -->
-        <span class="headline">
-          Good morning,
-          <span class="font-weight-bold">{{profile.firstName}}</span> !
-        </span>
-        <v-divider vertical></v-divider>
+
         <!-- </v-flex>
         </v-layout>-->
 
@@ -63,14 +71,48 @@
         <Pdp></Pdp>
       </v-flex>
 
-      <v-flex xs12 class="mt-4">
-        <!-- <Pdp></Pdp> -->
-        <span class="title">
-          <!-- <span class="profileIcon mr-1">
-              <v-icon>bug_report</v-icon>
-          </span>-->
-          Ideas Platform
-        </span>
+      <v-flex xs12 class="my-4">
+        <v-list subheader class="accent">
+          <v-list-tile>
+            <v-list-tile-avatar class="mr-2" size="50" color="orange lighten-4">
+              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title
+                style="height: 30px"
+                class="headline font-weight-bold"
+              >Ideas Platform</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-flex>
+
+      <v-flex xs12 sm6>
+        <v-card flat>
+          <v-card-title>
+            <span class="title">My ideas</span>
+          </v-card-title>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 class="pl-4">
+        <v-card flat>
+          <v-card-title>
+            <span class="title">Company strategy</span>
+          </v-card-title>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs12 class="my-4">
+        <v-list subheader class="accent">
+          <v-list-tile>
+            <v-list-tile-avatar class="mr-2" size="50" color="blue lighten-4">
+              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title style="height: 30px" class="headline font-weight-bold">My Review</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
       </v-flex>
 
       <v-flex xs12 class="mt-4">
@@ -131,7 +173,8 @@ export default {
     Review360
   },
   computed: {
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
+    ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("user", ["profile"])
   },
   data: () => ({
     employee: null,
@@ -170,9 +213,12 @@ export default {
 </script>
 
 <style lang="scss" scope>
-* {
-  color: #3c88b5;
+.text {
+  * {
+    color: #3c88b5;
+  }
 }
+
 .title {
   font-size: 18px !important;
   font-weight: 600;

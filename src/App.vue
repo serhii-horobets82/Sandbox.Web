@@ -47,7 +47,7 @@
       :color="snackbar.color"
       v-model="snackbar.show"
     >
-      {{ snackbar.text }}
+      <span class="title">{{ snackbar.text }}</span>
       <v-btn dark flat @click.native="snackbar.show = false" icon>
         <v-icon>close</v-icon>
       </v-btn>
@@ -77,6 +77,9 @@ export default {
         y: "bottom"
       };
       this.snackbar = { ...defSnackbar, ...snackbar };
+    });
+    EventBus.$on(EVENTS.REDIRECT_TO_LOGIN, () => {
+      this.$router.push("/auth");
     });
   },
   computed: {

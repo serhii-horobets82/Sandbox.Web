@@ -6,8 +6,10 @@ export const ROLES = {
   User: "User"
 };
 
+// Events for EventBus
 export const EVENTS = {
   LOGGED_IN: "logged-in",
   LOGGED_OUT: "logged-out",
+  REDIRECT_TO_LOGIN: "redirect-to-login",
   SHOW_SNACKBAR: "show-snackbar"
 };

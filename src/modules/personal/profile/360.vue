@@ -94,9 +94,7 @@ import axios from "axios";
 import echarts from "echarts";
 
 export default {
-  data: () => ({
-
-  }),
+  data: () => ({}),
 
   async created() {},
   mounted() {
@@ -179,49 +177,51 @@ export default {
           containLabel: true
         },
         xAxis: {
-          type: 'category',
-          data: ['II 2018' ,"III 2018", "IV 2018", "I 2019"],
+          type: "category",
+          data: ["II 2018", "III 2018", "IV 2018", "I 2019"],
           axisLine: { lineStyle: { color: "#E8EFF7" } },
           axisLabel: { color: "#3C88B5" }
         },
         yAxis: {
-          type: 'value',
+          type: "value",
 
           splitLine: { lineStyle: { color: "#E8EFF7" } },
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: { color: "#3C88B5", showMinLabel: false }
         },
-        series: [{
-          stack: 'Q1',
-          data: [, 3.9, 4, 4],
-          type: 'line',
-          smooth: true
-        },
-        {
-          stack: 'Q2',
-          data: [, 3.8, 3.9, 3.7],
-          type: 'line',
-          smooth: true
-        },
-        {
-          stack: 'Q3',
-          data: [, 3.6, 3.5, 3.8],
-          type: 'line',
-          smooth: true
-        },
-        {
-          stack: 'Q4',
-          data: [, 3.8, 4.1, 4.2],
-          type: 'line',
-          smooth: true
-        },
-        {
-          stack: 'Q5',
-          data: [, 4.3, 3.9, 3.7],
-          type: 'line',
-          smooth: true
-        }]
+        series: [
+          {
+            stack: "Q1",
+            data: [, 3.9, 4, 4],
+            type: "line",
+            smooth: true
+          },
+          {
+            stack: "Q2",
+            data: [, 3.8, 3.9, 3.7],
+            type: "line",
+            smooth: true
+          },
+          {
+            stack: "Q3",
+            data: [, 3.6, 3.5, 3.8],
+            type: "line",
+            smooth: true
+          },
+          {
+            stack: "Q4",
+            data: [, 3.8, 4.1, 4.2],
+            type: "line",
+            smooth: true
+          },
+          {
+            stack: "Q5",
+            data: [, 4.3, 3.9, 3.7],
+            type: "line",
+            smooth: true
+          }
+        ]
       };
       var myChart = echarts.init(document.getElementById("360quarterly"));
 
