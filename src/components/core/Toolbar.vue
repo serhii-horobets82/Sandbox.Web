@@ -12,6 +12,7 @@
         </v-text-field>
       </v-toolbar-title>
       <v-spacer/>
+
       <v-toolbar-items>
         <v-toolbar-items>
           <widget-switch-employee/>

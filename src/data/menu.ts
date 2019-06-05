@@ -37,35 +37,11 @@ const Menu: Array<NavigationItem> = [
     router: "/about"
   },
   {
-    title: "Account",
-    icon: "person",
-    router: "/profile",
-    authRequired: true,
-    group: NavigationGroup.Personal,
-    autoHide: true
-  },
-  {
-    title: "Sign in",
-    icon: "lock",
-    router: "/auth",
-    unauthRequired: true,
-    autoHide: true,
-    group: NavigationGroup.Personal
-  },
-  {
     title: "Administrator",
     icon: "build",
     router: "/admin",
     authRequired: true,
     adminRoleRequired: true,
-    autoHide: true,
-    group: NavigationGroup.Personal
-  },
-  {
-    title: "Sign out",
-    icon: "exit_to_app",
-    router: "/logout",
-    authRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },
@@ -83,9 +59,9 @@ const Menu: Array<NavigationItem> = [
   },
   { title: "PDP", icon: "book", router: "/personal/pdp", group: NavigationGroup.Main },
   {
-    title: "Ideas platform",
+    title: "Ideas Platform",
     icon: "lightbulb",
-    router: "/personal/summary",
+    router: "/personal/idea-platform",
     group: NavigationGroup.Main
   }
 ];

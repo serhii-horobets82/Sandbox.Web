@@ -3,6 +3,18 @@
     <template v-if="!$route.meta.public && isAuthenticated">
       <core-toolbar/>
       <core-drawer/>
+      <v-btn
+        :class="['toggle-btn', miniDrawer ? 'left' : 'right']"
+        small
+        fixed
+        depressed
+        top
+        left
+        fab
+        @click.stop="toogleDrawer"
+      >
+        <v-icon color="primary">{{miniDrawer ? 'add' : 'remove'}}</v-icon>
+      </v-btn>
       <core-view/>
       <!-- Floating button for settings   -->
       <v-btn
@@ -47,7 +59,7 @@
       :color="snackbar.color"
       v-model="snackbar.show"
     >
-      <span class="title">{{ snackbar.text }}</span>
+      <span class="body-1">{{ snackbar.text }}</span>
       <v-btn dark flat @click.native="snackbar.show = false" icon>
         <v-icon>close</v-icon>
       </v-btn>
@@ -56,7 +68,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { EventBus } from "@/event-bus";
 import { EVENTS } from "@/constants/index";
 
@@ -83,6 +95,7 @@ export default {
     });
   },
   computed: {
+    ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
     ...mapGetters("user", ["userIsAdmin", "userIsManager", "userIsHR"])
   },
@@ -90,6 +103,9 @@ export default {
     openThemeSettings() {
       this.$vuetify.goTo(0);
       this.rightDrawer = !this.rightDrawer;
+    },
+    toogleDrawer() {
+      this.$store.state.miniDrawer = !this.$store.state.miniDrawer;
     }
   }
 };
@@ -100,5 +116,25 @@ export default {
   top: 50% !important;
   right: 0;
   border-radius: 0;
+}
+
+.toggle-btn {
+  top: 30px;
+  height: 24px;
+  width: 24px;
+  background-color: white !important;
+  border: 1px solid lightgrey;
+
+  &:focus:before, &:focus {
+    background-color: white !important;
+  }
+
+  &.left {
+    left: 66px;
+  }
+
+  &.right {
+    left: 258px;
+  }
 }
 </style>

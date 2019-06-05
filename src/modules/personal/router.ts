@@ -4,6 +4,7 @@ import Profile from "./Profile.vue";
 import IEvaluate from "./IEvaluate.vue";
 import Pdp from "./Pdp.vue";
 import Summary from "./Summary.vue";
+import IdeaPlatform from "./IdeaPlatform.vue";
 import SuggestionsToImprove from "./360SuggestionsToImprove.vue";
 
 const routes: RouteConfig[] = [
@@ -43,6 +44,11 @@ const routes: RouteConfig[] = [
         name: "personal-summary",
         path: "summary",
         component: Summary
+      },
+      {
+        name: "personal-idea-platform",
+        path: "idea-platform",
+        component: IdeaPlatform
       }
     ]
   }

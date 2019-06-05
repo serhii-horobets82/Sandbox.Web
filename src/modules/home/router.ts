@@ -6,6 +6,7 @@ const routes: RouteConfig[] = [
     path: "/",
     name: "home",
     component: Home,
+    redirect: "/personal/profile",
     meta: { title: "Home" }
   },
   {

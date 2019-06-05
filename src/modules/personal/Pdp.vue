@@ -1,13 +1,11 @@
 <template>
-  <h1>PDP be here...</h1>
+  <v-container>
+    <v-layout row>
+      <h1>PDP</h1>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
-
-<style>
-
-</style>

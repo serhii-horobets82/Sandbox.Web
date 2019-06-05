@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-layout row>
-      <h1>Latest summary</h1>
+    <v-layout>
+      <h1>Idea Platform</h1>
     </v-layout>
   </v-container>
 </template>
