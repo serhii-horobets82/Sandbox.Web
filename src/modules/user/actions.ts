@@ -1,7 +1,7 @@
-import {ActionTree} from "vuex";
-import {UserProfileState, UserProfile} from "./types";
-import {GlobalState} from "@/types/global";
-import {userService} from "./service";
+import { ActionTree } from "vuex";
+import { UserProfileState, UserProfile } from "./types";
+import { GlobalState } from "@/types/global";
+import { userService } from "./service";
 import {
   REQUEST_PROFILE,
   RESET_PROFILE,
@@ -10,19 +10,20 @@ import {
 } from "./mutations";
 
 export const actions: ActionTree<UserProfileState, GlobalState> = {
-  userRequest({commit, dispatch}): any {
+  userRequest({ commit, dispatch }): any {
     commit(REQUEST_PROFILE);
     userService
       .getProfile()
       .then(response => {
         commit(REQUEST_PROFILE_SUCCESS, response.data);
+        dispatch("chat/connect", response.data, { root: true });
       })
       .catch(error => {
         commit(REQUEST_PROFILE_ERROR);
-        dispatch("auth/authLogout", null, {root: true});
+        dispatch("auth/authLogout", null, { root: true });
       });
   },
-  userReset({commit}): any {
+  userReset({ commit }): any {
     commit(RESET_PROFILE);
   }
 };

@@ -4,7 +4,7 @@
       <v-toolbar-title>
         <v-text-field clearable flat hide-details solo>
           <template v-slot:label>
-            <span class="subheading disabled">Find something ...</span>
+            <span class="subheading disabled">{{$t('Toolbar.findLabel')}}</span>
           </template>
           <template v-slot:prepend-inner>
             <v-icon color="primary">search</v-icon>
@@ -106,13 +106,6 @@ export default {
       this.title = val.name;
     }
   },
-
-  mounted() {
-    if (this.isAuthenticated && !this.profile)
-      this.$store.dispatch("user/userRequest");
-  },
-  beforeDestroy() {},
-
   methods: {
     handleFullScreen() {
       toggleFullScreen();

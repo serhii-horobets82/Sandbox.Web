@@ -7,6 +7,7 @@ import { user } from "@/modules/user";
 import admin from "@/modules/admin/store";
 import evaluation from "@/modules/evaluation/store";
 import okr from "@/modules/okr/store";
+import { chat } from "@/modules/chat";
 import { version } from "../package.json";
 import { GlobalState } from "@/types/global";
 
@@ -18,7 +19,12 @@ const getDefaultState = () => {
     version: version,
     drawer: true,
     miniDrawer: false,
-    color: "secondary"
+    color: "secondary",
+    chat: {
+      title: "Default",
+      users: [],
+      messages: []
+    }
   };
 };
 
@@ -47,7 +53,8 @@ const store: StoreOptions<GlobalState> = {
     home,
     admin,
     evaluation,
-    okr
+    okr,
+    chat
   }
 };
 

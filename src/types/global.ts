@@ -3,4 +3,5 @@ export interface GlobalState {
   drawer?: boolean;
   color?: string;
   image?: string;
+  chat?: any;
 }

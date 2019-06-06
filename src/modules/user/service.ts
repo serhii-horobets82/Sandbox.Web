@@ -1,9 +1,8 @@
-import axios from 'axios';
-import {UserProfile} from './types';
+import axios from "axios";
+import { UserProfile } from "./types";
 
 class UserService {
-  constructor() {
-  }
+  constructor() {}
 
   getProfile() {
     return axios.get<UserProfile>(`api/profile/me`);
