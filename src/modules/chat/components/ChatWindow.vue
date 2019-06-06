@@ -84,14 +84,71 @@ export default {
     }
   },
   created() {
-    this.$chatManager
-      .get()
-      .connect()
-      .then(currentUser => {
-        let chat = this.$store.state.chat;
+    // this.$chatManager
+    //   .get()
+    //   .connect()
+    //   .then(currentUser => {
+    //     let chat = this.$store.state.chat;
+    //     const room = currentUser.rooms[0];
+    //     console.log(this.profile.email);
+    //     chat = {
+    //       uuid: room.id,
+    //       title: `${room.name} (id=${room.id})`,
+    //       users: room.userIds,
+    //       messages: [],
+    //       created_by: room.createdByUserId,
+    //       created_at: room.createdAt
+    //     };
+    //     //let chat = getChatById(this.$route.params.uuid);
+    //     //this.$store.state.chat = chat;
+    //     // console.log(chat);
+    //     //console.log("Connected as user ", currentUser, chat);
+    //     currentUser.subscribeToRoom({
+    //       roomId: currentUser.rooms[0].id,
+    //       hooks: {
+    //         onMessage: message => {
+    //           console.log("Received message:", message);
+    //           chat.user = {
+    //             uuid: 111,
+    //             name: "user",
+    //             avatar:
+    //               "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
+    //           };
+    //           chat.messages.push({
+    //             uuid: message.id,
+    //             chatId: message.roomId,
+    //             text: message.text,
+    //             userId: message.senderId,
+    //             created_at: message.createdAt,
+    //             user: {
+    //               uuid: message.sender.id,
+    //               name: message.sender.name,
+    //               avatar:
+    //                 "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
+    //             }
+    //           });
+    //           this.$store.state.chat = chat;
+    //         }
+    //       }
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.error("error:", error);
+    //   });
+  },
+  computed: {
+    chat() {
+      let chatOrigin = {
+        title: "Chat",
+        users: [],
+        messages: []
+      };
+      let chat = getChatById(this.$route.params.uuid);
+      console.log("chat", chat);
 
-        const room = currentUser.rooms[0];
-        console.log(this.profile.email);
+      if (this.chatInfo && this.chatInfo.user) {
+        const { room, user } = this.chatInfo;
+        console.log("ccc", this.chatInfo);
         chat = {
           uuid: room.id,
           title: `${room.name} (id=${room.id})`,
@@ -100,47 +157,17 @@ export default {
           created_by: room.createdByUserId,
           created_at: room.createdAt
         };
-
-        //let chat = getChatById(this.$route.params.uuid);
-        //this.$store.state.chat = chat;
-        // console.log(chat);
-        //console.log("Connected as user ", currentUser, chat);
-
-        currentUser.subscribeToRoom({
-          roomId: currentUser.rooms[0].id,
-          hooks: {
-            onMessage: message => {
-              console.log("Received message:", message);
-              chat.user = {
-                uuid: 111,
-                name: "user",
-                avatar:
-                  "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
-              };
-              chat.messages.push({
-                uuid: message.id,
-                chatId: message.roomId,
-                text: message.text,
-                userId: message.senderId,
-                created_at: message.createdAt,
-                user: {
-                  uuid: message.sender.id,
-                  name: message.sender.name,
-                  avatar:
-                    "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
-                }
-              });
-              this.$store.state.chat = chat;
-            }
-          }
-        });
-      })
-      .catch(error => {
-        console.error("error:", error);
-      });
-  },
-  computed: {
-    ...mapState(["chat", "user"]),
+        chat.user = {
+          uuid: user.id,
+          name: user.name,
+          avatar:
+            "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
+        };
+      }
+      return Object.assign(chatOrigin, chat);
+    },
+    ...mapState(["user"]),
+    ...mapState("chat", ["chatInfo"]),
     ...mapGetters("user", ["profile"]),
     computeHeight() {
       return {

@@ -19,12 +19,7 @@ const getDefaultState = () => {
     version: version,
     drawer: true,
     miniDrawer: false,
-    color: "secondary",
-    chat: {
-      title: "Default",
-      users: [],
-      messages: []
-    }
+    color: "secondary"
   };
 };
 

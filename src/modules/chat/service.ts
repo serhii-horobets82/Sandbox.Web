@@ -10,7 +10,7 @@ class ChatService {
   currentRoom: any;
   constructor() {}
 
-  connect(userId: String) {
+  connect(userId: String, dispatch: any) {
     const tokenProvider = new TokenProvider({
       url: TOKEN_PROVIDER_URL
     });
@@ -63,7 +63,9 @@ class ChatService {
               roomId: roomToSubscribeTo.id,
               hooks: {
                 onMessage: (message: any) => {
+                  dispatch("chat/getMessage", message, { root: true });
                   console.log("new message:", message);
+                  toast.info(`${message.text}`);
                 }
               }
             });

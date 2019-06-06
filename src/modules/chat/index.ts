@@ -8,7 +8,7 @@ import { GlobalState } from "@/types/global";
 // default state for module
 export const getDefaultState = () => {
   return {
-    chatInfo: undefined,
+    chatInfo: { messages: [] },
     isError: false,
     isLoading: false,
     status: ""

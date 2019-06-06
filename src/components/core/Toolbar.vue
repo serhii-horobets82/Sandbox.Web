@@ -31,7 +31,10 @@
 
         <v-btn icon to="/chat" class="mx-3">
           <v-badge color="orange" overlap>
-            <template slot="badge">1</template>
+            <template
+              slot="badge"
+              v-if="chatInfo && chatInfo.room && chatInfo.room.unreadCount > 0"
+            >{{chatInfo.room.unreadCount}}</template>
             <v-icon color="secondary">sms</v-icon>
           </v-badge>
         </v-btn>
@@ -56,55 +59,9 @@ import { toggleFullScreen } from "@/util";
 import { EVENTS } from "@/constants/index";
 
 export default {
-  data: () => ({
-    title: null,
-    showProgressTooltip: false,
-    responsive: false,
-    responsiveInput: false,
-    toolbarLinks: [
-      { title: "Dashboard", to: "/" },
-      { title: "My profile", to: "/personal/profile" },
-      { title: "360", to: "/evaluation/360-team-view" },
-      { title: "Latest summary", to: "/personal/summary" },
-      { title: "PDP", to: "/personal/pdp" }
-    ],
-    toolbarItems: [
-      {
-        icon: "rate_review",
-        color: "orange",
-        title: "127",
-        subtitle: "Reviews"
-      },
-      {
-        icon: "book",
-        color: "blue",
-        title: "4",
-        subtitle: "Courses"
-      },
-      {
-        icon: "trending_up",
-        color: "green",
-        title: "12",
-        subtitle: "Trainings"
-      }
-    ]
-  }),
   computed: {
-    ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"]),
-    personalNavigationAuth() {
-      let personal = Menu.filter(
-        i => i.group === NavigationGroup.Personal && i.authRequired
-      );
-      return personal.filter(
-        i => (i.adminRoleRequired && this.userIsAdmin) || !i.adminRoleRequired
-      );
-    }
-  },
-  watch: {
-    $route(val) {
-      this.title = val.name;
-    }
+    ...mapGetters("chat", ["chatInfo"]),
+    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
   },
   methods: {
     handleFullScreen() {

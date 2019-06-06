@@ -1,7 +1,8 @@
 // Describe user chat info
 export interface ChatInfo {
-  id: string;
-  user: string;
+  id?: string;
+  user?: string;
+  room?: Object;
   messages?: Array<string>;
 }
 
