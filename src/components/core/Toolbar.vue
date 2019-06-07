@@ -4,7 +4,7 @@
       <v-toolbar-title>
         <v-text-field clearable flat hide-details solo>
           <template v-slot:label>
-            <span class="subheading disabled">{{$t('Toolbar.findLabel')}}</span>
+            <span class="subheading">{{$t('Toolbar.findLabel')}}</span>
           </template>
           <template v-slot:prepend-inner>
             <v-icon color="primary">search</v-icon>

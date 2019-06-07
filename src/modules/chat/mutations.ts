@@ -24,7 +24,6 @@ export const mutations: MutationTree<ChatState> = {
     state.isError = true;
   },
   [READ_MESSAGE](state, message: any) {
-    state.chatInfo.messages.push(message);
-    console.log("state::", state);
+    if (state.chatInfo && state.chatInfo.messages) state.chatInfo.messages.push(message);
   }
 };

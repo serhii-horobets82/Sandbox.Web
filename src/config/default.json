@@ -23,21 +23,25 @@
       {
         "title": "Admin",
         "userName": "admin@evoflare.com",
+        "avatar": "/img/avatars/admin.png",
         "password": "qwerty"
       },
       {
         "title": "Manager",
         "userName": "manager@evoflare.com",
+        "avatar": "/img/avatars/manager.png",
         "password": "qwerty"
       },
       {
         "title": "HR",
         "userName": "hr@evoflare.com",
+        "avatar": "/img/avatars/hr.png",
         "password": "qwerty"
       },
       {
         "title": "User",
         "userName": "user@evoflare.com",
+        "avatar": "/img/avatars/user.png",
         "password": "qwerty"
       }
     ]

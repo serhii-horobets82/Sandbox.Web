@@ -64,8 +64,6 @@ class ChatService {
               hooks: {
                 onMessage: (message: any) => {
                   dispatch("chat/getMessage", message, { root: true });
-                  console.log("new message:", message);
-                  toast.info(`${message.text}`);
                 }
               }
             });

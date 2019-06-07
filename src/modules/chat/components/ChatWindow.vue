@@ -1,12 +1,12 @@
 <template>
-  <v-card class="chat-room ml-2">
+  <v-card class="chat-room ml-2" v-if="chat">
     <v-toolbar card dense flat class="white chat-room--toolbar" light>
       <v-btn icon>
         <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
       </v-btn>
       <template v-if="chat.users">
-        <v-avatar size="32" class="avatar-stack" v-for="(user_id,index) in chat.users" :key="index">
-          <img :src="getAvatar(user_id)" alt>
+        <v-avatar size="32" class="avatar-stack" v-for="(uuid,index) in chat.users" :key="index">
+          <img :src="getAvatar(uuid)" :alt="uuid" :title="uuid">
         </v-avatar>
       </template>
       <v-spacer></v-spacer>
@@ -25,7 +25,7 @@
       <v-card-text class="chat-room--list pa-3">
         <template v-for="(item, index) in chat.messages">
           <div
-            v-bind:class="[ index % 2 == 0 ? 'reverse' : '']"
+            v-bind:class="[ item.user.uuid === profile.email ? 'reverse' : '']"
             class="messaging-item layout row my-4"
             :key="index"
           >
@@ -48,18 +48,13 @@
       </v-card-text>
     </vue-perfect-scrollbar>
     <v-card-actions>
-      <v-text-field
-        full-width
-        flat
-        clearable
-        hide-details
-        solo
-        append-icon="send"
-        label="Type some message here"
-      >
-        <v-icon slot="append-icon">send</v-icon>
-        <v-icon slot="append-icon" class="mx-2">photo</v-icon>
-        <v-icon slot="append-icon">face</v-icon>
+      <v-text-field v-model="messageText" clearable flat hide-details solo @submit="sendMessage">
+        <template v-slot:label>
+          <span class="subheading">{{$t('Chat.messageHint')}}</span>
+        </template>
+        <template v-slot:append>
+          <v-icon @click="sendMessage" color="primary">send</v-icon>
+        </template>
       </v-text-field>
     </v-card-actions>
   </v-card>
@@ -68,6 +63,8 @@
 import { getChatById } from "@/api/chat";
 import { getUserById } from "@/api/user";
 import { mapGetters, mapState, mapMutations } from "vuex";
+3;
+import { getAvatar } from "@/util";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 export default {
   components: {
@@ -83,88 +80,58 @@ export default {
       default: null
     }
   },
-  created() {
-    // this.$chatManager
-    //   .get()
-    //   .connect()
-    //   .then(currentUser => {
-    //     let chat = this.$store.state.chat;
-    //     const room = currentUser.rooms[0];
-    //     console.log(this.profile.email);
-    //     chat = {
-    //       uuid: room.id,
-    //       title: `${room.name} (id=${room.id})`,
-    //       users: room.userIds,
-    //       messages: [],
-    //       created_by: room.createdByUserId,
-    //       created_at: room.createdAt
-    //     };
-    //     //let chat = getChatById(this.$route.params.uuid);
-    //     //this.$store.state.chat = chat;
-    //     // console.log(chat);
-    //     //console.log("Connected as user ", currentUser, chat);
-    //     currentUser.subscribeToRoom({
-    //       roomId: currentUser.rooms[0].id,
-    //       hooks: {
-    //         onMessage: message => {
-    //           console.log("Received message:", message);
-    //           chat.user = {
-    //             uuid: 111,
-    //             name: "user",
-    //             avatar:
-    //               "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
-    //           };
-    //           chat.messages.push({
-    //             uuid: message.id,
-    //             chatId: message.roomId,
-    //             text: message.text,
-    //             userId: message.senderId,
-    //             created_at: message.createdAt,
-    //             user: {
-    //               uuid: message.sender.id,
-    //               name: message.sender.name,
-    //               avatar:
-    //                 "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
-    //             }
-    //           });
-    //           this.$store.state.chat = chat;
-    //         }
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.error("error:", error);
-    //   });
+  data: () => ({
+    messageText: ""
+  }),
+  methods: {
+    getAvatar,
+    sendMessage() {
+      const { user, room } = this.chatInfo;
+      user
+        .sendMessage({
+          text: this.messageText,
+          roomId: room.id
+        })
+        .then(messageId => {
+          this.messageText = "";
+        })
+        .catch(error => {
+          console.log("Error", error);
+        });
+    }
   },
   computed: {
     chat() {
-      let chatOrigin = {
-        title: "Chat",
-        users: [],
-        messages: []
-      };
-      let chat = getChatById(this.$route.params.uuid);
-      console.log("chat", chat);
-
       if (this.chatInfo && this.chatInfo.user) {
-        const { room, user } = this.chatInfo;
-        console.log("ccc", this.chatInfo);
-        chat = {
+        const { room, user, messages } = this.chatInfo;
+        let msgs = messages.map(message => ({
+          uuid: message.id,
+          chatId: message.roomId,
+          text: message.text,
+          userId: message.senderId,
+          created_at: message.createdAt,
+          user: {
+            uuid: message.sender.id,
+            name: message.sender.name,
+            avatar: this.getAvatar(message.sender.id)
+          }
+        }));
+
+        const chat = {
           uuid: room.id,
           title: `${room.name} (id=${room.id})`,
           users: room.userIds,
-          messages: [],
+          messages: msgs,
           created_by: room.createdByUserId,
-          created_at: room.createdAt
+          created_at: room.createdAt,
+          user: {
+            uuid: user.id,
+            name: user.name,
+            avatar: this.getAvatar(user.id)
+          }
         };
-        chat.user = {
-          uuid: user.id,
-          name: user.name,
-          avatar:
-            "https://s3.amazonaws.com/uifaces/faces/twitter/horaciobella/128.jpg"
-        };
+        return chat;
       }
-      return Object.assign(chatOrigin, chat);
     },
     ...mapState(["user"]),
     ...mapState("chat", ["chatInfo"]),
@@ -173,12 +140,6 @@ export default {
       return {
         height: this.height || ""
       };
-    }
-  },
-
-  methods: {
-    getAvatar(uid) {
-      return getUserById(uid).avatar;
     }
   }
 };
