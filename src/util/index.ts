@@ -15,6 +15,11 @@ export const getPageTitle = (routeTitle?: string) => {
   return `${title}`;
 };
 
+export function getAvatar(uid: string) {
+  const user = defaultSettings.demo.users.find(i => i.userName == uid);
+  if (user) return user.avatar;
+}
+
 /**
  * @param {Function} func
  * @param {number} wait

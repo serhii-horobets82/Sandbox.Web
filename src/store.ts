@@ -7,6 +7,7 @@ import { user } from "@/modules/user";
 import admin from "@/modules/admin/store";
 import evaluation from "@/modules/evaluation/store";
 import okr from "@/modules/okr/store";
+import { chat } from "@/modules/chat";
 import { version } from "../package.json";
 import { GlobalState } from "@/types/global";
 
@@ -47,7 +48,8 @@ const store: StoreOptions<GlobalState> = {
     home,
     admin,
     evaluation,
-    okr
+    okr,
+    chat
   }
 };
 
