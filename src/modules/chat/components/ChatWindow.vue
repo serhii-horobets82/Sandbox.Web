@@ -38,9 +38,7 @@
                 v-bind:class="[ index % 2 == 0 ? 'primary white--text' : 'white']"
                 class="pa-2"
               >{{item.text}}</p>
-              <div
-                class="caption px-2 text--secondary"
-              >{{new Date(item.created_at).toLocaleString()}}</div>
+              <div class="caption px-2 text--secondary">{{item.created_at | formatDate}}</div>
             </div>
             <v-spacer></v-spacer>
           </div>
@@ -48,7 +46,14 @@
       </v-card-text>
     </vue-perfect-scrollbar>
     <v-card-actions>
-      <v-text-field v-model="messageText" clearable flat hide-details solo @submit="sendMessage">
+      <v-text-field
+        @keyup.enter="sendMessage"
+        v-model="messageText"
+        clearable
+        flat
+        hide-details
+        solo
+      >
         <template v-slot:label>
           <span class="subheading">{{$t('Chat.messageHint')}}</span>
         </template>
@@ -63,22 +68,11 @@
 import { getChatById } from "@/api/chat";
 import { getUserById } from "@/api/user";
 import { mapGetters, mapState, mapMutations } from "vuex";
-3;
 import { getAvatar } from "@/util";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 export default {
   components: {
     VuePerfectScrollbar
-  },
-  props: {
-    uuid: {
-      type: String,
-      default: ""
-    },
-    height: {
-      type: String,
-      default: null
-    }
   },
   data: () => ({
     messageText: ""
@@ -86,6 +80,7 @@ export default {
   methods: {
     getAvatar,
     sendMessage() {
+      if (!this.messageText) return;
       const { user, room } = this.chatInfo;
       user
         .sendMessage({
@@ -104,18 +99,19 @@ export default {
     chat() {
       if (this.chatInfo && this.chatInfo.user) {
         const { room, user, messages } = this.chatInfo;
-        let msgs = messages.map(message => ({
-          uuid: message.id,
-          chatId: message.roomId,
-          text: message.text,
-          userId: message.senderId,
-          created_at: message.createdAt,
-          user: {
-            uuid: message.sender.id,
-            name: message.sender.name,
-            avatar: this.getAvatar(message.sender.id)
-          }
-        }));
+        let msgs = messages
+          .filter(m => m.roomId === room.id)
+          .map(message => ({
+            uuid: message.id,
+            text: message.text,
+            userId: message.senderId,
+            created_at: message.createdAt,
+            user: {
+              uuid: message.sender.id,
+              name: message.sender.name,
+              avatar: this.getAvatar(message.sender.id)
+            }
+          }));
 
         const chat = {
           uuid: room.id,

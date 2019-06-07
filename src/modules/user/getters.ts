@@ -1,8 +1,9 @@
-import {GetterTree} from "vuex";
-import {UserProfileState} from "./types";
-import {GlobalState} from "@/types/global";
+import { GetterTree } from "vuex";
+import { UserProfileState } from "./types";
+import { GlobalState } from "@/types/global";
 
 export const getters: GetterTree<UserProfileState, GlobalState> = {
+  state: state => state,
   profile: state => state.profile,
   userIsAdmin: state => state.userIsAdmin,
   userIsManager: state => state.userIsManager,

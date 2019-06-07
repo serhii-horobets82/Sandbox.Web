@@ -4,7 +4,13 @@ import { UserProfile } from "../user/types";
 import { GlobalState } from "@/types/global";
 import { chatService } from "./service";
 import toast from "@/services/toast";
-import { REQUEST_CHAT, REQUEST_CHAT_SUCCESS, REQUEST_CHAT_ERROR, READ_MESSAGE } from "./mutations";
+import {
+  REQUEST_CHAT,
+  REQUEST_CHAT_SUCCESS,
+  REQUEST_CHAT_ERROR,
+  READ_MESSAGE,
+  SWITCH_ROOM
+} from "./mutations";
 
 export const actions: ActionTree<ChatState, GlobalState> = {
   connect({ commit, dispatch }, profile: UserProfile): any {
@@ -19,7 +25,10 @@ export const actions: ActionTree<ChatState, GlobalState> = {
         commit(REQUEST_CHAT_ERROR, error);
       });
   },
-  getMessage({ commit }, message: any): any {
-    commit(READ_MESSAGE, message);
+  getMessage({ commit }, payload: any): any {
+    commit(READ_MESSAGE, payload);
+  },
+  switchRoom({ commit }, room: any): any {
+    commit(SWITCH_ROOM, room);
   }
 };
