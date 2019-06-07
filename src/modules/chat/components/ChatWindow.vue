@@ -45,7 +45,11 @@
         </template>
       </v-card-text>
     </vue-perfect-scrollbar>
-    <v-card-actions>
+    <v-card-actions class>
+      <emoji-list :show="emojiPanel" @close="toggleEmojiPanel" @click="addMessage"></emoji-list>
+      <v-btn icon class="blue--text emoji-panel" @click="toggleEmojiPanel">
+        <v-icon>mood</v-icon>
+      </v-btn>
       <v-text-field
         @keyup.enter="sendMessage"
         v-model="messageText"
@@ -69,16 +73,26 @@ import { getChatById } from "@/api/chat";
 import { getUserById } from "@/api/user";
 import { mapGetters, mapState, mapMutations } from "vuex";
 import { getAvatar } from "@/util";
+import EmojiList from "./EmojiList.vue";
+
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 export default {
   components: {
-    VuePerfectScrollbar
+    VuePerfectScrollbar,
+    EmojiList
   },
   data: () => ({
-    messageText: ""
+    messageText: "",
+    emojiPanel: false
   }),
   methods: {
     getAvatar,
+    addMessage(emoji) {
+      this.messageText += emoji.native;
+    },
+    toggleEmojiPanel() {
+      this.emojiPanel = !this.emojiPanel;
+    },
     sendMessage() {
       if (!this.messageText) return;
       const { user, room } = this.chatInfo;
