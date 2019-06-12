@@ -1,11 +1,6 @@
 <template>
-  <v-container class="text">
-    <!-- <v-layout> -->
-    <!-- <v-layout row>
-        Employee name
-    </v-layout>-->
-
-    <v-layout row wrap align-center>
+  <v-container class="text pt-2">
+    <v-layout row wrap align-start class>
       <v-flex xs2>
         <v-list subheader two-line v-if="isAuthenticated && profile" class="accent">
           <v-list-tile>
@@ -19,14 +14,14 @@
           </v-list-tile>
         </v-list>
       </v-flex>
-      <v-flex xs10>
+      <v-flex xs10 class="pt-4">
         <span class="title">Lorem ipsun dolor sit ame lorem ipsum dolor sit ame dolor</span>
       </v-flex>
 
       <v-flex xs8 class="pr-2">
         <Certifications></Certifications>
       </v-flex>
-      <v-flex xs4 class="pl-2" align-start>
+      <v-flex xs4 class="pl-2">
         <v-card class="text-xs-center" color="primary" flat>
           <v-card-text>
             <v-rating small :length="ratingLength" v-model="rating" hover></v-rating>
@@ -34,7 +29,7 @@
           <v-card-text class="title white--text">Lorem ipsum dolor sit ame lorem</v-card-text>
           <v-card-text>
             <v-btn large class="white" round outline>
-              <span class="title font-weight-bold">Review my colleagues</span>
+              <span class="white--text title font-weight-bold">Review my colleagues</span>
             </v-btn>
           </v-card-text>
         </v-card>
@@ -47,10 +42,7 @@
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
-            <v-list-tile-avatar class="mr-2" size="50" color="orange lighten-4">
-              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
+            <v-list-tile-content class="pl-0">
               <v-list-tile-title
                 style="height: 30px"
                 class="headline font-weight-bold"
@@ -78,9 +70,6 @@
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
-            <v-list-tile-avatar class="mr-2" size="50" color="blue lighten-4">
-              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
-            </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title style="height: 30px" class="headline font-weight-bold">My Review</v-list-tile-title>
             </v-list-tile-content>
@@ -191,9 +180,6 @@ export default {
 .text {
   * {
     color: #3c88b5;
-  }
-  .title {
-    color: white !important;
   }
 }
 
