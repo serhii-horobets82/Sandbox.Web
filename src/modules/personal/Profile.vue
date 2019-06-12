@@ -71,6 +71,10 @@
         <Pdp></Pdp>
       </v-flex>
 
+      <v-flex xs12 class="mt-4">
+        <IdeasPlatform></IdeasPlatform>
+      </v-flex>
+<!--
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
@@ -113,7 +117,7 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-      </v-flex>
+      </v-flex> -->
 
       <v-flex xs12 class="mt-4">
         <Review360></Review360>
@@ -161,6 +165,7 @@ import Certifications from "./profile/Certifications.vue";
 import Pdp from "./profile/Pdp.vue";
 import Technologies from "./profile/Technologies.vue";
 import Review360 from "./profile/360.vue";
+import IdeasPlatform from "./profile/IdeasPlatform.vue";
 import { mapGetters, mapState, mapMutations } from "vuex";
 
 export default {
@@ -170,7 +175,8 @@ export default {
     Certifications,
     Pdp,
     Technologies,
-    Review360
+    Review360,
+    IdeasPlatform
   },
   computed: {
     ...mapGetters("auth", ["isAuthenticated"]),
@@ -218,6 +224,7 @@ export default {
     color: #3c88b5;
   }
 }
+
 
 .title {
   font-size: 18px !important;

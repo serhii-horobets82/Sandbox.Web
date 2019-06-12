@@ -130,7 +130,7 @@ export default {
     }
     .month {
       display: block;
-      margin-top: -2px;
+      margin-top: -4px;
     }
   }
 
