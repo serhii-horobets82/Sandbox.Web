@@ -83,7 +83,11 @@
                   <v-icon medium class="material-icons-outlined">{{ item.icon }}</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                  <v-list-tile-title class="subheading font-weight-bold">{{ item.title }}</v-list-tile-title>
+                  <v-list-tile-title>
+                    <span class="body-2 font-weight-bold" >
+                      {{ item.title }}
+                    </span>
+                  </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
             </template>

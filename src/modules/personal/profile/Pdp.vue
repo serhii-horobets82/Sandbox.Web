@@ -1,9 +1,9 @@
 <template>
   <v-card flat>
-    <v-card-title>
-      <span class="title">My Planning</span>
+    <v-card-title class="pa-4">
+      <span class="subheading font-weight-bold">My Planning</span>
     </v-card-title>
-    <v-card-text>
+    <v-card-text class="pt-0">
       <v-layout row wrap>
         <v-flex>
           <div class="grid-wrapper" ref="gridWrapper">

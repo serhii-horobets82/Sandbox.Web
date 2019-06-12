@@ -24,10 +24,10 @@
                     <v-tab >
                       My Ideas
                     </v-tab>
-                    <v-tab ripple disabled>
+                    <v-tab ripple >
                       Most Popular
                     </v-tab>
-                    <v-tab ripple disabled>
+                    <v-tab ripple >
                       I liked
                     </v-tab>
                     <v-tab-item>
