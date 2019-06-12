@@ -6,9 +6,7 @@ const TOKEN_PROVIDER_URL =
 
 class ChatService {
   chatManager: any;
-  currentUser: any;
   currentRoom: any;
-  constructor() {}
 
   connect(userId: String, dispatch: any) {
     const tokenProvider = new TokenProvider({
@@ -32,44 +30,37 @@ class ChatService {
         .connect({
           onAddedToRoom: (room: any) => {
             console.log("added to room: ", room);
-            toast.success(`You was added to room ${room}`);
+            toast.success(`You was added to room "${room.name}"`);
           },
           onRemovedFromRoom: (room: any) => {
             console.log("removed from room: ", room);
-            toast.success(`You was removed from room ${room}`);
+            toast.success(`You was removed from room "${room.name}"`);
           },
           onUserJoinedRoom: (room: any, user: any) => {
             console.log("user: ", user, " joined room: ", room);
-            toast.success(`User ${user} joined room ${room}`);
+            toast.success(`User ${user} joined room "${room.name}"`);
           },
           onUserLeftRoom: (room: any, user: any) => {
             console.log("user: ", user, " left room: ", room);
-            toast.success(`User ${user} left room ${room}`);
+            toast.success(`User ${user} left room "${room.name}"`);
           },
           onPresenceChanged: ({ previous, current }: any, user: any) => {
             //console.log("user: ", user, " was ", previous, " but is now ", current);
             //toast.success(`User [${user.name}${user.id}] was ${previous} but now  ${current}`);
           }
         })
-        .then((cUser: any) => {
-          this.currentUser = cUser;
-
-          const roomToSubscribeTo = cUser.rooms[0];
-          if (roomToSubscribeTo) {
-            this.currentRoom = roomToSubscribeTo;
-            roomToSubscribeTo.unreadCount;
-
-            this.currentUser.subscribeToRoom({
-              roomId: roomToSubscribeTo.id,
+        .then((currentUser: any) => {
+          currentUser.rooms.forEach((room: any) => {
+            currentUser.subscribeToRoom({
+              roomId: room.id,
               hooks: {
                 onMessage: (message: any) => {
                   dispatch("chat/getMessage", message, { root: true });
                 }
               }
             });
-          }
-
-          resolve({ user: this.currentUser, room: this.currentRoom });
+          });
+          resolve({ user: currentUser, room: currentUser.rooms[0] });
         })
         .catch((error: any) => {
           reject(error);

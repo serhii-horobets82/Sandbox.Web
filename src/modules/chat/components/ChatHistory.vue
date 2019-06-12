@@ -3,7 +3,7 @@
     <v-toolbar dense>
       <v-text-field clearable flat hide-details solo>
         <template v-slot:label>
-          <span class="subheading disabled">Find in history</span>
+          <span class="subheading disabled">Find in rooms</span>
         </template>
         <template v-slot:prepend>
           <v-icon color="primary">search</v-icon>
@@ -13,26 +13,28 @@
     <vue-perfect-scrollbar class="chat-history--scrollbar">
       <v-divider></v-divider>
       <v-list two-line class="chat-history--list">
-        <v-subheader>History</v-subheader>
+        <v-subheader>Rooms</v-subheader>
         <template v-for="(item, index) in chats">
           <v-divider :key="index"></v-divider>
-          <v-list-tile
-            class="chat-list"
-            avatar
-            :key="item.title + index"
-            :to="chatRoute(item.uuid)"
-          >
-            <v-list-tile-avatar :color="randomAvatarColor(item)">
-              <img :src="item.user.avatar" v-if="item.users.length === 1">
-              <span v-else class="white--text headline">{{ firstLetter(item.title)}}</span>
+          <v-list-tile class="chat-list" avatar :key="item.id" @click="switchRoom(item)">
+            <v-list-tile-avatar :color="randomColor()" size="50">
+              <v-badge color="orange" left>
+                <template v-slot:badge>
+                  <span class="white--text">{{item.unreadCount}}</span>
+                </template>
+                <span class="white--text headline">{{ firstLetter(item.name)}}</span>
+              </v-badge>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>{{computeTitle(item)}}</v-list-tile-title>
-              <v-list-tile-sub-title>Some Latest message</v-list-tile-sub-title>
+              <v-list-tile-title>{{item.name}}</v-list-tile-title>
+              <v-list-tile-sub-title>
+                <v-icon>{{item.isPrivate ? 'lock' : 'public'}}</v-icon>
+                {{item.createdByUserId}}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-list-tile-action-text>{{ formatChatTime(item.created_at) }}</v-list-tile-action-text>
-              <v-circle dot small :color="chatStatusColor(item)"></v-circle>
+              <v-list-tile-action-text>{{ item.createdAt | formatDate }}</v-list-tile-action-text>
+              <v-circle dot :color="chatStatusColor(item)"></v-circle>
             </v-list-tile-action>
           </v-list-tile>
         </template>
@@ -45,21 +47,27 @@
 import { Groups } from "@/api/chat";
 import { getUserById } from "@/api/user";
 import VCircle from "@/components/circle/VCircle";
-import { randomElement } from "@/util";
+import { randomElement, getAvatar } from "@/util";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
+import { mapGetters, mapState, mapMutations } from "vuex";
 export default {
   components: {
     VuePerfectScrollbar,
     VCircle
   },
-
-  data: () => ({
-    chats: Groups
-  }),
-
+  computed: {
+    ...mapState("chat", ["chatInfo"]),
+    chats() {
+      if (this.chatInfo && this.chatInfo.user) {
+        const { user } = this.chatInfo;
+        return user.rooms;
+      }
+    }
+  },
   methods: {
-    chatRoute(id) {
-      return "/chat/messaging/" + id;
+    getAvatar,
+    switchRoom(room) {
+      this.$store.dispatch("chat/switchRoom", room, { root: true });
     },
     firstLetter(title) {
       return title.charAt(0);
@@ -68,18 +76,14 @@ export default {
       return new Date(s).toLocaleDateString();
     },
     computeTitle(item) {
-      let username =
-        item.users.length === 1 ? getUserById(item.users[0]).username : "";
-      return item.users.length === 1 ? username : item.title;
+      return item.name;
     },
-    randomAvatarColor(item) {
-      return item.users.length === 1
-        ? ""
-        : randomElement(["blue", "indigo", "success", "error", "pink"]);
+    randomColor() {
+      return randomElement(["blue", "indigo", "success", "error", "green"]);
     },
 
-    chatStatusColor(item) {
-      return randomElement(["blue", "indigo", "success", "error", "pink"]);
+    chatStatusColor() {
+      return "black";
     }
   }
 };

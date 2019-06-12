@@ -7,6 +7,7 @@ export const REQUEST_CHAT = "REQUEST_CHAT";
 export const REQUEST_CHAT_SUCCESS = "REQUEST_CHAT_SUCCESS";
 export const REQUEST_CHAT_ERROR = "REQUEST_CHAT_ERROR";
 export const READ_MESSAGE = "READ_MESSAGE";
+export const SWITCH_ROOM = "SWITCH_ROOM";
 
 export const mutations: MutationTree<ChatState> = {
   [REQUEST_CHAT]: state => {
@@ -25,5 +26,8 @@ export const mutations: MutationTree<ChatState> = {
   },
   [READ_MESSAGE](state, message: any) {
     if (state.chatInfo && state.chatInfo.messages) state.chatInfo.messages.push(message);
+  },
+  [SWITCH_ROOM](state, room: any) {
+    if (state.chatInfo && state.chatInfo.room) state.chatInfo.room = room;
   }
 };

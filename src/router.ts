@@ -25,7 +25,15 @@ const ConstantRoutes: RouteConfig[] = [
     component: () => import("@/views/error-page/404.vue"),
     meta: {
       title: "Not found",
-      public: true
+      public: false
+    }
+  },
+  {
+    path: "/403",
+    component: () => import("@/views/error-page/403.vue"),
+    meta: {
+      title: "Access denied",
+      public: false
     }
   }
 ];
@@ -62,6 +70,12 @@ router.beforeEach((to: Route, from: Route, next: any) => {
   const isAuthenticated = store.getters["auth/isAuthenticated"];
 
   if (isAuthenticated) {
+    // check profile existance (case with manual page refresh)
+    const { profile, isLoading } = store.getters["user/state"];
+    if (!profile && !isLoading) {
+      store.dispatch("user/userRequest");
+    }
+
     if (to.path === "/auth") {
       // if is logged in, redirect to the home page
       next({ path: "/" });

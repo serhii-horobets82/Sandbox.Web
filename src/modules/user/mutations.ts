@@ -3,6 +3,7 @@ import { UserProfileState, UserProfile } from "./types";
 import { getDefaultState } from "./index";
 import { EVENTS, ROLES } from "@/constants";
 import { EventBus } from "@/event-bus";
+import { randomInt, randomDecimal } from "@/util";
 
 // mutation constants
 export const RESET_PROFILE = "RESET_PROFILE";
@@ -18,7 +19,12 @@ export const mutations: MutationTree<UserProfileState> = {
   },
   [REQUEST_PROFILE_SUCCESS](state, payload: UserProfile) {
     // TODO
-    state.profile = { userScore: "4.04", ...payload };
+    state.profile = {
+      userScore: randomDecimal(1, 6),
+      userPrevScore: randomDecimal(2, 5),
+      totalProgress: randomInt(10, 100),
+      ...payload
+    };
     // check roles
     if (payload.roles) {
       state.userIsAdmin = payload.roles.includes(ROLES.Admin);

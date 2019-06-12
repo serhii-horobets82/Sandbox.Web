@@ -1,70 +1,38 @@
 <template>
-  <v-container class="text">
-    <!-- <v-layout> -->
-    <!-- <v-layout row>
-        Employee name
-    </v-layout>-->
-
-    <v-layout row wrap align-center>
-      <v-flex xs12 class>
-        <!-- <v-card>
-            <v-layout>
-        <v-flex>-->
+  <v-container class="text pt-2">
+    <v-layout row wrap align-start class>
+      <v-flex xs2>
         <v-list subheader two-line v-if="isAuthenticated && profile" class="accent">
           <v-list-tile>
-            <v-list-tile-avatar class="mr-2" size="50" color="blue lighten-4">
-              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
-            </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-sub-title class="title">Good morning,</v-list-tile-sub-title>
               <v-list-tile-title
                 style="height: 30px"
                 class="headline font-weight-bold"
-              >{{profile.lastName}}</v-list-tile-title>
+              >{{profile.lastName}}!</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-
-        <!-- <v-icon style="font-size: 60px" color="teal darken-2">perm_identity</v-icon> -->
-
-        <!-- </v-flex>
-        </v-layout>-->
-
-        <!-- <v-card-title class="headline" v-if="employee">
-              {{ employee.nameTemp }} ({{ employee.employeeType.type }})
-            </v-card-title>
-            <v-card-text style="height: 150px" class="text-xs-center">
-              <v-icon style="font-size: 100px" color="teal darken-2">perm_identity</v-icon>
-        </v-card-text>-->
-        <!-- </v-card> -->
+      </v-flex>
+      <v-flex xs10 class="pt-4">
+        <span class="title">Lorem ipsun dolor sit ame lorem ipsum dolor sit ame dolor</span>
       </v-flex>
 
-      <!-- <v-flex xs6>
-          <v-card>
-            <v-card-title>
-              Teams/Projects
-            </v-card-title>
-            <v-card-text style="min-height: 150px">
-              <v-card v-for="item in teamsByProjectId" :key="item.id">
-                <v-card-title>
-                  Project: {{ item.projectName }}
-                </v-card-title>
-
-                <v-card-text>
-                  Teams:
-                  <ul>
-                  <li v-for="team in item.teams" :key="team.teamId">
-                    {{team.teamName}}
-                  </li>
-                  </ul>
-                </v-card-text>
-              </v-card>
-            </v-card-text>
-          </v-card>
-      </v-flex>-->
-
-      <v-flex xs8 class="mt-4">
+      <v-flex xs8 class="pr-2">
         <Certifications></Certifications>
+      </v-flex>
+      <v-flex xs4 class="pl-2">
+        <v-card class="text-xs-center" color="primary" flat>
+          <v-card-text>
+            <v-rating small :length="ratingLength" v-model="rating" hover></v-rating>
+          </v-card-text>
+          <v-card-text class="title white--text">Lorem ipsum dolor sit ame lorem</v-card-text>
+          <v-card-text>
+            <v-btn large class="white" round outline>
+              <span class="white--text title font-weight-bold">Review my colleagues</span>
+            </v-btn>
+          </v-card-text>
+        </v-card>
       </v-flex>
 
       <v-flex xs12 class="mt-4">
@@ -78,10 +46,7 @@
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
-            <v-list-tile-avatar class="mr-2" size="50" color="orange lighten-4">
-              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
+            <v-list-tile-content class="pl-0">
               <v-list-tile-title
                 style="height: 30px"
                 class="headline font-weight-bold"
@@ -109,9 +74,6 @@
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
-            <v-list-tile-avatar class="mr-2" size="50" color="blue lighten-4">
-              <icon-light-bulb-on height="38" width="38" iconColor="#0091FF"/>
-            </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title style="height: 30px" class="headline font-weight-bold">My Review</v-list-tile-title>
             </v-list-tile-content>
@@ -183,6 +145,8 @@ export default {
     ...mapGetters("user", ["profile"])
   },
   data: () => ({
+    rating: 0,
+    ratingLength: 3,
     employee: null,
     teamsByProjectId: {},
     competences: []

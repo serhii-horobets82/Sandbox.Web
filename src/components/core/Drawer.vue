@@ -23,8 +23,14 @@
         </v-layout>
       </v-card-title>
       <v-card-title>
-        <v-layout align-center justify-center>
-          <v-progress-circular :rotate="135" :size="170" :width="6" value="20" color="secondary">
+        <v-layout align-center justify-center v-if="profile">
+          <v-progress-circular
+            :rotate="135"
+            :size="170"
+            :width="6"
+            :value="profile.totalProgress"
+            color="secondary"
+          >
             <v-badge bottom color="primary lighten-1">
               <template v-slot:badge>
                 <v-btn
@@ -47,10 +53,10 @@
       <v-layout align-center justify-center v-if="!miniDrawer">
         <v-toolbar-title class="ml-3" v-if="isAuthenticated && profile">
           <h4>{{profile.fullName}}</h4>
-          <div class="caption text-xs-center">User Role</div>
+          <div class="caption text-xs-center">{{profile.email}}</div>
           <v-icon class="bl" color="secondary">star_border</v-icon>
           <span class="display-1 ml-1">{{profile.userScore}}</span>
-          <span class="subheading ml-1">4.02</span>
+          <span class="subheading ml-1">{{profile.userPrevScore}}</span>
         </v-toolbar-title>
       </v-layout>
     </v-card>
@@ -89,7 +95,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { mapGetters, mapState, mapMutations } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import { EventBus } from "@/event-bus";
 import { getAvatar } from "@/util";
 import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
@@ -108,13 +114,6 @@ import Menu from "@/data/menu";
   },
   components: {
     VuePerfectScrollbar
-  },
-  created(): void {
-    // try reload profile data on page refresh
-    if (this.isAuthenticated && !this.profile) {
-      this.$store.dispatch("user/userRequest").then(() => {});
-    }
-    EventBus.$on("logged-in", (payLoad: any) => {});
   }
 })
 export default class AppDrawer extends Vue {
@@ -122,33 +121,15 @@ export default class AppDrawer extends Vue {
 
   get mainNavigation(): Array<NavigationItem> {
     let menu = this.links.filter(i => i.group === NavigationGroup.Main);
-
     return menu;
   }
 
   get personalNavigation(): Array<NavigationItem> {
     return this.links.filter(i => i.group === NavigationGroup.Personal);
   }
-
-  get personalNavigationAuth(): Array<NavigationItem> {
-    return this.links.filter(
-      i => i.group === NavigationGroup.Personal && i.authRequired
-    );
-  }
   scrollSettings: any = {
     maxScrollbarLength: 160
   };
-
-  // methods
-  private logOut() {
-    this.$store.dispatch("auth/authLogout").then(() => {
-      this.$router.push("/");
-    });
-  }
-
-  private destroyed() {
-    EventBus.$off("logged-in");
-  }
 }
 </script>
 
