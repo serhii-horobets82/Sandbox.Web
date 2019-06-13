@@ -143,14 +143,13 @@
                 <v-list three-line>
                 <v-list-tile
                 >
-                  <v-list-tile-avatar>
-
-                    <span style="height: 88px; line-height: 88px; margin-top: 8px; color: #3DB3ED; ">
+                  <v-list-tile-avatar size="54">
+                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #3DB3ED; background-color: rgba(61,179,237, 0.2)" class="title">
                       201
                     </span>
                   </v-list-tile-avatar>
 
-                  <v-list-tile-content>
+                  <v-list-tile-content class="ml-2">
                     <v-list-tile-sub-title>
                       <span>
                       Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
@@ -160,13 +159,13 @@
                 </v-list-tile>
                 <v-list-tile
                 >
-                  <v-list-tile-avatar>
-                    <span style="height: 88px; line-height: 88px; margin-top: 8px; color: #FFB800; ">
+                  <v-list-tile-avatar size="54">
+                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #FFB800; background-color: rgba(255,184,0, 0.2)" class="title">
                       66
                     </span>
                   </v-list-tile-avatar>
 
-                  <v-list-tile-content>
+                  <v-list-tile-content class="ml-2">
                     <v-list-tile-sub-title>
                       <span>
                       Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
@@ -176,13 +175,13 @@
                 </v-list-tile>
                 <v-list-tile
                 >
-                  <v-list-tile-avatar>
-                    <span style="height: 88px; line-height: 88px; margin-top: 8px; color: #939ED7;">
+                  <v-list-tile-avatar size="54">
+                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #939ED7; background-color: rgba(147,158,215, 0.2)" class="title">
                       34
                     </span>
                   </v-list-tile-avatar>
 
-                  <v-list-tile-content>
+                  <v-list-tile-content class="ml-2">
                     <v-list-tile-sub-title>
                       <span>
                       Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
