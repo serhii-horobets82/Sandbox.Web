@@ -39,15 +39,65 @@
                   dense
                 ></v-select> -->
               </v-card-title>
-              <v-card-text class="pt-0">
-                <v-layout>
+              <v-card-text class="pt-0 overflow-hidden">
+                <v-layout class="horiz-scroll">
                   <v-flex v-for="grade in gradesByRoleId[path.roleId]" :key="grade.id" class="mr-2" style="max-width: 530px">
                   <!-- <v-flex v-for="grade in role.roleGrade" :key="grade.name" class="mr-2"> -->
-                    <v-card flat>
+                    <v-card flat style="min-width: 200px;">
                       <v-card-title class="pt-1">{{ grade.name }}</v-card-title>
                       <!-- <v-card-text></v-card-text> -->
                       <v-card flat style="background-color: #f5f9fc; min-height: 120px;">
-                        <v-btn @click="openPositionDialog(path.roleId, grade.id)">+ Add</v-btn>
+                        <v-btn v-if="!careerCompetences[path.id].positions[grade.id]" @click="openPositionDialog(path.id, path.roleId, grade.id)">+ Add</v-btn>
+                        <div v-if="careerCompetences[path.id].positions[grade.id]">
+                        <table class="skillHeaderRow">
+                          <tbody>
+                            <tr>
+                              <td style="width: 50%">
+
+                              </td>
+                              <td v-for="i in [1,2,3,4,5]" :key="i"
+                                class="text-xs-center">
+                                {{ `E${i}` }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table class="skillRow"
+
+                          v-for="competence in careerCompetences[path.id].positions[grade.id].competences"
+                          :key="competence.id">
+                          <tbody>
+                            <tr>
+                              <td style="width: 50%">
+                                <v-layout>
+                                  {{ competence.name }}
+                                  <v-spacer></v-spacer>
+                                  <CompetenceInfo :competence="competence"></CompetenceInfo>
+                                </v-layout>
+                              </td>
+                              <td v-for="i in [1,2,3,4,5]" :key="i"
+                                class="competenceLevelFill text-xs-center"
+                                style="width: 10%"
+                                :class="{
+                                  'required': competence.competenceLevel === i,
+                                  'available': competence.levels[i - 1],// && i < competence.competenceLevel
+                                  'selected': i == competence.competenceLevel
+                                }"
+                                >
+                                <v-icon style="color: #B5D6EC" small v-if="!competence.levels[i - 1]">block</v-icon>
+                                <v-tooltip bottom v-if="competence.levels[i - 1] && competence.levels[i - 1].certificates">
+                                  <template v-slot:activator="{ on }">
+                                    <v-icon
+                                      small
+                                      v-on="on">assignment</v-icon>
+                                  </template>
+                                  <span>{{competence.levels[i-1].certificates.map(c=>c.name).join('; ')}}</span>
+                                </v-tooltip>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        </div>
                       </v-card>
                     </v-card>
                   </v-flex>
@@ -127,11 +177,10 @@
           <v-select
             :items="careerPathDialog.availableRoles"
             v-model="careerPathDialog.roleId"
-            label="Select..."
+            label="Role"
             :hide-details="true"
             item-text="type"
             item-value="id"
-            solo
           ></v-select>
         </v-card-text>
 
@@ -283,6 +332,7 @@ export default {
 
   data() {
     return {
+      projectId: null,
       positions: null,
       project: {},
       roles: [],
@@ -299,17 +349,22 @@ export default {
       },
       positionDialog: {
         open: false,
+        pathId: null,
+        roleId: null,
+        gradeId: null,
         width: 600,
         companyTemplate: null
       },
       careerPaths: [],
       gradesByRoleId: {}, // { [key: string] : any[] }
       roleGrades: [],
+      careerCompetences: null
     }
   },
 
   async created() {
     const projectId = this.$route.params.projectId;
+    this.projectId = projectId;
     // const roleRes = await axios.get(this.$backendUrl + `api/Employees/roles`);
 
     const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
@@ -320,11 +375,7 @@ export default {
     this.gradesByRoleId = byId;
     this.roleGrades = res.data;
 
-    this.careerPaths = [
-      {id: 1, name: 'Mainenance developer', roleId: 2, role: {type: 'DEV'}, team: {id: 1, name: 'Team 1'}},
-      {id: 2, name: 'QA', roleId: 3, role: {type: 'QA'}},
-      {id: 3, name: 'Test data', roleId: 9, role: {type: 'Another role'}},
-    ]
+    await this.loadCareerPaths();
     // const res = await axios.get(this.$backendUrl + `api/projects/${projectId}`);
     // this.project = res.data;
     // const response = await axios.get(this.$backendUrl + `api/positions/project/${projectId}`)
@@ -332,6 +383,19 @@ export default {
   },
 
   methods: {
+    async loadCareerPaths(){
+      const res = await axios.get(this.$backendUrl + `api/ProjectCareerPaths/${this.projectId}/competences`);
+      this.careerCompetences = res.data;
+
+      const resCareer = await axios.get(this.$backendUrl + `api/ProjectCareerPaths/${this.projectId}`);
+      this.careerPaths = resCareer.data;
+
+      // this.careerPaths = [
+      //   {id: 1, name: 'Mainenance developer', roleId: 2, role: {type: 'DEV'}, team: {id: 1, name: 'Team 1'}},
+      //   {id: 2, name: 'QA', roleId: 3, role: {type: 'QA'}},
+      //   {id: 3, name: 'Test data', roleId: 9, role: {type: 'Another role'}},
+      // ]
+    },
     async openRoleDialog() {
       this.roleDialog.open = true;
       const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
@@ -339,6 +403,8 @@ export default {
     },
     async openCareerPathDialog() {
       this.careerPathDialog.open = true;
+      this.careerPathDialog.name = null;
+      this.careerPathDialog.roleId = null;
       const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
       this.careerPathDialog.availableRoles = res.data;
     },
@@ -380,17 +446,35 @@ export default {
     },
 
     async addCareerPath() {
-      alert('nothing here')
+      const data = {
+        name: this.careerPathDialog.name,
+        roleId: this.careerPathDialog.roleId,
+        projectId: this.projectId,
+      }
+      const res = await axios.post(this.$backendUrl + `api/ProjectCareerPaths/${this.projectId}`, data);
+
       this.careerPathDialog.open = false;
+      await this.loadCareerPaths();
     },
-    async openPositionDialog(roleId, gradeId) {
+    async openPositionDialog(pathId, roleId, gradeId) {
       const res = await axios.get(this.$backendUrl + `api/RoleGrades/${roleId}/${gradeId}`);
       console.log(res.data)
+      this.positionDialog.pathId = pathId;
+      this.positionDialog.roleId = roleId;
+      this.positionDialog.gradeId = gradeId;
       this.positionDialog.companyTemplate = res.data[gradeId];
       this.positionDialog.open = true;
     },
     async addPosition() {
       alert('nothing')
+      const data = {
+        projectId: this.projectId,
+        careerPathId: this.positionDialog.pathId,
+        roleGradeId: this.positionDialog.gradeId,
+        projectPositionCompetence: [
+
+        ]
+      }
       this.positionDialog.open = false;
     },
   }
