@@ -46,6 +46,15 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "Salary Review Plan",
+    icon: "local_atm",
+    router: "/salary",
+    authRequired: true,
+    managerRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "My profile",
     icon: "person",
     router: "/personal/profile",

@@ -84,9 +84,7 @@
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>
-                    <span class="body-2 font-weight-bold" >
-                      {{ item.title }}
-                    </span>
+                    <span class="body-2 font-weight-bold">{{ item.title }}</span>
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>

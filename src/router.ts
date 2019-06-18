@@ -14,6 +14,7 @@ import OkrRoutes from "./modules/okr/router";
 import PersonalRoutes from "./modules/personal/router";
 import AdministrationRoutes from "./modules/administration/router";
 import ChatRoutes from "./modules/chat/router";
+import ChatRoutes from "./modules/  /router";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
