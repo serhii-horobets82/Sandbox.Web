@@ -1,6 +1,6 @@
 <template>
   <v-container class="text pt-2">
-    <v-layout row wrap align-start class>
+    <v-layout row wrap align-start>
       <v-flex xs2>
         <v-list subheader two-line v-if="isAuthenticated && profile" class="accent">
           <v-list-tile>
@@ -42,7 +42,7 @@
       <v-flex xs12 class="mt-4">
         <IdeasPlatform></IdeasPlatform>
       </v-flex>
-<!--
+      <!--
       <v-flex xs12 class="my-4">
         <v-list subheader class="accent">
           <v-list-tile>
@@ -79,7 +79,7 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-      </v-flex> -->
+      </v-flex>-->
 
       <v-flex xs12 class="mt-4">
         <Review360></Review360>
@@ -188,7 +188,6 @@ export default {
     color: #3c88b5;
   }
 }
-
 
 .title {
   font-size: 18px !important;

@@ -6,7 +6,7 @@ const routes: RouteConfig[] = [
     path: "/salary",
     name: "salary",
     component: () => import(/* webpackChunkName: "salary" */ "./Index.vue"),
-    redirect: "/admin/users",
+    redirect: "/salary/review",
     children: [
       {
         path: "review",
