@@ -134,6 +134,7 @@ export default {
   data: () => ({
     competences: [],
     grades: null,
+    gradeId: null
   }),
 
   async created() {
