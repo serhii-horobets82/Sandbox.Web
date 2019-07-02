@@ -63,6 +63,13 @@
             </span>
             Objective C
           </v-chip>
+
+          <svg style="margin-bottom: -18px" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="22.5" cy="22.5" r="21.5" stroke="#CCD9E8" stroke-dasharray="4 4"/>
+            <path d="M15 23.0001H29" stroke="#3C88B5"/>
+            <path d="M22.0001 16V30" stroke="#3C88B5"/>
+          </svg>
+
         </v-flex>
       </v-layout>
     </v-flex>
