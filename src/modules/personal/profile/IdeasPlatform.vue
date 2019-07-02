@@ -19,89 +19,70 @@
             <v-layout row wrap>
               <v-flex>
                 <v-card flat style="min-height: 62px; line-height: 62px;">
-                  <v-tabs class="" slider-color="#3DB3ED" :height="62"
-                  >
-                    <v-tab >
+                  <v-tabs  slider-color="#3DB3ED" :height="62" v-model="active" >
+                    <v-tab ripple key="1">
                       My Ideas
                     </v-tab>
-                    <v-tab ripple >
+                    <v-tab ripple key="2">
                       Most Popular
                     </v-tab>
-                    <v-tab ripple >
+                    <v-tab ripple key="3">
                       I liked
                     </v-tab>
-                    <v-tab-item>
+
+                    <v-tab-item
+                      v-for="(currentTabData, i) in [ideas.my, ideas.popular, ideas.liked]"
+                      :key="i+1">
                       <v-divider></v-divider>
-                      <v-card flat class="px-1">
+                      <v-card flat class="px-2">
                         <v-layout row>
                           <v-flex xs12>
-                            <v-list two-line>
-                              <v-list-tile class="mt-3" v-for="i in 3" :key="i">
+                            <v-list two-line class="pa-0" >
+                              <template v-for="(item, i) in currentTabData">
+                              <v-list-tile :key="item.id" style="margin: 5px 0px;">
                                 <v-list-tile-content>
-                                  <v-list-tile-title style="font-size: 14px">Lorem ipsum is placeholder text commonly used</v-list-tile-title>
-                                  <v-list-tile-sub-title style="line-height: 40px;">
-                                    <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <v-list-tile-title style="font-size: 14px">
+                                    {{ item.text }}
+                                  </v-list-tile-title>
+                                  <v-list-tile-sub-title style="line-height: 34px;">
+                                    <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z" fill="#ED3D3D"/>
                                     </svg>
-                                    <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">56</span>
-
-                                    <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M10.1509 0.0139918C10.092 0.00839506 10.033 0.00279835 9.97127 0C9.11783 0.00279835 8.2644 0.00373109 7.41096 0.00279831C7.1948 0.00279831 6.00168 0.00279835 4.64292 0C4.292 0.0167901 4.03653 0.0363786 3.9467 0.0531687C1.36674 0.503703 -0.376621 3.03341 0.0697479 5.6107C0.488043 8.03127 2.44196 9.6851 4.90681 9.69909C5.57215 9.70189 6.23749 9.69069 6.90283 9.70748C7.05858 9.71272 7.20917 9.76439 7.33517 9.8558C8.02016 10.3875 8.68831 10.9444 9.3733 11.476C9.60912 11.6579 9.8702 11.823 10.1425 11.9294C10.6506 12.1253 11.083 11.9042 11.2598 11.3837C11.3245 11.1919 11.3632 10.9924 11.3749 10.7904C11.3946 10.4071 11.3974 10.0209 11.3834 9.63473C11.3749 9.42765 11.4367 9.31571 11.6304 9.21777C13.5254 8.25514 14.5192 6.47259 14.3563 4.35983C14.1823 2.12675 12.3805 0.22107 10.1509 0.0139918Z" fill="#C1D9E8"/>
-                                    </svg>
-                                    <span style="color: #C1D9E8; font-size: 12px;" class="ml-1 mr-3">13</span>
-
-                                    <span style="font-size: 12px; color:#3C88B5">
-                                      May 25, 2019
+                                    <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">
+                                      {{item.likes}}
                                     </span>
 
-                                    <svg style="margin-bottom: -6px; margin-left: 5px;" width="56" height="23" viewBox="0 0 56 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <rect width="56" height="23" rx="11.5" fill="#EFF9FD"/>
-                                      <path d="M16.636 13.684C16.636 14.324 16.408 14.86 15.952 15.292C15.496 15.724 14.892 15.984 14.14 16.072V17.392H13.3V16.084C12.748 16.052 12.236 15.944 11.764 15.76C11.3 15.576 10.892 15.32 10.54 14.992L10.912 14.236C11.296 14.564 11.68 14.808 12.064 14.968C12.456 15.128 12.88 15.22 13.336 15.244V12.196C12.784 12.052 12.328 11.9 11.968 11.74C11.608 11.58 11.304 11.348 11.056 11.044C10.816 10.732 10.696 10.324 10.696 9.82C10.696 9.38 10.804 8.984 11.02 8.632C11.244 8.28 11.552 7.996 11.944 7.78C12.336 7.556 12.788 7.42 13.3 7.372V6.064H14.14V7.384C14.604 7.424 15.044 7.536 15.46 7.72C15.884 7.904 16.244 8.144 16.54 8.44L16.168 9.196C15.584 8.636 14.896 8.312 14.104 8.224V11.452C14.632 11.58 15.068 11.72 15.412 11.872C15.764 12.024 16.056 12.248 16.288 12.544C16.52 12.832 16.636 13.212 16.636 13.684ZM11.704 9.784C11.704 10.192 11.844 10.504 12.124 10.72C12.404 10.936 12.808 11.116 13.336 11.26V8.224C12.824 8.272 12.424 8.436 12.136 8.716C11.848 8.988 11.704 9.344 11.704 9.784ZM14.104 15.22C14.592 15.156 14.968 14.996 15.232 14.74C15.504 14.476 15.64 14.132 15.64 13.708C15.64 13.356 15.508 13.084 15.244 12.892C14.98 12.692 14.6 12.524 14.104 12.388V15.22ZM23.9993 13.324V14.14H22.7033V16H21.7193V14.14H17.7833V13.396L21.8993 7.456H22.7033V13.324H23.9993ZM18.8033 13.324H21.7193V9.124L18.8033 13.324ZM27.9906 16.096C27.0146 16.096 26.2706 15.728 25.7586 14.992C25.2546 14.248 25.0026 13.16 25.0026 11.728C25.0026 10.296 25.2546 9.212 25.7586 8.476C26.2706 7.732 27.0146 7.36 27.9906 7.36C28.9666 7.36 29.7066 7.732 30.2106 8.476C30.7226 9.212 30.9786 10.292 30.9786 11.716C30.9786 13.148 30.7226 14.236 30.2106 14.98C29.7066 15.724 28.9666 16.096 27.9906 16.096ZM27.9906 15.268C28.6706 15.268 29.1706 14.98 29.4906 14.404C29.8186 13.828 29.9826 12.932 29.9826 11.716C29.9826 10.508 29.8226 9.62 29.5026 9.052C29.1826 8.484 28.6786 8.2 27.9906 8.2C27.3106 8.2 26.8066 8.484 26.4786 9.052C26.1586 9.62 25.9986 10.508 25.9986 11.716C25.9986 12.924 26.1586 13.82 26.4786 14.404C26.8066 14.98 27.3106 15.268 27.9906 15.268ZM35.1859 16.096C34.2099 16.096 33.4659 15.728 32.9539 14.992C32.4499 14.248 32.1979 13.16 32.1979 11.728C32.1979 10.296 32.4499 9.212 32.9539 8.476C33.4659 7.732 34.2099 7.36 35.1859 7.36C36.1619 7.36 36.9019 7.732 37.4059 8.476C37.9179 9.212 38.1739 10.292 38.1739 11.716C38.1739 13.148 37.9179 14.236 37.4059 14.98C36.9019 15.724 36.1619 16.096 35.1859 16.096ZM35.1859 15.268C35.8659 15.268 36.3659 14.98 36.6859 14.404C37.0139 13.828 37.1779 12.932 37.1779 11.716C37.1779 10.508 37.0179 9.62 36.6979 9.052C36.3779 8.484 35.8739 8.2 35.1859 8.2C34.5059 8.2 34.0019 8.484 33.6739 9.052C33.3539 9.62 33.1939 10.508 33.1939 11.716C33.1939 12.924 33.3539 13.82 33.6739 14.404C34.0019 14.98 34.5059 15.268 35.1859 15.268ZM42.3813 16.096C41.4053 16.096 40.6613 15.728 40.1493 14.992C39.6453 14.248 39.3933 13.16 39.3933 11.728C39.3933 10.296 39.6453 9.212 40.1493 8.476C40.6613 7.732 41.4053 7.36 42.3813 7.36C43.3573 7.36 44.0973 7.732 44.6013 8.476C45.1133 9.212 45.3693 10.292 45.3693 11.716C45.3693 13.148 45.1133 14.236 44.6013 14.98C44.0973 15.724 43.3573 16.096 42.3813 16.096ZM42.3813 15.268C43.0613 15.268 43.5613 14.98 43.8813 14.404C44.2093 13.828 44.3733 12.932 44.3733 11.716C44.3733 10.508 44.2133 9.62 43.8933 9.052C43.5733 8.484 43.0693 8.2 42.3813 8.2C41.7013 8.2 41.1973 8.484 40.8693 9.052C40.5493 9.62 40.3893 10.508 40.3893 11.716C40.3893 12.924 40.5493 13.82 40.8693 14.404C41.1973 14.98 41.7013 15.268 42.3813 15.268Z" fill="#3DB3ED"/>
+                                    <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M10.1509 0.0139918C10.092 0.00839506 10.033 0.00279835 9.97127 0C9.11783 0.00279835 8.2644 0.00373109 7.41096 0.00279831C7.1948 0.00279831 6.00168 0.00279835 4.64292 0C4.292 0.0167901 4.03653 0.0363786 3.9467 0.0531687C1.36674 0.503703 -0.376621 3.03341 0.0697479 5.6107C0.488043 8.03127 2.44196 9.6851 4.90681 9.69909C5.57215 9.70189 6.23749 9.69069 6.90283 9.70748C7.05858 9.71272 7.20917 9.76439 7.33517 9.8558C8.02016 10.3875 8.68831 10.9444 9.3733 11.476C9.60912 11.6579 9.8702 11.823 10.1425 11.9294C10.6506 12.1253 11.083 11.9042 11.2598 11.3837C11.3245 11.1919 11.3632 10.9924 11.3749 10.7904C11.3946 10.4071 11.3974 10.0209 11.3834 9.63473C11.3749 9.42765 11.4367 9.31571 11.6304 9.21777C13.5254 8.25514 14.5192 6.47259 14.3563 4.35983C14.1823 2.12675 12.3805 0.22107 10.1509 0.0139918Z" fill="#C1D9E8"/>
                                     </svg>
+                                    <span style="color: #C1D9E8; font-size: 12px;" class="ml-1 mr-2">
+                                      {{item.comments}}
+                                    </span>
+                                    <span class="mr-2" style="display:inline-block;height: 4px; width: 4px;border: 2px solid #C1D9E8;margin-bottom:3px;border-radius: 4px;"></span>
+                                    <span class="mr-2" style="font-size: 12px; color:#3C88B5">
+                                      {{item.date}}
+                                    </span>
+                                    <span class="mr-2" style="display:inline-block;height: 4px; width: 4px;border: 2px solid #C1D9E8;margin-bottom:3px;border-radius: 4px;"></span>
+
+
+                                    <span style="font-size: 12px; color: #3DB3ED; display:inline-block; background: #EFF9FD;line-height: 14px; padding: 5px 10px; border-radius: 18px;">
+                                      ${{item.price}}
+                                    </span>
                                   </v-list-tile-sub-title>
                                 </v-list-tile-content>
+
                                 <v-list-tile-action>
                                   <svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="19.5" cy="19.5" r="18.5" fill="white" stroke="#E8EFF7"/>
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M20.6039 25.7699C20.6039 25.7699 25.7399 20.628 25.7821 20.5848C26.0726 20.2922 26.0726 19.727 25.7821 19.4344L20.6039 14.2195C20.3133 13.9268 19.8414 13.9268 19.5518 14.2195C19.2612 14.5117 19.2612 14.9863 19.5518 15.2791L23.49 19.2454H14.8393C14.428 19.2454 14.0952 19.5807 14.0952 19.9947C14.0952 20.4085 14.428 20.744 14.8393 20.744H23.49L19.5518 24.7103C19.2612 25.003 19.2612 25.4771 19.5518 25.7699C19.8416 26.0626 20.3133 26.0626 20.6039 25.7699Z" fill="#3C88B5"/>
                                     <path d="M20.6039 25.7699C20.6039 25.7699 25.7399 20.628 25.7821 20.5848C26.0726 20.2922 26.0726 19.727 25.7821 19.4344L20.6039 14.2195C20.3133 13.9268 19.8414 13.9268 19.5518 14.2195C19.2612 14.5117 19.2612 14.9863 19.5518 15.2791L23.49 19.2454H14.8393C14.428 19.2454 14.0952 19.5807 14.0952 19.9947C14.0952 20.4085 14.428 20.744 14.8393 20.744H23.49L19.5518 24.7103C19.2612 25.003 19.2612 25.4771 19.5518 25.7699C19.8416 26.0626 20.3133 26.0626 20.6039 25.7699" stroke="white" stroke-width="0.5"/>
                                   </svg>
-
                                 </v-list-tile-action>
                               </v-list-tile>
-
+                              <v-divider v-if="i < currentTabData.length -1" style="border-color: #E8EFF7"></v-divider>
+                              </template>
 
                             </v-list>
-                            <!-- <v-card flat v-for="i in 3" :key="i" class="px-3 pb-3">
-                              <v-card-text>
-
-                              </v-card-text>
-                              <span style="margin-top: -16px;display: block;">
-                              Lorem ipsum is placeholder text commonly used
-                              </span>
-                              <span style="display:block; line-height: 12px; margin-top: -14px;">
-                                <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z" fill="#ED3D3D"/>
-                                </svg>
-                                <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">56</span>
-
-                                <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M10.1509 0.0139918C10.092 0.00839506 10.033 0.00279835 9.97127 0C9.11783 0.00279835 8.2644 0.00373109 7.41096 0.00279831C7.1948 0.00279831 6.00168 0.00279835 4.64292 0C4.292 0.0167901 4.03653 0.0363786 3.9467 0.0531687C1.36674 0.503703 -0.376621 3.03341 0.0697479 5.6107C0.488043 8.03127 2.44196 9.6851 4.90681 9.69909C5.57215 9.70189 6.23749 9.69069 6.90283 9.70748C7.05858 9.71272 7.20917 9.76439 7.33517 9.8558C8.02016 10.3875 8.68831 10.9444 9.3733 11.476C9.60912 11.6579 9.8702 11.823 10.1425 11.9294C10.6506 12.1253 11.083 11.9042 11.2598 11.3837C11.3245 11.1919 11.3632 10.9924 11.3749 10.7904C11.3946 10.4071 11.3974 10.0209 11.3834 9.63473C11.3749 9.42765 11.4367 9.31571 11.6304 9.21777C13.5254 8.25514 14.5192 6.47259 14.3563 4.35983C14.1823 2.12675 12.3805 0.22107 10.1509 0.0139918Z" fill="#C1D9E8"/>
-                                </svg>
-                                <span style="color: #C1D9E8; font-size: 12px;" class="ml-1 mr-3">13</span>
-
-
-                                <span style="font-size: 12px; color:#3C88B5">
-                                  May 25, 2019
-                                </span>
-
-                                <svg style="margin-bottom: -6px;" width="56" height="23" viewBox="0 0 56 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <rect width="56" height="23" rx="11.5" fill="#EFF9FD"/>
-                                  <path d="M16.636 13.684C16.636 14.324 16.408 14.86 15.952 15.292C15.496 15.724 14.892 15.984 14.14 16.072V17.392H13.3V16.084C12.748 16.052 12.236 15.944 11.764 15.76C11.3 15.576 10.892 15.32 10.54 14.992L10.912 14.236C11.296 14.564 11.68 14.808 12.064 14.968C12.456 15.128 12.88 15.22 13.336 15.244V12.196C12.784 12.052 12.328 11.9 11.968 11.74C11.608 11.58 11.304 11.348 11.056 11.044C10.816 10.732 10.696 10.324 10.696 9.82C10.696 9.38 10.804 8.984 11.02 8.632C11.244 8.28 11.552 7.996 11.944 7.78C12.336 7.556 12.788 7.42 13.3 7.372V6.064H14.14V7.384C14.604 7.424 15.044 7.536 15.46 7.72C15.884 7.904 16.244 8.144 16.54 8.44L16.168 9.196C15.584 8.636 14.896 8.312 14.104 8.224V11.452C14.632 11.58 15.068 11.72 15.412 11.872C15.764 12.024 16.056 12.248 16.288 12.544C16.52 12.832 16.636 13.212 16.636 13.684ZM11.704 9.784C11.704 10.192 11.844 10.504 12.124 10.72C12.404 10.936 12.808 11.116 13.336 11.26V8.224C12.824 8.272 12.424 8.436 12.136 8.716C11.848 8.988 11.704 9.344 11.704 9.784ZM14.104 15.22C14.592 15.156 14.968 14.996 15.232 14.74C15.504 14.476 15.64 14.132 15.64 13.708C15.64 13.356 15.508 13.084 15.244 12.892C14.98 12.692 14.6 12.524 14.104 12.388V15.22ZM23.9993 13.324V14.14H22.7033V16H21.7193V14.14H17.7833V13.396L21.8993 7.456H22.7033V13.324H23.9993ZM18.8033 13.324H21.7193V9.124L18.8033 13.324ZM27.9906 16.096C27.0146 16.096 26.2706 15.728 25.7586 14.992C25.2546 14.248 25.0026 13.16 25.0026 11.728C25.0026 10.296 25.2546 9.212 25.7586 8.476C26.2706 7.732 27.0146 7.36 27.9906 7.36C28.9666 7.36 29.7066 7.732 30.2106 8.476C30.7226 9.212 30.9786 10.292 30.9786 11.716C30.9786 13.148 30.7226 14.236 30.2106 14.98C29.7066 15.724 28.9666 16.096 27.9906 16.096ZM27.9906 15.268C28.6706 15.268 29.1706 14.98 29.4906 14.404C29.8186 13.828 29.9826 12.932 29.9826 11.716C29.9826 10.508 29.8226 9.62 29.5026 9.052C29.1826 8.484 28.6786 8.2 27.9906 8.2C27.3106 8.2 26.8066 8.484 26.4786 9.052C26.1586 9.62 25.9986 10.508 25.9986 11.716C25.9986 12.924 26.1586 13.82 26.4786 14.404C26.8066 14.98 27.3106 15.268 27.9906 15.268ZM35.1859 16.096C34.2099 16.096 33.4659 15.728 32.9539 14.992C32.4499 14.248 32.1979 13.16 32.1979 11.728C32.1979 10.296 32.4499 9.212 32.9539 8.476C33.4659 7.732 34.2099 7.36 35.1859 7.36C36.1619 7.36 36.9019 7.732 37.4059 8.476C37.9179 9.212 38.1739 10.292 38.1739 11.716C38.1739 13.148 37.9179 14.236 37.4059 14.98C36.9019 15.724 36.1619 16.096 35.1859 16.096ZM35.1859 15.268C35.8659 15.268 36.3659 14.98 36.6859 14.404C37.0139 13.828 37.1779 12.932 37.1779 11.716C37.1779 10.508 37.0179 9.62 36.6979 9.052C36.3779 8.484 35.8739 8.2 35.1859 8.2C34.5059 8.2 34.0019 8.484 33.6739 9.052C33.3539 9.62 33.1939 10.508 33.1939 11.716C33.1939 12.924 33.3539 13.82 33.6739 14.404C34.0019 14.98 34.5059 15.268 35.1859 15.268ZM42.3813 16.096C41.4053 16.096 40.6613 15.728 40.1493 14.992C39.6453 14.248 39.3933 13.16 39.3933 11.728C39.3933 10.296 39.6453 9.212 40.1493 8.476C40.6613 7.732 41.4053 7.36 42.3813 7.36C43.3573 7.36 44.0973 7.732 44.6013 8.476C45.1133 9.212 45.3693 10.292 45.3693 11.716C45.3693 13.148 45.1133 14.236 44.6013 14.98C44.0973 15.724 43.3573 16.096 42.3813 16.096ZM42.3813 15.268C43.0613 15.268 43.5613 14.98 43.8813 14.404C44.2093 13.828 44.3733 12.932 44.3733 11.716C44.3733 10.508 44.2133 9.62 43.8933 9.052C43.5733 8.484 43.0693 8.2 42.3813 8.2C41.7013 8.2 41.1973 8.484 40.8693 9.052C40.5493 9.62 40.3893 10.508 40.3893 11.716C40.3893 12.924 40.5493 13.82 40.8693 14.404C41.1973 14.98 41.7013 15.268 42.3813 15.268Z" fill="#3DB3ED"/>
-                                </svg>
-
-                              </span>
-                            </v-card> -->
                           </v-flex>
 
                         </v-layout>
@@ -115,12 +96,6 @@
                     </v-tab-item>
                   </v-tabs>
 
-
-
-                  <!-- <v-card-title class="py-0 mx-2">
-                    <v-spacer></v-spacer>
-
-                  </v-card-title> -->
                 </v-card>
 
                 <v-divider style="border-color:#E8EFF7"></v-divider>
@@ -135,60 +110,49 @@
                 <v-card flat style="min-height: 62px; line-height: 62px;">
                   <v-card-title class="py-0 mx-2">
                     Company strategy
+                    <v-spacer></v-spacer>
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="8.5" cy="8.5" r="8.5" fill="#E8EFF7"/>
+                      <path d="M7.76562 10.8848C7.76172 10.7441 7.75977 10.6387 7.75977 10.5684C7.75977 10.1543 7.81836 9.79688 7.93555 9.49609C8.02148 9.26953 8.16016 9.04102 8.35156 8.81055C8.49219 8.64258 8.74414 8.39844 9.10742 8.07812C9.47461 7.75391 9.71289 7.49609 9.82227 7.30469C9.93164 7.11328 9.98633 6.9043 9.98633 6.67773C9.98633 6.26758 9.82617 5.9082 9.50586 5.59961C9.18555 5.28711 8.79297 5.13086 8.32812 5.13086C7.87891 5.13086 7.50391 5.27148 7.20312 5.55273C6.90234 5.83398 6.70508 6.27344 6.61133 6.87109L5.52734 6.74219C5.625 5.94141 5.91406 5.32812 6.39453 4.90234C6.87891 4.47656 7.51758 4.26367 8.31055 4.26367C9.15039 4.26367 9.82031 4.49219 10.3203 4.94922C10.8203 5.40625 11.0703 5.95898 11.0703 6.60742C11.0703 6.98242 10.9824 7.32812 10.8066 7.64453C10.6309 7.96094 10.2871 8.3457 9.77539 8.79883C9.43164 9.10352 9.20703 9.32812 9.10156 9.47266C8.99609 9.61719 8.91797 9.7832 8.86719 9.9707C8.81641 10.1582 8.78711 10.4629 8.7793 10.8848H7.76562ZM7.70117 13V11.7988H8.90234V13H7.70117Z" fill="#3C88B5"/>
+                    </svg>
                   </v-card-title>
-                  <v-divider></v-divider>
                 </v-card>
 
                 <v-divider style="border-color:#E8EFF7"></v-divider>
-                <v-list three-line>
-                <v-list-tile
-                >
-                  <v-list-tile-avatar size="54">
-                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #3DB3ED; background-color: rgba(61,179,237, 0.2)" class="title">
-                      201
-                    </span>
-                  </v-list-tile-avatar>
+                <v-list two-line class="py-0 px-2">
+                  <template v-for="(strategy, i) in companyStrategy">
+                    <v-list-tile style="padding-top: 5px; padding-bottom: 5px" :key="strategy.id">
+                      <v-list-tile-avatar size="54" class="mr-2">
+                        <div v-if="i == 0"
+                          style="height: 100%; width: 100%; line-height: 54px;
+                            color: #3DB3ED; background-color: rgba(61,179,237, 0.2);
+                            font-size: 20px; font-weight: bold">
+                        {{strategy.number}}
+                        </div>
+                        <div v-if="i == 1"
+                          style="height: 100%; width: 100%; line-height: 54px;
+                            color: #FFB800; background-color: rgba(255,184,0, 0.2);
+                            font-size: 20px; font-weight: bold">
+                        {{strategy.number}}
+                        </div>
+                        <div v-if="i == 2"
+                          style="height: 100%; width: 100%; line-height: 54px;
+                            color: #939ED7; background-color: rgba(147,158,215, 0.2);
+                            font-size: 20px; font-weight: bold">
+                        {{strategy.number}}
+                        </div>
+                      </v-list-tile-avatar>
+                      <v-list-tile-content>
+                        <v-list-tile-title style="font-size: 14px;">
+                          {{strategy.text}}
+                        </v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
 
-                  <v-list-tile-content class="ml-2">
-                    <v-list-tile-sub-title>
-                      <span>
-                      Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
-                      </span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile
-                >
-                  <v-list-tile-avatar size="54">
-                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #FFB800; background-color: rgba(255,184,0, 0.2)" class="title">
-                      66
-                    </span>
-                  </v-list-tile-avatar>
-
-                  <v-list-tile-content class="ml-2">
-                    <v-list-tile-sub-title>
-                      <span>
-                      Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
-                      </span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile
-                >
-                  <v-list-tile-avatar size="54">
-                    <span style="height: 54px; width: 54px; line-height: 54px !important; margin-top: 14px; color: #939ED7; background-color: rgba(147,158,215, 0.2)" class="title">
-                      34
-                    </span>
-                  </v-list-tile-avatar>
-
-                  <v-list-tile-content class="ml-2">
-                    <v-list-tile-sub-title>
-                      <span>
-                      Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.
-                      </span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
+                    <v-divider v-if="i < companyStrategy.length -1"
+                      style="border-color: #E8EFF7;"
+                      class="mx-3"></v-divider>
+                  </template>
                 </v-list>
               </v-flex>
             </v-layout>
@@ -210,11 +174,33 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    model: null,
+    active: null,
+    tab: null,
+    ideasTab: null,
+    ideas: {
+      my: [
+        { id: 1, text: 'Lorem ipsum is placeholder text commonly used', likes: 3, comments: 13, date: 'May 25, 2019', price: 4000 },
+        { id: 2, text: 'Lorem ipsum is placeholder text commonly used', likes: 4, comments: 1, date: 'May 25, 2019', price: 500 },
+        { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
+      ],
+      popular: [
+        { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
+        { id: 5, text: 'Lorem ipsum is placeholder text commonly used', likes: 27, comments: 3, date: 'May 25, 2019', price: 300 },
+        { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
+      ],
+      liked: [
+        { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
+      ]
+    },
+    companyStrategy: [
+      {id: 1, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 201},
+      {id: 2, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 66},
+      {id: 3, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 34},
+    ]
   }),
 
   async created(){
-
+    // this.ideasTab = this.ideas.my
   },
 
   methods: {
@@ -224,9 +210,16 @@ export default {
     async save(){
 
     },
+  },
+
+  computed: {
   }
 }
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: Muli;
+}
+
 </style>
