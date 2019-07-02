@@ -36,11 +36,11 @@
       </v-flex>
 
       <v-flex xs12 class="mt-4">
-        <Pdp></Pdp>
+        <IdeasPlatform></IdeasPlatform>
       </v-flex>
 
       <v-flex xs12 class="mt-4">
-        <IdeasPlatform></IdeasPlatform>
+        <Pdp></Pdp>
       </v-flex>
 <!--
       <v-flex xs12 class="my-4">
