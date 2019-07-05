@@ -1,5 +1,10 @@
 {
   "title": "Salary Review Plan",
   "sortBy": "Sort by",
-  "addEmployee": "Add employee"
+  "addEmployee": "Add employee",
+  "colHiringDate": "Hiring date",
+  "colName": "Name",
+  "colSurname": "Surname",
+  "colLevel": "Level",
+  "colPeDate": "PE date"
 }
