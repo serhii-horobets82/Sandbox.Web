@@ -61,7 +61,7 @@ const Menu: Array<NavigationItem> = [
   {
     title: "Ideas Platform",
     icon: "lightbulb",
-    router: "/personal/idea-platform",
+    router: "/ideas-platform",
     group: NavigationGroup.Main
   }
 ];
