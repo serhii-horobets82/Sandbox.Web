@@ -7,6 +7,13 @@ Vue.filter("formatDate", (value: any) => {
   }
 });
 
+Vue.filter("formatDateShort", (value: any) => {
+  if (value) {
+    return moment(String(value)).format("DD.MM.YYYY");
+  }
+});
+
+
 Vue.filter("formatNumber", (value: number) => {
   if (value) {
     return value.toFixed(1);

@@ -2,17 +2,22 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12>
+        <img v-show="false" class="ma-0 pa-0" src="/img/misc/salary-review.png" />
+      </v-flex>
+      <v-flex xs12>
         <h2>{{$t('Salary.title')}}</h2>
       </v-flex>
       <v-flex xs6>
-        <v-card flat>
+        <v-card flat class="accent">
           <v-card-actions>
-            <span class="body-2 font-weight-bold text-uppercase pr-2">{{$t('Salary.sortBy')}}</span>
+            <span class="form-label pr-2">{{$t('Salary.sortBy')}}</span>
             <v-select
+              height="26"
               append-icon
+              class="form-select primary lighten-1"
               flat
               hide-details
-              prepend-inner-icon="unfold_more"
+              prepend-inner-icon="fa-sort"
               outline
               dense
               single-line
@@ -50,7 +55,7 @@
               <th
                 v-for="header in props.headers"
                 :key="header.text"
-                :class="['text-uppercase column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
+                :class="['form-label column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
                 @click="changeSort(header.value)"
               >
                 <v-icon small>arrow_upward</v-icon>
@@ -63,11 +68,11 @@
               <td>
                 <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox>
               </td>
-              <td class="text-xs-center">{{ props.item.hiringDate }}</td>
+              <td class="text-xs-center">{{ props.item.hiringDate | formatDateShort }}</td>
               <td class="text-xs-left font-weight-bold">{{ props.item.name }}</td>
               <td class="text-xs-leftt font-weight-bold">{{ props.item.surname }}</td>
               <td class="text-xs-left">{{ props.item.level }}</td>
-              <td class="text-xs-center">{{ props.item.peDate }}</td>
+              <td class="text-xs-center">{{ props.item.peDate | formatDateShort }}</td>
             </tr>
           </template>
         </v-data-table>
@@ -78,7 +83,6 @@
 
 <script>
 let row = {
-  hiringDate: "01.03.2010",
   name: "Oleksandr",
   surname: "Storokha",
   level: "Tech Lead",
@@ -93,14 +97,16 @@ export default {
     const res = await axios.get(this.$backendUrl + `api/employees`);
     this.employees = res.data.map(e => ({
       ...row,
-      name: e.nameTemp,
+      hiringDate: e.hiringDate,
+      name: e.name,
+      surname: e.surname,
       level: e.employeeType.type,
       id: e.id
     }));
   },
   data: () => ({
     sortByColumns: [
-      { value: 0, text: "Active employee" },
+      { value: 0, text: "Active Employee" },
       { value: 1, text: "Hiring date" }
     ],
     sortByColumn: 0,
