@@ -73,10 +73,8 @@
                     !item.managerRoleRequired &&
                     !item.adminRoleRequired) ||
                   (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
-                  (item.authRequired &&
-                    isAuthenticated &&
-                    item.managerRoleRequired &&
-                    (userIsManager || userIsAdmin))"
+                  (item.authRequired && isAuthenticated && item.hrRoleRequired && userIsHR) ||
+                  (item.authRequired && isAuthenticated && item.managerRoleRequired && userIsManager)"
             >
               <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
                 <v-list-tile-action>
@@ -84,9 +82,7 @@
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>
-                    <span class="body-2 font-weight-bold" >
-                      {{ item.title }}
-                    </span>
+                    <span class="body-2 font-weight-bold">{{ item.title }}</span>
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -111,7 +107,7 @@ import Menu from "@/data/menu";
   computed: {
     ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
+    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager", "userIsHR"])
   },
   methods: {
     getAvatar
