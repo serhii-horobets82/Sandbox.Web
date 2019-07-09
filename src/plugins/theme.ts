@@ -3,7 +3,8 @@ import colors from "vuetify/es5/util/colors";
 export default {
   primary: {
     base: "#0091FF",
-    lighten1: "#fff"
+    lighten1: "#fff",
+    lighten2: "#3DB3ED"
   },
   secondary: "#0091FF",
   tertiary: "#B5D6EC",

@@ -15,6 +15,7 @@ import PersonalRoutes from "./modules/personal/router";
 import AdministrationRoutes from "./modules/administration/router";
 import ChatRoutes from "./modules/chat/router";
 import SalaryRoutes from "./modules/salary/router";
+import CareerRoutes from "./modules/career/router";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
@@ -58,6 +59,7 @@ const router: Router = new Router({
     ...OkrRoutes,
     ...ChatRoutes,
     ...SalaryRoutes,
+    ...CareerRoutes,
     errorRoute
   ]
 });

@@ -14,7 +14,7 @@ const routes: RouteConfig[] = [
         name: "chart",
         component: OkrChart,
         meta: {
-          public: true
+          public: false
         }
       },
       {
@@ -22,7 +22,7 @@ const routes: RouteConfig[] = [
         name: "list",
         component: OkrList,
         meta: {
-          public: true
+          public: false
         }
       }
     ]
