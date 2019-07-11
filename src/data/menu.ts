@@ -55,6 +55,16 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "Career Cubes",
+    icon: "fa-cube",
+    router: "/career",
+    authRequired: true,
+    managerRoleRequired: true,
+    hrRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "My profile",
     icon: "person",
     router: "/personal/profile",

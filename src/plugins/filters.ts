@@ -20,6 +20,11 @@ Vue.filter("formatNumber", (value: number) => {
   }
 });
 
+Vue.filter("formatNumberWithCommas", (value: number) => {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+
 Vue.filter("splitStr", (value: string, delimiter: string = " ", index: number = 0) => {
   if (value) {
     return value.split(delimiter)[index];

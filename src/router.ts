@@ -16,6 +16,7 @@ import AdministrationRoutes from "./modules/administration/router";
 import ChatRoutes from "./modules/chat/router";
 import IdeasPlatform from "./modules/ideasPlatform/router";
 import SalaryRoutes from "./modules/salary/router";
+import CareerRoutes from "./modules/career/router";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
@@ -60,6 +61,7 @@ const router: Router = new Router({
     ...ChatRoutes,
     ...IdeasPlatform,
     ...SalaryRoutes,
+    ...CareerRoutes,
     errorRoute
   ]
 });
