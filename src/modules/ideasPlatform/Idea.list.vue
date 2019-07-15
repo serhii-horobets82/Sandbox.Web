@@ -14,12 +14,12 @@
           color="rgb(245, 249, 252)"
           slider-color="#3DB3ED"
         >
-          <v-tab class="active-class" v-for="(tab, i) in tabs" :key="i">
+          <v-tab class="active-class" v-for="(tab, i) in tabs" :key="i+'-tab'">
             {{ tab.name }}
           </v-tab>
         </v-tabs>
 
-        <v-card v-for="i in 10" :key="i"
+        <v-card v-for="idea in ideasFiltered" :key="idea.id+'-idea'"
           class="mt-3 pa-4"
           flat
           style="border: 1px solid #E8EFF7;border-radius: 2px;">
@@ -27,25 +27,30 @@
             <v-flex xs12>
               <v-card flat>
                 <v-card-title class="pa-0">
-                  <span class="mr-5" style="font-size: 13px;">{{ idea.createdBy }}</span>
-                  <span style="font-size: 13px; opacity: 0.5;">{{ idea.createdDate }}</span>
+                  <span class="mr-5" style="font-size: 13px;">{{ idea.createdBy.nameTemp }}</span>
+                  <span style="font-size: 13px; opacity: 0.5;">{{ formatDate(idea.createdDate) }}</span>
                   <v-spacer></v-spacer>
                   <span style="font-size: 12px; color: #3DB3ED !important; display:inline-block; background: #EFF9FD;line-height: 14px; padding: 5px 10px; border-radius: 18px;">
-                    ${{idea.price}}
+                    ${{idea.price || ' ---'}}
                   </span>
                 </v-card-title>
               </v-card>
             </v-flex>
 
             <v-flex xs12 class="mt-2 mb-2">
-              <span style="font-size: 18px; font-weight: bold;">{{idea.name}}</span>
+              <router-link
+                style="font-size: 18px; font-weight: bold;text-decoration: none;"
+                :to="{name: 'ideas-platform-view', params: {id: idea.id}}"
+              >
+                {{idea.name}}
+              </router-link>
             </v-flex>
 
             <v-flex xs12>
-              <span v-for="(tag, i) in idea.tags" :key="i"
+              <span v-for="(tagRef) in idea.ideaTagRef" :key="tagRef.id+'-tagRef-idea-'+idea.id"
                 class=" px-3 mr-2"
                 style="display: inline-block; background: #EFF6FD; border-radius: 2px; font-size: 12px; height: 22px; line-height: 22px">
-                {{tag}}
+                {{tagsById[tagRef.tagId]}}
               </span>
             </v-flex>
 
@@ -60,21 +65,21 @@
                 <svg class="mr-1" style="margin-bottom: -3px;" width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.59303 16.4707C26.5664 6.805 16.7839 -4.42495 9.59303 2.74261C2.40212 -4.42495 -7.40367 6.805 9.59303 16.4707Z" fill="#ED3D3D"/>
                 </svg>
-                {{ idea.likes }}
+                {{ idea.ideaLike.length || '-' }}
               </span>
 
               <span class="pr-3">
                 <svg class="mr-1" style="margin-bottom: -3px;" width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M13.5346 0.489359C13.456 0.481897 13.3774 0.474434 13.295 0.470703C12.1571 0.474434 11.0192 0.475678 9.88129 0.474434C9.59307 0.474434 8.00223 0.474434 6.19056 0.470703C5.72267 0.49309 5.38204 0.519208 5.26226 0.541595C1.82232 1.14231 -0.502161 4.51525 0.0929972 7.95163C0.650724 11.1791 3.25594 13.3842 6.54241 13.4028C7.42953 13.4066 8.31666 13.3916 9.20378 13.414C9.41144 13.421 9.61223 13.4899 9.78022 13.6118C10.6935 14.3207 11.5844 15.0632 12.4977 15.7721C12.8122 16.0146 13.1603 16.2348 13.5234 16.3765C14.2009 16.6377 14.7773 16.343 15.0131 15.649C15.0994 15.3933 15.151 15.1273 15.1666 14.858C15.1928 14.3468 15.1965 13.8319 15.1778 13.317C15.1666 13.0409 15.2489 12.8917 15.5072 12.7611C18.0338 11.4776 19.3589 9.10082 19.1418 6.28381C18.9097 3.30637 16.5074 0.765463 13.5346 0.489359Z" fill="#D8E3EE"/>
                 </svg>
-                {{ idea.comments }}
+                {{ idea.ideaComment.length || '-' }}
               </span>
 
               <span>
                 <svg class="mr-1" style="margin-bottom: -3px;" width="26" height="15" viewBox="0 0 26 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M12.678 15C19.482 15 25.1337 8.35669 25.1337 8.35669C25.5757 7.88355 25.5882 7.10206 25.1476 6.62498C25.1476 6.62498 19.7753 0 12.7367 0C5.69802 0 0.325677 6.62498 0.325677 6.62498C-0.108673 7.10824 -0.110974 7.89267 0.333291 8.36401C0.333291 8.36401 5.87399 15 12.678 15ZM12.7367 12.7941C15.6522 12.7941 18.0156 10.4239 18.0156 7.5C18.0156 4.57614 15.6522 2.20588 12.7367 2.20588C9.82116 2.20588 7.45768 4.57614 7.45768 7.5C7.45768 10.4239 9.82116 12.7941 12.7367 12.7941ZM12.7367 9.85294C14.0324 9.85294 15.0829 8.79949 15.0829 7.5C15.0829 6.20051 14.0324 5.14706 12.7367 5.14706C11.4409 5.14706 10.3904 6.20051 10.3904 7.5C10.3904 8.79949 11.4409 9.85294 12.7367 9.85294Z" fill="#D8E3EE"/>
                 </svg>
-                {{ idea.views }}
+                {{ idea.ideaView.length || '-' }}
               </span>
 
               <v-spacer></v-spacer>
@@ -112,7 +117,7 @@
 
         <v-list two-line class="py-0 px-2">
           <template v-for="(strategy, i) in companyStrategy">
-            <v-list-tile style="padding-top: 5px; padding-bottom: 5px" :key="strategy.id">
+            <v-list-tile style="padding-top: 5px; padding-bottom: 5px" :key="strategy.id+'-strategy'">
               <v-list-tile-avatar size="54" class="mr-2">
                 <div v-if="i == 0"
                   style="height: 100%; width: 100%; line-height: 54px;
@@ -179,15 +184,18 @@
 </template>
 
 <script>
+import axios from 'axios';
+import moment from 'moment';
+
 export default {
   data: () => ({
     tabsModel: null,
     tabs: [
-      {name: 'All'},
-      {name: 'My Ideas'},
-      {name: 'Recently Added'},
-      {name: 'Most Popular'},
-      {name: 'I Liked'},
+      {id: 1, name: 'All'},
+      {id: 2, name: 'My Ideas'},
+      {id: 3, name: 'Recently Added'},
+      {id: 4, name: 'Most Popular'},
+      {id: 5, name: 'I Liked'},
     ],
     idea: {
         id: 1,
@@ -198,9 +206,9 @@ export default {
         tags: ['office', 'lunch', 'business'],
         likes: 59, comments: 11, views: 30
       },
-    ideas: [
-
-    ],
+    ideas: null,
+    tags: null,
+    tagsById: {},
     companyStrategy: [
       {id: 1, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 201},
       {id: 2, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 66},
@@ -218,10 +226,35 @@ export default {
       // {title: 'Notifications', url: ''},
     ]
   }),
-  created() {
-    if (this.$router.currentRoute.name == "personal") {
-      this.$router.push({ name: "personal-profile" });
-      // this.$router.push({name: 'personal-notifications'});
+  async created() {
+    const res = await axios.get(this.$backendUrl + `api/ideas`);
+    this.ideas = res.data;
+    const resTags = await axios.get(this.$backendUrl + `api/ideaTags`);
+    const byId = resTags.data.reduce((obj, curr) => {obj[curr.id] = curr.name; return obj;}, {})
+    this.tagsById = Object.assign({}, this.tagsById, byId);
+  },
+  methods: {
+    formatDate(date){
+      return moment(date).format('DD MMMM, YYYY');
+    }
+  },
+  computed: {
+    ideasFiltered() {
+      const currentEmployeeId = 2;
+      switch(this.tabsModel){
+        case 0:
+          return this.ideas;
+        case 1:
+          return this.ideas.filter(i => i.createdById == currentEmployeeId);
+        case 2:
+          return [...this.ideas].sort((a, b) => parseFloat(a.createdDate) - parseFloat(b.createdDate));
+        case 3:
+          return [...this.ideas].sort((a, b) => parseFloat(a.ideaComment.length) - parseFloat(b.ideaComment.length));
+        case 4:
+          return this.ideas.filter(i => i.ideaLike.some(l => l.employeeId == currentEmployeeId));
+        default:
+          return this.ideas;
+      }
     }
   }
 };

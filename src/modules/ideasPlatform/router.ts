@@ -13,7 +13,7 @@ const routes: RouteConfig[] = [
 
     children: [
       {
-        path: "",
+        path: "dashboard",
         name: "ideas-platform-list",
         component: List,
       },
