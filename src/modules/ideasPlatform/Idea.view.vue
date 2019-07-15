@@ -52,7 +52,7 @@
 
               <v-list-tile-content>
                 <v-list-tile-title style="font-size: 14px; font-weight: bold">By {{ idea.createdBy.nameTemp }}</v-list-tile-title>
-                <v-list-tile-sub-title style="font-size: 13px;color: #3C88B5;">{{ formatDate(idea.createdDate) }}</v-list-tile-sub-title>
+                <v-list-tile-sub-title style="font-size: 13px;color: #3C88B5;">{{ idea.createdDate | formatDateHuman }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -77,21 +77,21 @@
             <svg class="mr-1" style="margin-bottom: -3px;" width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M9.59303 16.4707C26.5664 6.805 16.7839 -4.42495 9.59303 2.74261C2.40212 -4.42495 -7.40367 6.805 9.59303 16.4707Z" fill="#ED3D3D"/>
             </svg>
-            {{ idea.ideaLike ? idea.ideaLike.length : '-' }}
+            {{ idea.ideaLike.length }}
           </span>
 
           <span class="pr-3">
             <svg class="mr-1" style="margin-bottom: -3px;" width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13.5346 0.489359C13.456 0.481897 13.3774 0.474434 13.295 0.470703C12.1571 0.474434 11.0192 0.475678 9.88129 0.474434C9.59307 0.474434 8.00223 0.474434 6.19056 0.470703C5.72267 0.49309 5.38204 0.519208 5.26226 0.541595C1.82232 1.14231 -0.502161 4.51525 0.0929972 7.95163C0.650724 11.1791 3.25594 13.3842 6.54241 13.4028C7.42953 13.4066 8.31666 13.3916 9.20378 13.414C9.41144 13.421 9.61223 13.4899 9.78022 13.6118C10.6935 14.3207 11.5844 15.0632 12.4977 15.7721C12.8122 16.0146 13.1603 16.2348 13.5234 16.3765C14.2009 16.6377 14.7773 16.343 15.0131 15.649C15.0994 15.3933 15.151 15.1273 15.1666 14.858C15.1928 14.3468 15.1965 13.8319 15.1778 13.317C15.1666 13.0409 15.2489 12.8917 15.5072 12.7611C18.0338 11.4776 19.3589 9.10082 19.1418 6.28381C18.9097 3.30637 16.5074 0.765463 13.5346 0.489359Z" fill="#D8E3EE"/>
             </svg>
-            {{ idea.ideaComment ? idea.ideaComment.length : '-' }}
+            {{ idea.ideaComment.length }}
           </span>
 
           <span>
             <svg class="mr-1" style="margin-bottom: -3px;" width="26" height="15" viewBox="0 0 26 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M12.678 15C19.482 15 25.1337 8.35669 25.1337 8.35669C25.5757 7.88355 25.5882 7.10206 25.1476 6.62498C25.1476 6.62498 19.7753 0 12.7367 0C5.69802 0 0.325677 6.62498 0.325677 6.62498C-0.108673 7.10824 -0.110974 7.89267 0.333291 8.36401C0.333291 8.36401 5.87399 15 12.678 15ZM12.7367 12.7941C15.6522 12.7941 18.0156 10.4239 18.0156 7.5C18.0156 4.57614 15.6522 2.20588 12.7367 2.20588C9.82116 2.20588 7.45768 4.57614 7.45768 7.5C7.45768 10.4239 9.82116 12.7941 12.7367 12.7941ZM12.7367 9.85294C14.0324 9.85294 15.0829 8.79949 15.0829 7.5C15.0829 6.20051 14.0324 5.14706 12.7367 5.14706C11.4409 5.14706 10.3904 6.20051 10.3904 7.5C10.3904 8.79949 11.4409 9.85294 12.7367 9.85294Z" fill="#D8E3EE"/>
             </svg>
-            {{ idea.ideaView ? idea.ideaView.length : '-' }}
+            {{ idea.ideaView.length }}
           </span>
         </v-layout>
 
@@ -99,19 +99,24 @@
           <v-text-field style="border: 1px solid #E8EFF7; background-color: white !important;"
             outline
             hide-details
+            v-model="comment"
+            @keypress.enter="enterComment()"
             placeholder="Type your comment here..."
           ></v-text-field>
         </v-layout>
 
         <v-layout row wrap style="background-color: white !important; border: 1px solid #E8EFF7; border-radius: 2px;">
+          <v-flex xs12>
+
           <v-card flat>
 
-            <span class="mx-4 mt-4 mb-3" style="display: block; font-weight: 600; font-size: 14px;">Comments</span>
+            <span class="mx-4 mt-4 mb-3" style="display: block; font-weight: 600; font-size: 14px;">Comments (save is working, UI update is not for some reason...)</span>
 
             <v-divider></v-divider>
 
             <Comment v-for="c in idea.ideaComment" :key="c.id" :comment="c"></Comment>
           </v-card>
+          </v-flex>
         </v-layout>
       </v-flex>
 
@@ -131,6 +136,7 @@ export default {
     id: null,
     idea: null,
     tagsById: {},
+    comment: null,
   }),
 
   async created(){
@@ -182,8 +188,14 @@ export default {
   },
 
   methods: {
-    formatDate(date){
-      return moment(date).format('DD MMMM, YYYY');
+    // formatDate(date){
+    //   return moment(date).format('DD MMMM, YYYY');
+    // },
+    async enterComment(){
+      const comment = {comment: this.comment, ideaId: this.id}
+      const res = await axios.post(this.$backendUrl + `api/IdeaComments`, comment);
+      this.idea.ideaComment.push(res.data);
+      this.comment = null;
     }
   }
 }
