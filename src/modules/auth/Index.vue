@@ -75,19 +75,30 @@
       </v-layout>
     </v-navigation-drawer>
 
-    <v-content></v-content>
+    <v-content>
+      <div class="version">
+        <div class="tertiary--text">{{versionInfo.version}}</div>
+        <div class="tertiary--text">{{versionInfo.database}}</div>
+        <div class="tertiary--text">{{versionInfo.organization}}</div>
+        organization
+      </div>
+    </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Credentials } from "@/models/credentials.interface";
+import { versionService } from "@/services/version.service";
+import { VersionInfo } from "@/models/version.interface";
 
 @Component
 export default class LoginForm extends Vue {
   private valid: boolean = true;
   private isError: boolean = false;
   private rememberMe: boolean = false;
+
+  private versionInfo = {} as VersionInfo;
 
   private isBusy: boolean = false;
   private errorMessage: string = "";
@@ -125,6 +136,14 @@ export default class LoginForm extends Vue {
       color: "#ea4335"
     }
   ];
+  created() {
+    versionService.getVersion().subscribe(
+      data => {
+        this.versionInfo = data;
+      },
+      error => {}
+    );
+  }
 
   // rule for require field
   requireRule(value: string) {
@@ -193,8 +212,16 @@ export default class LoginForm extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
 h2 {
   font-size: 36px;
 }
+
+.version {
+  text-align : right;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 </style>
+

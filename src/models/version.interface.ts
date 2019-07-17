@@ -3,4 +3,5 @@ export interface VersionInfo {
   creationDate: string;
   database: string;
   name: string;
+  organization: string;
 }
