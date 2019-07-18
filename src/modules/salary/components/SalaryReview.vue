@@ -7,7 +7,7 @@
       <v-flex xs12>
         <h2>{{$t('Salary.title')}}</h2>
       </v-flex>
-      <v-flex xs6>
+      <v-flex xs6 v-if="false">
         <v-card flat class="accent">
           <v-card-actions>
             <span class="form-label pr-2">{{$t('Salary.sortBy')}}</span>
@@ -31,7 +31,7 @@
           </v-card-actions>
         </v-card>
       </v-flex>
-      <v-flex xs6>
+      <v-flex xs6 v-if="false">
         <v-card flat class="accent">
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -66,6 +66,7 @@
           :pagination.sync="pagination"
           select-all
           item-key="id"
+          hide-actions
           class="v-datatable-root"
         >
           <template v-slot:headers="props">
@@ -266,8 +267,7 @@ export default {
 }
 
 .chip-bonus {
-  background-color: rgba(255, 207, 85, 0.15);
-  color: #FFB800;
+  //color: #FFB800;
 }
 
 .chip-total {
