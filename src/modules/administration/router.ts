@@ -5,6 +5,7 @@ import _360Questionarie from './360/Questionarie.edit.vue'
 import Positions from './position/Positions.vue'
 import PositionEdit from './position/Position.edit.vue'
 import PositionsGrade from './position/PositionsGrade.vue'
+import OrganizationStructure from './OrganizationStructure.vue'
 
 const routes: RouteConfig[] = [{
   path: '/administration',
@@ -46,6 +47,11 @@ const routes: RouteConfig[] = [{
       path: 'positions-grade',
       name: 'positions-grade',
       component: PositionsGrade
+    },
+    {
+      path: 'organization-structure',
+      name: 'organization-structure',
+      component: OrganizationStructure
     },
   ]
 }]
