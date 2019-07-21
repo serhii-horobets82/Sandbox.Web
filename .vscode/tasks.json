@@ -1,0 +1,47 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "serve",
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Set env",
+      "type": "shell",
+      "command": "heroku config:set VUE_APP_ROOT_API=https://evoflare-api.herokuapp.com/",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Add remote",
+      "type": "shell",
+      "command": "heroku git:remote -a evoflare-web",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Push",
+      "type": "shell",
+      "command": "git push heroku master",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    }
+
+    
+  ]
+}
