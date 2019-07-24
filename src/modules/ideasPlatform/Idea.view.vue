@@ -70,7 +70,7 @@
         <v-divider></v-divider>
 
         <v-layout row wrap class="my-4">
-          <span class="pr-3" style="color: #ED3D3D !important; display: inline-block; ">
+          <span @click="like(idea)" class="pr-3" style="color: #ED3D3D !important; display: inline-block; ">
             <!-- <svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M10.593 17.4707C27.5664 7.805 17.7839 -3.42495 10.593 3.74261C3.40212 -3.42495 -6.40367 7.805 10.593 17.4707Z" stroke="#ED3D3D"/>
             </svg> -->
@@ -140,46 +140,6 @@ export default {
   }),
 
   async created(){
-//     this.idea = {
-//       strategy: 'AALorem ipsum is placeholder text commonly used in the graphic, print, and publishing.',
-//       name: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing',
-//       description: `New York (CNN Business)America's business leaders are growing more worried that the United States will enter a recession by the end of 2020. Their primary fear: protectionist trade policy.
-
-// That is the topline finding of a report released Monday by the National Association for Business Economics. The survey, based on responses by 53 economists, is a leading barometer of where the US business community thinks the economy is headed.
-// "Increased trade protectionism is considered the primary downwide risk to growth by a majority of the respondents," Gregory Daco, chief US economist for Oxford Economics, said in a statement. The report found what it called a "surge" in recession fears among the economists.
-// The report comes as the United States ratchets up its trade war with China and has gone after other major trading partners, including Mexico and India.
-// The risk of recession happening soon remains low but will "rise rapidly" next year. The survey's respondents said the risk of recession starting in 2019 is only 15% but 60% by the end of 2020. About a third of respondents forecast a recession will begin halfway through next year.
-// According to the survey, the median forecast for gross domestic product growth in the last quarter of 2020 was 1.9%. That would be a big drop from the most recent estimate of current US economic growth — 3.1% in the first three months of 2019.
-// The United States is probably somewhere in the last stages of an epic run of economic growth that began in 2009. Dramatic and coordinated responses by the Federal Reserve, Congress and the Obama administration helped pull the country up from the Great Recession.`,
-//       tags: ['office', 'lunch', 'business'],
-//       price: 4000,
-//       createdBy: 'Oleksandr Storokha',
-//       createdDate: '23 May, 2019',
-//       likes: 46,
-//       views: 30,
-//       comments: [
-//         {
-//           id: 1,
-//           comment: `New York (CNN Business)America's business leaders are growing more worried that the United States will enter a recession by the end of 2020. Their primary fear: protectionist trade policy.`,
-//           createdBy: 'Oleksandr Storokha',
-//           createdDate: '04.09.2018',
-//           comments: [
-//             {
-//               id: 2,
-//               comment: `Yep :)`,
-//               createdBy: 'Oleksandr Storokha',
-//               createdDate: '04.09.2018',
-//             }
-//           ]
-//         },
-//         {
-//           id: 3,
-//           comment: `Their primary fear: protectionist trade policy.`,
-//           createdBy: 'Oleksandr Storokha',
-//           createdDate: '04.09.2018',
-//         }
-//       ],
-//     }
     this.id = +this.$route.params.id;
     const res = await axios.get(this.$backendUrl + `api/ideas/${this.id}`);
     this.idea = Object.assign({}, this.idea, res.data);
@@ -188,9 +148,19 @@ export default {
   },
 
   methods: {
-    // formatDate(date){
-    //   return moment(date).format('DD MMMM, YYYY');
-    // },
+    async like(idea) {
+      const currentEmployeeId = 2;
+      const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
+      if (like.length) {
+        const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        idea.ideaLike.splice(idea.ideaLike.indexOf(like[0]), 1);
+      } else {
+        const newLike = {id: 0, ideaId: idea.id, employeeId: currentEmployeeId};
+        idea.ideaLike.push(newLike);
+        const res = await axios.post(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        newLike.id = res.data.id;
+      }
+    },
     async enterComment(){
       const comment = {comment: this.comment, ideaId: this.id}
       const res = await axios.post(this.$backendUrl + `api/IdeaComments`, comment);

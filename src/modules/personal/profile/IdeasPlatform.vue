@@ -19,7 +19,7 @@
             <v-layout row wrap>
               <v-flex>
                 <v-card flat style="min-height: 62px; line-height: 62px;">
-                  <v-tabs  slider-color="#3DB3ED" :height="62" v-model="active" >
+                  <v-tabs  slider-color="#3DB3ED" :height="62" v-model="tabsModel" >
                     <v-tab ripple key="1">
                       My Ideas
                     </v-tab>
@@ -31,52 +31,61 @@
                     </v-tab>
 
                     <v-tab-item
-                      v-for="(currentTabData, i) in [ideas.my, ideas.popular, ideas.liked]"
+                      v-for="(currentTabData, i) in [1,2,3]"
                       :key="i+1">
                       <v-divider></v-divider>
                       <v-card flat class="px-2">
                         <v-layout row>
                           <v-flex xs12>
                             <v-list two-line class="pa-0" >
-                              <template v-for="(item, i) in currentTabData">
-                              <v-list-tile :key="item.id" style="margin: 5px 0px;">
+                              <template v-for="(item, i) in ideasFiltered">
+                              <v-list-tile :key="item.id+'-idea'" style="margin: 8px 0px;">
                                 <v-list-tile-content>
                                   <v-list-tile-title style="font-size: 14px">
-                                    {{ item.text }}
+                                    {{ item.name }}
                                   </v-list-tile-title>
                                   <v-list-tile-sub-title style="line-height: 34px;">
-                                    <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z" fill="#ED3D3D"/>
-                                    </svg>
-                                    <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">
-                                      {{item.likes}}
+                                    <span @click="like(item)" style="cursor: pointer;">
+                                      <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z" fill="#ED3D3D"/>
+                                      </svg>
+                                      <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">
+                                        {{item.ideaLike.length}}
+                                      </span>
                                     </span>
 
-                                    <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M10.1509 0.0139918C10.092 0.00839506 10.033 0.00279835 9.97127 0C9.11783 0.00279835 8.2644 0.00373109 7.41096 0.00279831C7.1948 0.00279831 6.00168 0.00279835 4.64292 0C4.292 0.0167901 4.03653 0.0363786 3.9467 0.0531687C1.36674 0.503703 -0.376621 3.03341 0.0697479 5.6107C0.488043 8.03127 2.44196 9.6851 4.90681 9.69909C5.57215 9.70189 6.23749 9.69069 6.90283 9.70748C7.05858 9.71272 7.20917 9.76439 7.33517 9.8558C8.02016 10.3875 8.68831 10.9444 9.3733 11.476C9.60912 11.6579 9.8702 11.823 10.1425 11.9294C10.6506 12.1253 11.083 11.9042 11.2598 11.3837C11.3245 11.1919 11.3632 10.9924 11.3749 10.7904C11.3946 10.4071 11.3974 10.0209 11.3834 9.63473C11.3749 9.42765 11.4367 9.31571 11.6304 9.21777C13.5254 8.25514 14.5192 6.47259 14.3563 4.35983C14.1823 2.12675 12.3805 0.22107 10.1509 0.0139918Z" fill="#C1D9E8"/>
-                                    </svg>
-                                    <span style="color: #C1D9E8; font-size: 12px;" class="ml-1 mr-2">
-                                      {{item.comments}}
+                                    <span>
+                                      <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.1509 0.0139918C10.092 0.00839506 10.033 0.00279835 9.97127 0C9.11783 0.00279835 8.2644 0.00373109 7.41096 0.00279831C7.1948 0.00279831 6.00168 0.00279835 4.64292 0C4.292 0.0167901 4.03653 0.0363786 3.9467 0.0531687C1.36674 0.503703 -0.376621 3.03341 0.0697479 5.6107C0.488043 8.03127 2.44196 9.6851 4.90681 9.69909C5.57215 9.70189 6.23749 9.69069 6.90283 9.70748C7.05858 9.71272 7.20917 9.76439 7.33517 9.8558C8.02016 10.3875 8.68831 10.9444 9.3733 11.476C9.60912 11.6579 9.8702 11.823 10.1425 11.9294C10.6506 12.1253 11.083 11.9042 11.2598 11.3837C11.3245 11.1919 11.3632 10.9924 11.3749 10.7904C11.3946 10.4071 11.3974 10.0209 11.3834 9.63473C11.3749 9.42765 11.4367 9.31571 11.6304 9.21777C13.5254 8.25514 14.5192 6.47259 14.3563 4.35983C14.1823 2.12675 12.3805 0.22107 10.1509 0.0139918Z" fill="#C1D9E8"/>
+                                      </svg>
+                                      <span style="color: #C1D9E8; font-size: 12px;" class="ml-1 mr-2">
+                                        {{item.ideaComment.length}}
+                                      </span>
                                     </span>
                                     <span class="mr-2" style="display:inline-block;height: 4px; width: 4px;border: 2px solid #C1D9E8;margin-bottom:3px;border-radius: 4px;"></span>
                                     <span class="mr-2" style="font-size: 12px; color:#3C88B5">
-                                      {{item.date}}
+                                      {{item.createdDate | formatDateHuman}}
                                     </span>
                                     <span class="mr-2" style="display:inline-block;height: 4px; width: 4px;border: 2px solid #C1D9E8;margin-bottom:3px;border-radius: 4px;"></span>
 
 
                                     <span style="font-size: 12px; color: #3DB3ED; display:inline-block; background: #EFF9FD;line-height: 14px; padding: 5px 10px; border-radius: 18px;">
-                                      ${{item.price}}
+                                      ${{item.price || ' ---'}}
                                     </span>
                                   </v-list-tile-sub-title>
                                 </v-list-tile-content>
 
                                 <v-list-tile-action>
+                                  <router-link style="line-height: 0;"
+                                    :to="{name: 'ideas-platform-view', params: {id: item.id}}"
+                                  >
                                   <svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="19.5" cy="19.5" r="18.5" fill="white" stroke="#E8EFF7"/>
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M20.6039 25.7699C20.6039 25.7699 25.7399 20.628 25.7821 20.5848C26.0726 20.2922 26.0726 19.727 25.7821 19.4344L20.6039 14.2195C20.3133 13.9268 19.8414 13.9268 19.5518 14.2195C19.2612 14.5117 19.2612 14.9863 19.5518 15.2791L23.49 19.2454H14.8393C14.428 19.2454 14.0952 19.5807 14.0952 19.9947C14.0952 20.4085 14.428 20.744 14.8393 20.744H23.49L19.5518 24.7103C19.2612 25.003 19.2612 25.4771 19.5518 25.7699C19.8416 26.0626 20.3133 26.0626 20.6039 25.7699Z" fill="#3C88B5"/>
                                     <path d="M20.6039 25.7699C20.6039 25.7699 25.7399 20.628 25.7821 20.5848C26.0726 20.2922 26.0726 19.727 25.7821 19.4344L20.6039 14.2195C20.3133 13.9268 19.8414 13.9268 19.5518 14.2195C19.2612 14.5117 19.2612 14.9863 19.5518 15.2791L23.49 19.2454H14.8393C14.428 19.2454 14.0952 19.5807 14.0952 19.9947C14.0952 20.4085 14.428 20.744 14.8393 20.744H23.49L19.5518 24.7103C19.2612 25.003 19.2612 25.4771 19.5518 25.7699C19.8416 26.0626 20.3133 26.0626 20.6039 25.7699" stroke="white" stroke-width="0.5"/>
                                   </svg>
+
+                                  </router-link>
                                 </v-list-tile-action>
                               </v-list-tile>
                               <v-divider v-if="i < currentTabData.length -1" style="border-color: #E8EFF7"></v-divider>
@@ -88,8 +97,8 @@
                         </v-layout>
                             <v-divider></v-divider>
                         <v-layout row wrap>
-                          <v-flex class="text-xs-center" style="line-height: 40px; color: #3DB3ED">
-                            Show All
+                          <v-flex class="text-xs-center" style="line-height: 40px;">
+                            <router-link style=" color: #3DB3ED !important; text-decoration: none;" :to="{name: 'ideas-platform-list'}">Show All</router-link>
                           </v-flex>
                         </v-layout>
                       </v-card>
@@ -174,24 +183,25 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    active: null,
+    tabsModel: null,
     tab: null,
     ideasTab: null,
-    ideas: {
-      my: [
-        { id: 1, text: 'Lorem ipsum is placeholder text commonly used', likes: 3, comments: 13, date: 'May 25, 2019', price: 4000 },
-        { id: 2, text: 'Lorem ipsum is placeholder text commonly used', likes: 4, comments: 1, date: 'May 25, 2019', price: 500 },
-        { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
-      ],
-      popular: [
-        { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
-        { id: 5, text: 'Lorem ipsum is placeholder text commonly used', likes: 27, comments: 3, date: 'May 25, 2019', price: 300 },
-        { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
-      ],
-      liked: [
-        { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
-      ]
-    },
+    ideas: null,
+    // ideas: {
+    //   my: [
+    //     { id: 1, text: 'Lorem ipsum is placeholder text commonly used', likes: 3, comments: 13, date: 'May 25, 2019', price: 4000 },
+    //     { id: 2, text: 'Lorem ipsum is placeholder text commonly used', likes: 4, comments: 1, date: 'May 25, 2019', price: 500 },
+    //     { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
+    //   ],
+    //   popular: [
+    //     { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
+    //     { id: 5, text: 'Lorem ipsum is placeholder text commonly used', likes: 27, comments: 3, date: 'May 25, 2019', price: 300 },
+    //     { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
+    //   ],
+    //   liked: [
+    //     { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
+    //   ]
+    // },
     companyStrategy: [
       {id: 1, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 201},
       {id: 2, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 66},
@@ -200,10 +210,27 @@ export default {
   }),
 
   async created(){
-    // this.ideasTab = this.ideas.my
+    const res = await axios.get(this.$backendUrl + `api/ideas`);
+    this.ideas = res.data;
+    // const resTags = await axios.get(this.$backendUrl + `api/ideaTags`);
+    // const byId = resTags.data.reduce((obj, curr) => {obj[curr.id] = curr.name; return obj;}, {})
+    // this.tagsById = Object.assign({}, this.tagsById, byId);
   },
 
   methods: {
+    async like(idea) {
+      const currentEmployeeId = 2;
+      const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
+      if (like.length) {
+        const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        idea.ideaLike.splice(idea.ideaLike.indexOf(like[0]), 1);
+      } else {
+        const newLike = {id: 0, ideaId: idea.id, employeeId: currentEmployeeId};
+        idea.ideaLike.push(newLike);
+        const res = await axios.post(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        newLike.id = res.data.id;
+      }
+    },
     add(id) {
 
     },
@@ -213,6 +240,20 @@ export default {
   },
 
   computed: {
+    ideasFiltered() {
+      const currentEmployeeId = 2;
+      if (this.ideas == null) return [];
+      switch(this.tabsModel){
+        case 0:
+          return this.ideas.filter(i => i.createdById == currentEmployeeId);
+        case 1:
+          return this.ideas;
+        case 2:
+          return this.ideas.filter(i => i.ideaLike.some(l => l.employeeId == currentEmployeeId));
+        default:
+          return this.ideas;
+      }
+    }
   }
 }
 </script>

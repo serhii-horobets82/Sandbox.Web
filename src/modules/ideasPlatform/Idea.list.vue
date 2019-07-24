@@ -58,7 +58,7 @@
               <v-card flat >
                 <v-card-title class="pa-0">
 
-              <span class="pr-3" style="color: #ED3D3D !important; display: inline-block; ">
+              <span @click="like(idea)" class="pr-3" style="color: #ED3D3D !important; display: inline-block; cursor: pointer">
                 <!-- <svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M10.593 17.4707C27.5664 7.805 17.7839 -3.42495 10.593 3.74261C3.40212 -3.42495 -6.40367 7.805 10.593 17.4707Z" stroke="#ED3D3D"/>
                 </svg> -->
@@ -197,15 +197,6 @@ export default {
       {id: 4, name: 'Most Popular'},
       {id: 5, name: 'I Liked'},
     ],
-    idea: {
-        id: 1,
-        name: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing',
-        createdBy: 'Oleksandr Storokha',
-        createdDate: '23 May, 2019',
-        price: 4000,
-        tags: ['office', 'lunch', 'business'],
-        likes: 59, comments: 11, views: 30
-      },
     ideas: null,
     tags: null,
     tagsById: {},
@@ -234,7 +225,19 @@ export default {
     this.tagsById = Object.assign({}, this.tagsById, byId);
   },
   methods: {
-
+    async like(idea) {
+      const currentEmployeeId = 2;
+      const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
+      if (like.length) {
+        const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        idea.ideaLike.splice(idea.ideaLike.indexOf(like[0]), 1);
+      } else {
+        const newLike = {id: 0, ideaId: idea.id, employeeId: currentEmployeeId};
+        idea.ideaLike.push(newLike);
+        const res = await axios.post(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        newLike.id = res.data.id;
+      }
+    },
   },
   computed: {
     ideasFiltered() {
