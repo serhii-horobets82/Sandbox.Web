@@ -79,8 +79,8 @@
       <div class="version">
         <div class="tertiary--text">{{versionInfo.version}}</div>
         <div class="tertiary--text">{{versionInfo.database}}</div>
+        <div class="tertiary--text">{{versionInfo.databaseType}}</div>
         <div class="tertiary--text">{{versionInfo.organization}}</div>
-        organization
       </div>
     </v-content>
   </v-app>

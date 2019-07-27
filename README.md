@@ -30,5 +30,7 @@ npm run lint
 npm run test:unit
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Run on heroku (set env)
+```
+heroku config:set VUE_APP_ROOT_API=https://evoflare-api.herokuapp.com/
+```
