@@ -187,21 +187,6 @@ export default {
     tab: null,
     ideasTab: null,
     ideas: null,
-    // ideas: {
-    //   my: [
-    //     { id: 1, text: 'Lorem ipsum is placeholder text commonly used', likes: 3, comments: 13, date: 'May 25, 2019', price: 4000 },
-    //     { id: 2, text: 'Lorem ipsum is placeholder text commonly used', likes: 4, comments: 1, date: 'May 25, 2019', price: 500 },
-    //     { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
-    //   ],
-    //   popular: [
-    //     { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
-    //     { id: 5, text: 'Lorem ipsum is placeholder text commonly used', likes: 27, comments: 3, date: 'May 25, 2019', price: 300 },
-    //     { id: 3, text: 'Lorem ipsum is placeholder text commonly used', likes: 17, comments: 16, date: 'May 25, 2019', price: 4000 },
-    //   ],
-    //   liked: [
-    //     { id: 4, text: 'Lorem ipsum is placeholder text commonly used', likes: 33, comments: 15, date: 'May 25, 2019', price: 12000 },
-    //   ]
-    // },
     companyStrategy: [
       {id: 1, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 201},
       {id: 2, text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing.', number: 66},

@@ -36,14 +36,38 @@
 
 <script>
 import notes from "@/data/notification";
+import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 
 export default {
   data: () => ({
+    connection: null,
     items: notes,
-    count: notes.filter(i => i.title).length
   }),
+  async created(){
+    const connection = new HubConnectionBuilder()
+      .withUrl(this.$backendUrl + 'hubs/notification-hub', { accessTokenFactory: () => localStorage["auth-token"] })
+      .configureLogging(LogLevel.Information)
+      .build()
+
+    connection.start()
+      .catch((err) => console.error(err.toSting()));
+    connection.on('SendNotification', (message) => {
+      this.items.push({title: message});
+    });
+    // connection.send('SendNotification', 'ddddddddddddddddddddddddddddddddd')
+    this.connection = connection;
+  },
+  beforeDestroy(){
+    // this.connection.off('SendNotification')
+  },
+
   methods: {
     handleClick: e => {}
+  },
+  computed: {
+    count() {
+      return this.items.filter(i => i.title).length
+    }
   }
 };
 </script>

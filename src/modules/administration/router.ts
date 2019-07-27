@@ -6,6 +6,8 @@ import Positions from './position/Positions.vue'
 import PositionEdit from './position/Position.edit.vue'
 import PositionsGrade from './position/PositionsGrade.vue'
 import OrganizationStructure from './OrganizationStructure.vue'
+import NotificationsTest from './NotificationsTest.vue';
+import WelcomeChecklist from './WelcomeChecklist.vue'
 
 const routes: RouteConfig[] = [{
   path: '/administration',
@@ -52,6 +54,18 @@ const routes: RouteConfig[] = [{
       path: 'organization-structure',
       name: 'organization-structure',
       component: OrganizationStructure
+    },
+
+    {
+      path: 'notifications-test',
+      name: 'notifications-test',
+      component: NotificationsTest
+    },
+
+    {
+      path: 'welcome-checklist',
+      name: 'welcome-checklist',
+      component: WelcomeChecklist
     },
   ]
 }]
