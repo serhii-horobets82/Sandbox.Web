@@ -9,8 +9,8 @@
         The message should appear in the notification menu for all (for now) users
       </v-flex>
       <v-flex xs12>
-        <v-text-field v-model="message"></v-text-field>
-        <v-btn color="success" @click="send()">Send</v-btn>
+        User assigned to project
+        <v-btn @click="sendUserAdded()">Send</v-btn>
       </v-flex>
     </v-layout>
   </v-container>
@@ -29,9 +29,15 @@ export default {
   },
 
   methods: {
-    async send(){
-      await this.$http.post('api/Notifications/send', {message: this.message})
-      this.message = null;
+    async sendUserAdded(){
+      const payload = {
+        data: {
+          name: 'Alex Took',
+          project: 'HellProject'
+        },
+        notificationTypeId: 1 //joined
+      }
+      await this.$http.post('api/Notifications/send', payload);
     },
   }
 }

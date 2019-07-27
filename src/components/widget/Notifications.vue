@@ -1,8 +1,10 @@
 <template>
-  <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition">
+  <v-menu bottom left offset-y
+    content-class="dropdown-menu" transition="slide-y-transition"
+    min-width="400">
     <v-btn icon slot="activator" class="mx-3">
       <v-badge color="error" overlap>
-        <template slot="badge">{{ count }}</template>
+        <template slot="badge" v-if="count">{{ count }}</template>
         <v-icon color="secondary">notifications</v-icon>
       </v-badge>
     </v-btn>
@@ -51,8 +53,16 @@ export default {
 
     connection.start()
       .catch((err) => console.error(err.toSting()));
-    connection.on('SendNotification', (message) => {
-      this.items.push({title: message});
+    connection.on('SendTestNotification', (payload) => {
+      let title = payload.template;
+      for(let key in payload.data) {
+        title = title.replace('${' + key + '}', payload.data[key])
+      }
+      this.items.push({
+        title: title,
+        color: 'light-green',
+        icon: 'account_circle',
+      })
     });
     // connection.send('SendNotification', 'ddddddddddddddddddddddddddddddddd')
     this.connection = connection;
