@@ -16,7 +16,7 @@ export const actions: ActionTree<UserProfileState, GlobalState> = {
       .getProfile()
       .then(response => {
         commit(REQUEST_PROFILE_SUCCESS, response.data);
-        dispatch("chat/connect", response.data, { root: true });
+        //dispatch("chat/connect", response.data, { root: true });
       })
       .catch(error => {
         commit(REQUEST_PROFILE_ERROR);

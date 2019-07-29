@@ -44,7 +44,7 @@
                 </v-btn>
               </template>
               <v-avatar :size="miniDrawer ? 50 : 150" @click.stop="$router.push('/profile')">
-                <img :src="getAvatar(profile.email)" :alt="profile.fullName" v-if="profile">
+                <img :src="getCommonAvatar(profile)" :alt="profile.fullName" v-if="profile">
               </v-avatar>
             </v-badge>
           </v-progress-circular>
@@ -97,7 +97,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { mapGetters, mapState } from "vuex";
 import { EventBus } from "@/event-bus";
-import { getAvatar } from "@/util";
+import { getCommonAvatar } from "@/util";
 import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
 import { UserProfile } from "@/modules/user/types";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
@@ -110,7 +110,7 @@ import Menu from "@/data/menu";
     ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager", "userIsHR"])
   },
   methods: {
-    getAvatar
+    getCommonAvatar
   },
   components: {
     VuePerfectScrollbar

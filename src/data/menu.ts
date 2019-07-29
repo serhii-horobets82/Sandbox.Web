@@ -55,9 +55,9 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
-    title: "Career Cubes",
+    title: "Education Cubes",
     icon: "fa-cube",
-    router: "/career",
+    router: "/education",
     authRequired: true,
     managerRoleRequired: true,
     hrRoleRequired: true,

@@ -7,13 +7,13 @@
     </v-layout>
     <v-layout row class="mb-4">
       <v-flex grow pa-1>
-        <h2>{{$t('Career.title')}}</h2>
+        <h2>{{$t('Education.title')}}</h2>
       </v-flex>
       <v-flex shrink pa-1>
         <v-btn-toggle class="btn-swither elevation-0" v-model="switchMode">
-          <v-btn class="px-3" flat>{{$t('Career.positions')}}</v-btn>
-          <v-btn class="px-3" flat>{{$t('Career.certificates')}}</v-btn>
-          <v-btn class="px-3" flat>{{$t('Career.budget')}}</v-btn>
+          <v-btn class="px-3" flat>{{$t('Education.positions')}}</v-btn>
+          <v-btn class="px-3" flat>{{$t('Education.certificates')}}</v-btn>
+          <v-btn class="px-3" flat>{{$t('Education.budget')}}</v-btn>
         </v-btn-toggle>
       </v-flex>
     </v-layout>
