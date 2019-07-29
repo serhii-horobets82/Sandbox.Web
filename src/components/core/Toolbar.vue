@@ -1,7 +1,7 @@
 <template>
   <v-toolbar id="core-toolbar" color="accent" height="80" app flat>
-    <v-layout row class="primary lighten-1">
-      <v-toolbar-title>
+    <v-layout row>
+      <!-- <v-toolbar-title>
         <v-text-field clearable flat hide-details solo>
           <template v-slot:label>
             <span class="subheading">{{$t('Toolbar.findLabel')}}</span>
@@ -10,21 +10,21 @@
             <v-icon color="primary">search</v-icon>
           </template>
         </v-text-field>
-      </v-toolbar-title>
+      </v-toolbar-title> -->
       <v-spacer/>
 
-      <v-toolbar-items>
+      <v-toolbar-items class="primary lighten-1 pl-3">
         <v-toolbar-items>
           <widget-switch-employee/>
         </v-toolbar-items>
 
         <!-- Fullscreen icon -->
-        <v-btn icon @click="handleFullScreen()" class="mx-3">
+        <!-- <v-btn icon @click="handleFullScreen()" class="mx-3">
           <v-icon color="secondary">fullscreen</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <!-- Language switch -->
-        <widget-locale/>
+        <!-- <widget-locale/> -->
 
         <!-- Notification -->
         <widget-notifications/>
