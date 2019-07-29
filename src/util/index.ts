@@ -1,5 +1,7 @@
 import screenfull from "screenfull";
 import defaultSettings from "@/config/default.json";
+import { UserProfile } from "@/modules/user/types";
+import { ROLES } from "@/constants";
 
 export const toggleFullScreen = () => {
   if (screenfull) {
@@ -18,6 +20,15 @@ export const getPageTitle = (routeTitle?: string) => {
 export function getAvatar(uid: string) {
   const user = defaultSettings.demo.users.find(i => i.userName == uid);
   if (user) return user.avatar;
+}
+
+export function getCommonAvatar(profile: UserProfile) {
+  if (profile && profile.roles) {
+    if (profile.roles.includes(ROLES.Admin)) return "/img/avatars/admin.png";
+    else if (profile.roles.includes(ROLES.Manager)) return "/img/avatars/manager.png";
+    else if (profile.roles.includes(ROLES.HR)) return "/img/avatars/hr.png";
+  }
+  return "/img/avatars/user.png";
 }
 
 /**

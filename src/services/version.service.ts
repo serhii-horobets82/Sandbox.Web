@@ -2,6 +2,7 @@ import axios from "axios";
 import {BaseService} from "./base.service";
 import {Observable} from "rxjs";
 import {VersionInfo} from "@/models/version.interface";
+import {Credentials} from "@/models/credentials.interface";
 
 class VersionService extends BaseService {
   private static instance: VersionService;
@@ -20,6 +21,21 @@ class VersionService extends BaseService {
         .get(`${this.api}api/version`)
         .then(response => {
           observer.next(response.data as VersionInfo);
+          observer.complete();
+        })
+        .catch(error => {
+          observer.error(error);
+        });
+    });
+  }
+
+  public getDemoUsers(): Observable<Credentials[]> {
+    return new Observable(observer => {
+      axios
+        .get(`${this.api}api/version/demousers`)
+        .then(response => {
+          let data = response.data.map((e : any) => {e.password = "qwerty"; return e;})
+          observer.next(data as Credentials[]);
           observer.complete();
         })
         .catch(error => {

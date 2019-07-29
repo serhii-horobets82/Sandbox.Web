@@ -36,9 +36,9 @@
                 <template #activator="data">
                   <v-btn v-on="data.on" block>{{$t('Auth.demo')}}</v-btn>
                 </template>
-                <v-list>
+                <v-list dense>
                   <v-list-tile
-                    v-for="(item, index) in $config.demo.users"
+                    v-for="(item, index) in demoUsersCredentilas"
                     :key="index"
                     @click="setDemoCredential(item)"
                   >
@@ -103,6 +103,7 @@ export default class LoginForm extends Vue {
   private isBusy: boolean = false;
   private errorMessage: string = "";
   private credentials = {} as Credentials;
+  private demoUsersCredentilas = [] as Credentials[];
 
   private socials: any = [
     {
@@ -143,6 +144,15 @@ export default class LoginForm extends Vue {
       },
       error => {}
     );
+
+     versionService.getDemoUsers().subscribe(
+      data => {
+        this.demoUsersCredentilas = data; 
+      },
+      error => {}
+    );
+
+    
   }
 
   // rule for require field
