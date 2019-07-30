@@ -17,6 +17,7 @@ import ChatRoutes from "./modules/chat/router";
 import IdeasPlatform from "./modules/ideasPlatform/router";
 import SalaryRoutes from "./modules/salary/router";
 import EducationRoutes from "./modules/education/router";
+import SystemRoutes from "./modules/system/router";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
@@ -62,6 +63,7 @@ const router: Router = new Router({
     ...IdeasPlatform,
     ...SalaryRoutes,
     ...EducationRoutes,
+    ...SystemRoutes,
     errorRoute
   ]
 });
@@ -89,13 +91,19 @@ router.beforeEach((to: Route, from: Route, next: any) => {
     }
 
     const userIsAdmin = store.getters["user/userIsAdmin"];
+    const userIsSysAdmin = store.getters["user/userIsSysAdmin"];
     //const userIsManager = store.getters["user/userIsManager"];
     //const userIsHR = store.getters["user/userIsHR"];
 
     const requiresAdminRole = to.matched.some(
       (record: RouteRecord) => record.meta.requiresAdminRole
     );
+    const requiresSysAdminRole = to.matched.some(
+      (record: RouteRecord) => record.meta.requiresSysAdminRole
+    );
     if (requiresAdminRole && !userIsAdmin) {
+      next({ path: "/403", query: { redirect: "/403" } });
+    } else if (requiresSysAdminRole && !userIsSysAdmin) {
       next({ path: "/403", query: { redirect: "/403" } });
     } else next();
   } else {

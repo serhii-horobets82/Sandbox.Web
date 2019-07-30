@@ -44,7 +44,7 @@
                 </v-btn>
               </template>
               <v-avatar :size="miniDrawer ? 50 : 150" @click.stop="$router.push('/profile')">
-                <img :src="getCommonAvatar(profile)" :alt="profile.fullName" v-if="profile">
+                <img :src="getCommonAvatar(profile)" :alt="profile.fullName" v-if="profile" />
               </v-avatar>
             </v-badge>
           </v-progress-circular>
@@ -62,16 +62,15 @@
     </v-card>
     <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
       <v-layout tag="v-list" column class="left-menu mt-3">
-        <template v-for="(item, index) in [...mainNavigation, ...personalNavigation]">
+        <template v-for="(item, index) in [...mainNavigation, ...personalNavigation]" v-if="profile">
           <template>
             <template
               v-if="
                 !item.autoHide ||
                   (item.unauthRequired && !isAuthenticated) ||
                   (item.authRequired &&
-                    isAuthenticated &&
-                    !item.managerRoleRequired &&
-                    !item.adminRoleRequired) ||
+                    isAuthenticated &&  !item.managerRoleRequired && !item.adminRoleRequired && !item.sysAdminRoleRequired) ||
+                  (item.authRequired && isAuthenticated && item.sysAdminRoleRequired && userIsSysAdmin) ||
                   (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
                   (item.authRequired && isAuthenticated && item.hrRoleRequired && userIsHR) ||
                   (item.authRequired && isAuthenticated && item.managerRoleRequired && userIsManager)"
@@ -107,7 +106,13 @@ import Menu from "@/data/menu";
   computed: {
     ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager", "userIsHR"])
+    ...mapGetters("user", {
+      profile: "profile",
+      userIsSysAdmin: "userIsSysAdmin",
+      userIsAdmin : "userIsAdmin",
+      userIsManager : "userIsManager",
+      userIsHR : "userIsHR"
+    })
   },
   methods: {
     getCommonAvatar
@@ -118,10 +123,12 @@ import Menu from "@/data/menu";
 })
 export default class AppDrawer extends Vue {
   links: Array<NavigationItem> = Menu;
+  userIsSysAdmin!: boolean;
+  userIsAdmin!: boolean;
 
   get mainNavigation(): Array<NavigationItem> {
-    let menu = this.links.filter(i => i.group === NavigationGroup.Main);
-    return menu;
+    if(this.userIsSysAdmin || this.userIsAdmin) return [];
+    return this.links.filter(i => i.group === NavigationGroup.Main);
   }
 
   get personalNavigation(): Array<NavigationItem> {

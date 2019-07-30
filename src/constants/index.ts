@@ -14,3 +14,10 @@ export const EVENTS = {
   REDIRECT_TO_LOGIN: "redirect-to-login",
   SHOW_SNACKBAR: "show-snackbar"
 };
+
+
+export enum GENDER {
+  Unknown = 0,
+  Male = 1, 
+  Female = 2
+}

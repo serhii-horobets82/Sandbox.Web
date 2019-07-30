@@ -1,5 +1,6 @@
 import Vue from "vue";
 import moment from "moment";
+import { GENDER } from "@/constants";
 
 Vue.filter("formatDate", (value: any) => {
   if (value) {
@@ -14,10 +15,10 @@ Vue.filter("formatDateShort", (value: any) => {
 });
 
 Vue.filter("formatDateHuman", (value: any) => {
-  return value ? moment(value).format('DD MMMM, YYYY') : '';
+  return value ? moment(value).format("DD MMMM, YYYY") : "";
 });
 Vue.filter("formatDateTimeHuman", (value: any) => {
-  return value ? moment(value).format('DD MMMM, YYYY hh:mm') : '';
+  return value ? moment(value).format("DD MMMM, YYYY hh:mm") : "";
 });
 
 Vue.filter("formatNumber", (value: number) => {
@@ -26,10 +27,15 @@ Vue.filter("formatNumber", (value: number) => {
   }
 });
 
+Vue.filter("formatGender", (value: number) => {
+  if (value === GENDER.Male) return "Male";
+  else if (value === GENDER.Female) return "Female";
+  return "Unknown";
+});
+
 Vue.filter("formatNumberWithCommas", (value: number) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 });
-
 
 Vue.filter("splitStr", (value: string, delimiter: string = " ", index: number = 0) => {
   if (value) {

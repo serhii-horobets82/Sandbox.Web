@@ -15,6 +15,7 @@ export interface UserProfile {
 // Vuex state for user profile
 export interface UserProfileState {
   profile?: UserProfile;
+  userIsSysAdmin: boolean;
   userIsAdmin: boolean;
   userIsManager: boolean;
   userIsHR: boolean;
