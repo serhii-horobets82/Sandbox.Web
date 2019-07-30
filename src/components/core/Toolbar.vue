@@ -11,12 +11,11 @@
           </template>
         </v-text-field>
       </v-toolbar-title>
-      <v-spacer/>
+      <v-spacer />
 
-      <v-toolbar-items>
-        <v-toolbar-items>
-          <widget-switch-employee/>
-        </v-toolbar-items>
+      <v-toolbar-items v-if="profile">
+        <!-- Swith user on fly - demo only -->
+        <widget-switch-employee />
 
         <!-- Fullscreen icon -->
         <v-btn icon @click="handleFullScreen()" class="mx-3">
@@ -24,10 +23,10 @@
         </v-btn>
 
         <!-- Language switch -->
-        <widget-locale/>
+        <widget-locale />
 
         <!-- Notification -->
-        <widget-notifications/>
+        <widget-notifications />
 
         <v-btn icon to="/chat" class="mx-3">
           <v-badge color="orange" overlap>

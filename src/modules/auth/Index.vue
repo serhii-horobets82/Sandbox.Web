@@ -32,9 +32,9 @@
               <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
             </v-card-text>
             <v-card-actions>
-              <v-menu offset-y>
+              <v-menu offset-y max-height="450">
                 <template #activator="data">
-                  <v-btn v-on="data.on" block>{{$t('Auth.demo')}}</v-btn>
+                  <v-btn :disabled="demoUsersCredentilas.length === 0" v-on="data.on" block>{{$t('Auth.demo')}}</v-btn>
                 </template>
                 <v-list dense>
                   <v-list-tile
@@ -42,7 +42,12 @@
                     :key="index"
                     @click="setDemoCredential(item)"
                   >
-                    <v-list-tile-title prepend-icon="person">{{ item.title }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
+                        <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
+                      </v-avatar>
+                      {{ item.name }} {{ item.surname }} ({{ getMapTypeToRole(item.type).role }})
+                    </v-list-tile-title>
                   </v-list-tile>
                 </v-list>
               </v-menu>
@@ -87,12 +92,17 @@
 </template>
 
 <script lang="ts">
+import { getMapTypeToRole } from "@/util";
 import { Component, Vue } from "vue-property-decorator";
 import { Credentials } from "@/models/credentials.interface";
 import { versionService } from "@/services/version.service";
 import { VersionInfo } from "@/models/version.interface";
 
-@Component
+@Component({
+  methods: {
+    getMapTypeToRole
+  }
+})
 export default class LoginForm extends Vue {
   private valid: boolean = true;
   private isError: boolean = false;
@@ -145,14 +155,12 @@ export default class LoginForm extends Vue {
       error => {}
     );
 
-     versionService.getDemoUsers().subscribe(
+    versionService.getDemoUsers().subscribe(
       data => {
-        this.demoUsersCredentilas = data; 
+        this.demoUsersCredentilas = data;
       },
       error => {}
     );
-
-    
   }
 
   // rule for require field
@@ -228,7 +236,7 @@ h2 {
 }
 
 .version {
-  text-align : right;
+  text-align: right;
   position: absolute;
   top: 5px;
   right: 5px;

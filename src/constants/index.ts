@@ -1,5 +1,6 @@
 // Base roles
 export const ROLES = {
+  SysAdmin: "SysAdmin",
   Admin: "Admin",
   Manager: "Manager",
   HR: "HR",
