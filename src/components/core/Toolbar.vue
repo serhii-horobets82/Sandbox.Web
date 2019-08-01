@@ -1,7 +1,7 @@
 <template>
   <v-toolbar id="core-toolbar" color="accent" height="80" app flat>
     <v-layout row>
-      <!-- <v-toolbar-title>
+       <v-toolbar-title>
         <v-text-field clearable flat hide-details solo>
           <template v-slot:label>
             <span class="subheading">{{$t('Toolbar.findLabel')}}</span>
@@ -10,13 +10,12 @@
             <v-icon color="primary">search</v-icon>
           </template>
         </v-text-field>
-      </v-toolbar-title> -->
-      <v-spacer/>
+      </v-toolbar-title>
+      <v-spacer />
 
-      <v-toolbar-items class="primary lighten-1 pl-3">
-        <v-toolbar-items>
-          <widget-switch-employee/>
-        </v-toolbar-items>
+      <v-toolbar-items v-if="profile">
+        <!-- Swith user on fly - demo only -->
+        <widget-switch-employee />
 
         <!-- Fullscreen icon -->
         <!-- <v-btn icon @click="handleFullScreen()" class="mx-3">
@@ -24,10 +23,10 @@
         </v-btn> -->
 
         <!-- Language switch -->
-        <!-- <widget-locale/> -->
+        <widget-locale />
 
         <!-- Notification -->
-        <widget-notifications/>
+        <widget-notifications />
 
         <v-btn icon to="/chat" class="mx-3">
           <v-badge color="orange" overlap>

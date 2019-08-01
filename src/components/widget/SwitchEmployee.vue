@@ -1,62 +1,70 @@
 <template>
-  <v-menu bottom left offset-y content-class="dropdown-menu" transition="slide-y-transition" max-height="450">
+  <v-menu
+    bottom
+    left
+    offset-y
+    content-class="dropdown-menu"
+    transition="slide-y-transition"
+    max-height="450"
+  >
     <template #activator="data">
-      <v-btn v-on="data.on" flat @click="showEmployeeSelection()">
-        {{ vueEmployee.nameTemp }} ({{ vueEmployee.employeeType.type }})
+      <v-btn
+        v-on="data.on"
+        flat
+        class="toolbar-items"
+        color="secondary"
+        @click="showEmployeeSelection()"
+      >
+        <v-icon color="secondary" left>label</v-icon>
+        {{profile.fullName}}
       </v-btn>
-      <!-- <v-btn icon v-on="data.on" @click="showEmployeeSelection()" class="toolbar-items">
-        <v-icon color="tertiary">fa arrows-alt-h</v-icon>
-      </v-btn> -->
     </template>
 
-    <v-list>
-      <v-list-tile
-        v-for="item in employees"
-        :key="item.id"
-        @click="selectEmployee(item)"
-      >
-        <v-list-tile-avatar size="30" style="min-width: 40px">
-          <v-icon v-if="item.id == vueEmployee.id" color="primary">done</v-icon>
+    <v-list dense>
+      <v-list-tile v-for="item in employees" :key="item.id" @click="selectEmployee(item)">
+        <v-list-tile-avatar>
+          <v-icon v-if="item.id == profile.employeeId" color="primary">done</v-icon>
         </v-list-tile-avatar>
-        <v-list-tile-content>
-          <!-- <v-list-tile-title></v-list-tile-title> -->
-          <v-list-tile-sub-title>{{ item.nameTemp }} ({{ item.employeeType.type }})</v-list-tile-sub-title>
-        </v-list-tile-content>
+          <v-list-tile-title>
+            <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
+              <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
+            </v-avatar>
+            {{ item.name }} {{ item.surname }} ({{item.typeName}})
+          </v-list-tile-title>
       </v-list-tile>
     </v-list>
   </v-menu>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
+import { getMapTypeToRole } from "@/util";
+import { mapGetters } from "vuex";
 
 export default {
   data: () => ({
     employees: null
   }),
-
-  async created(){
-  },
-
   methods: {
+    getMapTypeToRole,
     async showEmployeeSelection() {
-      const res = await axios.get(this.$backendUrl + `api/employees`);
+      const res = await axios.get(this.$backendUrl + `api/demo/users`);
       this.employees = res.data;
     },
-    async selectEmployee(employee){
-      this.$employee.set(employee);
-      window.location.reload();
-    },
-  },
-
-  computed: {
-    vueEmployee() {
-      return this.$employee.get();
+    async selectEmployee(employee) {
+      this.$store.dispatch("auth/authRequest", {
+        ...employee,
+        userName: employee.email
+      }).then(() => {
+          this.$router.push("/");
+        })
     }
+  },
+  computed: {
+    ...mapGetters("user", ["profile"])
   }
-}
+};
 </script>
 
 <style>
-
 </style>

@@ -11,10 +11,14 @@ import toast from "@/services/toast";
 axios.interceptors.request.use(
   (config: any) => {
     const token = store.getters["auth/authToken"];
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token.authToken}`;
     }
-    config.headers._EmployeeId = Vue.prototype.$employee.get().id;
+    const profile = store.getters["user/profile"];
+    if(profile){
+      config.headers._EmployeeId = profile.employeeId;
+    }
     return config;
   },
   (err: any) => {

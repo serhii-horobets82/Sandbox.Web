@@ -37,11 +37,20 @@ const Menu: Array<NavigationItem> = [
     router: "/about"
   },
   {
-    title: "Administrator",
+    title: "Configuration",
     icon: "build",
     router: "/admin",
     authRequired: true,
     adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "System settings",
+    icon: "settings_applications",
+    router: "/system",
+    authRequired: true,
+    sysAdminRoleRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },

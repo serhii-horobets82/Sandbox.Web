@@ -13,7 +13,7 @@
         @click="$i18n.locale = item.locale"
       >
         <v-list-tile-action>
-          <v-icon v-if="item.locale == $i18n.locale">done</v-icon>
+          <v-icon v-if="item.locale == $i18n.locale" color="primary">done</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title v-text="item.name"/>

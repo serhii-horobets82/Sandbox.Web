@@ -128,7 +128,7 @@ import Pdp from "./profile/Pdp.vue";
 import Technologies from "./profile/Technologies.vue";
 import Review360 from "./profile/360.vue";
 import IdeasPlatform from "./profile/IdeasPlatform.vue";
-import { mapGetters, mapState, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -151,33 +151,43 @@ export default {
     teamsByProjectId: {},
     competences: []
   }),
-
+  watch: {
+    profile: {
+      handler(val) {
+        this.getData(); // hack to reload data withod page reload
+      },
+      immediate: true
+    }
+  },
   async created() {
-    const res = await axios.get(this.$backendUrl + `api/employees/profile`);
-    this.employee = res.data;
-
-    this.employee.employeeRelationsEmployee.forEach(r => {
-      const d = {
-        teamId: r.teamId,
-        teamName: r.team.name
-      };
-      let t = this.teamsByProjectId[r.projectId];
-      if (!t) {
-        t = {
-          id: r.id,
-          projectId: r.projectId,
-          projectName: r.project.name,
-          teams: []
-        };
-        this.teamsByProjectId[r.projectId] = t;
-      }
-      t.teams.push(d);
-    });
   },
 
   methods: {
     add(id) {},
-    async save() {}
+    async save() {},
+    async getData() {
+      if(!this.profile) return; // wait for profile
+      const res = await axios.get(this.$backendUrl + `api/employees/profile`);
+      this.employee = res.data;
+
+      this.employee.employeeRelationsEmployee.forEach(r => {
+        const d = {
+          teamId: r.teamId,
+          teamName: r.team.name
+        };
+        let t = this.teamsByProjectId[r.projectId];
+        if (!t) {
+          t = {
+            id: r.id,
+            projectId: r.projectId,
+            projectName: r.project.name,
+            teams: []
+          };
+          this.teamsByProjectId[r.projectId] = t;
+        }
+        t.teams.push(d);
+      });
+    }
   }
 };
 </script>

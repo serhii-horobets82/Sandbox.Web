@@ -5,6 +5,7 @@ export interface NavigationItem {
   icon?: string,
   router?: string
   authRequired?: boolean,
+  sysAdminRoleRequired?: boolean,
   adminRoleRequired?: boolean,
   managerRoleRequired?: boolean,
   hrRoleRequired?: boolean,

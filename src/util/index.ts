@@ -5,7 +5,7 @@ import { ROLES } from "@/constants";
 
 export const toggleFullScreen = () => {
   if (screenfull) {
-    screenfull.request();
+    screenfull.toggle();
   }
 };
 
@@ -20,6 +20,22 @@ export const getPageTitle = (routeTitle?: string) => {
 export function getAvatar(uid: string) {
   const user = defaultSettings.demo.users.find(i => i.userName == uid);
   if (user) return user.avatar;
+}
+
+// mapping EmployeeTypeId to role
+export function getMapTypeToRole(type: number) {
+  switch (type) {
+    case 10:
+      return { role: ROLES.SysAdmin, label: "S", color: "red" };
+    case 11:
+      return { role: ROLES.Admin, label: "A", color: "teal" };
+    case 1:
+      return { role: ROLES.Manager, label: "M", color: "purple" };
+    case 12:
+      return { role: ROLES.HR, label: "H", color: "indigo" };
+    default:
+      return { role: ROLES.User, label: "U", color: "green" };
+  }
 }
 
 export function getCommonAvatar(profile: UserProfile) {
