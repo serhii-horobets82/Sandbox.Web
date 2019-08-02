@@ -25,12 +25,12 @@
         <v-list-tile-avatar>
           <v-icon v-if="item.id == profile.employeeId" color="primary">done</v-icon>
         </v-list-tile-avatar>
-          <v-list-tile-title>
-            <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
-              <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
-            </v-avatar>
-            {{ item.name }} {{ item.surname }} ({{item.typeName}})
-          </v-list-tile-title>
+        <v-list-tile-title>
+          <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
+            <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
+          </v-avatar>
+          {{ item.name }} {{ item.surname }} ({{item.typeName}})
+        </v-list-tile-title>
       </v-list-tile>
     </v-list>
   </v-menu>
@@ -52,12 +52,22 @@ export default {
       this.employees = res.data;
     },
     async selectEmployee(employee) {
-      this.$store.dispatch("auth/authRequest", {
-        ...employee,
-        userName: employee.email
-      }).then(() => {
+      this.$store
+        .dispatch("auth/authRequest", {
+          ...employee,
+          userName: employee.email
+        })
+        .then(() => {
+          // read profile before redirect
+          return this.$store.dispatch("user/userRequest");
+        })
+        .then(() => {
           this.$router.push("/");
         })
+        .catch(err => {
+          this.errorMessage = err;
+          this.isError = true;
+        });
     }
   },
   computed: {

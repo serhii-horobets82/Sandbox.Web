@@ -7,6 +7,14 @@ class UserService {
   getProfile() {
     return axios.get<UserProfile>(`api/profile/me`);
   }
+
+  getPermission() {
+    return axios.get(`api/profile/permissions`);
+  }
+
+  getClaims() {
+    return axios.get(`api/profile/claims`);
+  }
 }
 
 // Export a singleton instance in the global namespace

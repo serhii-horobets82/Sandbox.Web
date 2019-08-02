@@ -16,7 +16,7 @@ const getters = {
 };
 
 const actions = {
-  authRequest: ({ commit, dispatch }: { commit: any; dispatch: any }, credentials: Credentials) => {
+  authRequest: ({ commit }: { commit: any }, credentials: Credentials) => {
     return new Promise((resolve, reject) => {
       commit("authRequest");
       authService.login(credentials).subscribe(
@@ -24,7 +24,6 @@ const actions = {
           localStorage.setItem("auth-token", result.authToken); // stash the auth token in localStorage
           commit("authSuccess", result);
           EventBus.$emit(EVENTS.LOGGED_IN);
-          dispatch("user/userRequest", null, { root: true });
           resolve(result);
         },
         (errors: any) => {
