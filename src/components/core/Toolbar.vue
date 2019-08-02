@@ -1,7 +1,7 @@
 <template>
   <v-toolbar id="core-toolbar" color="accent" height="80" app flat>
-    <v-layout row class="primary lighten-1">
-      <v-toolbar-title>
+    <v-layout row>
+       <v-toolbar-title>
         <v-text-field clearable flat hide-details solo>
           <template v-slot:label>
             <span class="subheading">{{$t('Toolbar.findLabel')}}</span>
@@ -18,9 +18,9 @@
         <widget-switch-employee />
 
         <!-- Fullscreen icon -->
-        <v-btn icon @click="handleFullScreen()" class="mx-3">
+        <!-- <v-btn icon @click="handleFullScreen()" class="mx-3">
           <v-icon color="secondary">fullscreen</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <!-- Language switch -->
         <widget-locale />

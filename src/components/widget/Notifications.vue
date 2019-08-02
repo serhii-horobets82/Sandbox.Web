@@ -2,7 +2,7 @@
   <v-menu bottom left offset-y
     content-class="dropdown-menu" transition="slide-y-transition"
     min-width="400">
-    <v-btn icon slot="activator" class="mx-3">
+    <v-btn icon slot="activator" class="mx-2">
       <v-badge color="error" overlap>
         <template slot="badge" v-if="count">{{ count }}</template>
         <v-icon color="secondary">notifications</v-icon>

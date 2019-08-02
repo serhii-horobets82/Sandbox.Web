@@ -7,29 +7,33 @@
             <h2>{{$t('Auth.signIn')}}</h2>
           </v-card-title>
           <v-form ref="form" v-model="valid" lazy-validation>
-            <v-card-text>
+            <v-card-text class="pa-2">
               <v-text-field
+                class="mb-4"
                 outline
                 prepend-inner-icon="person"
                 name="login"
                 :label="$t('Auth.email')"
                 type="text"
                 :rules="[requireRule, emailRule]"
+                hide-details
                 required
                 v-model="credentials.userName"
               ></v-text-field>
               <v-text-field
                 id="password"
+                class="mb-4"
                 outline
                 prepend-inner-icon="lock"
                 name="password"
                 :label="$t('Auth.password')"
                 v-model="credentials.password"
+                hide-details
                 required
                 :rules="[requireRule]"
                 type="password"
               ></v-text-field>
-              <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox>
+              <!-- <v-checkbox :label="$t('Auth.rememberMe')" v-model="credentials.rememberMe"></v-checkbox> -->
             </v-card-text>
             <v-card-actions>
               <v-menu offset-y max-height="450">
@@ -61,7 +65,7 @@
                 }}
               </v-btn>
             </v-card-actions>
-            <v-divider></v-divider>
+            <!-- <v-divider></v-divider>
             <v-subheader>Sign In using your account with</v-subheader>
             <v-card-actions class="white justify-center">
               <v-btn
@@ -77,7 +81,7 @@
               >
                 <v-icon>{{ social.icon }}</v-icon>
               </v-btn>
-            </v-card-actions>
+            </v-card-actions> -->
             <v-alert :value="isError" type="error">{{ errorMessage }}</v-alert>
           </v-form>
         </v-card>
