@@ -38,7 +38,11 @@
             <v-card-actions>
               <v-menu offset-y max-height="450">
                 <template #activator="data">
-                  <v-btn :disabled="demoUsersCredentilas.length === 0" v-on="data.on" block>{{$t('Auth.demo')}}</v-btn>
+                  <v-btn
+                    :disabled="demoUsersCredentilas.length === 0"
+                    v-on="data.on"
+                    block
+                  >{{$t('Auth.demo')}}</v-btn>
                 </template>
                 <v-list dense>
                   <v-list-tile
@@ -218,6 +222,10 @@ export default class LoginForm extends Vue {
       this.isBusy = true;
       this.$store
         .dispatch("auth/authRequest", this.credentials)
+        .then(() => {
+          // read profile before redirect
+          return  this.$store.dispatch("user/userRequest");
+        })
         .then(() => {
           let { redirect } = this.$route.query;
           this.$router.push((redirect as string) || "/");

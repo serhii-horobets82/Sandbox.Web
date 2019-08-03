@@ -1,5 +1,5 @@
 import { ActionTree } from "vuex";
-import { UserProfileState, UserProfile } from "./types";
+import { UserProfileState } from "./types";
 import { GlobalState } from "@/types/global";
 import { userService } from "./service";
 import {
@@ -11,17 +11,21 @@ import {
 
 export const actions: ActionTree<UserProfileState, GlobalState> = {
   userRequest({ commit, dispatch }): any {
-    commit(REQUEST_PROFILE);
-    userService
-      .getProfile()
-      .then(response => {
-        commit(REQUEST_PROFILE_SUCCESS, response.data);
-        //dispatch("chat/connect", response.data, { root: true });
-      })
-      .catch(error => {
-        commit(REQUEST_PROFILE_ERROR);
-        dispatch("auth/authLogout", null, { root: true });
-      });
+    return new Promise((resolve, reject) => {
+      commit(REQUEST_PROFILE);
+      userService
+        .getProfile()
+        .then(response => {
+          commit(REQUEST_PROFILE_SUCCESS, response.data);
+          resolve(response.data);
+          //dispatch("chat/connect", response.data, { root: true });
+        })
+        .catch(error => {
+          commit(REQUEST_PROFILE_ERROR);
+          reject(error);
+          dispatch("auth/authLogout", null, { root: true });
+        });
+    });
   },
   userReset({ commit }): any {
     commit(RESET_PROFILE);

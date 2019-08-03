@@ -78,22 +78,32 @@ router.beforeEach((to: Route, from: Route, next: any) => {
   const isAuthenticated = store.getters["auth/isAuthenticated"];
 
   if (isAuthenticated) {
+    const {
+      profile,
+      isLoading,
+      userIsSysAdmin,
+      userIsAdmin,
+      userIsManager,
+      userIsHR
+    } = store.getters["user/state"];
+
     // check profile existance (case with manual page refresh)
-    const { profile, isLoading } = store.getters["user/state"];
     if (!profile && !isLoading) {
-      store.dispatch("user/userRequest");
+      store.dispatch("user/userRequest").then(()=>{
+        next(to);
+      });
+      return;
     }
 
-    if (to.path === "/auth") {
-      // if is logged in, redirect to the home page
-      next({ path: "/" });
+    // override default route
+    if (to.path === "/") {
+      if (userIsSysAdmin) next({ path: "/system" });
+      else if (userIsAdmin) next({ path: "/admin" });
+      else if (userIsHR) next({ path: "/personal/profile" });
+      else if (userIsManager) next({ path: "/personal/profile" });
+      else next({ path: "/personal/profile" });
       NProgress.done();
     }
-
-    const userIsAdmin = store.getters["user/userIsAdmin"];
-    const userIsSysAdmin = store.getters["user/userIsSysAdmin"];
-    //const userIsManager = store.getters["user/userIsManager"];
-    //const userIsHR = store.getters["user/userIsHR"];
 
     const requiresAdminRole = to.matched.some(
       (record: RouteRecord) => record.meta.requiresAdminRole
