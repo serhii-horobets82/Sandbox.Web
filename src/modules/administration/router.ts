@@ -8,6 +8,7 @@ import PositionsGrade from './position/PositionsGrade.vue'
 import OrganizationStructure from './OrganizationStructure.vue'
 import NotificationsTest from './NotificationsTest.vue';
 import WelcomeChecklist from './WelcomeChecklist.vue'
+import Projects from './Projects.vue'
 
 const routes: RouteConfig[] = [{
   path: '/administration',
@@ -67,6 +68,12 @@ const routes: RouteConfig[] = [{
       name: 'welcome-checklist',
       component: WelcomeChecklist
     },
+
+    {
+      path: 'project',
+      name: 'administration-project',
+      component: Projects
+    }
   ]
 }]
 

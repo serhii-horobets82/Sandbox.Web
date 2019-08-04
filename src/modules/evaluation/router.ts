@@ -3,6 +3,7 @@ import EvaluationSchedule from './EvaluationSchedule.vue'
 import EmployeesEvaluation from './personal/EmployeesEvaluation.vue'
 import EvaluationForm from './ecf/EcfEvaluationForm.vue'
 import _360TeamView from './360TeamView.vue'
+import _360Analytics from './analytics/360Analytics.vue'
 
 const routes: RouteConfig[] = [{
   path: '/evaluation',
@@ -30,6 +31,12 @@ const routes: RouteConfig[] = [{
       name: '360-team-view',
       path: '360-team-view',
       component: _360TeamView
+    },
+
+    {
+      name: '360-analytics',
+      path: '360-analytics',
+      component: _360Analytics
     },
   ]
 }]

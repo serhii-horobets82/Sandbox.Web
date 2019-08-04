@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-layout row wrap>
       <v-flex>
         <h2 class="headline mb-3">
