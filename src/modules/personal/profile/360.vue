@@ -42,7 +42,12 @@
                 <v-divider style="border-color:#E8EFF7"></v-divider>
               </v-flex>
               <v-flex>
-                <div class="mt-4 mb-3 ml-2 mr-2" id="360bars" style="width: 550px;height:280px;"></div>
+                <div
+                  class="mt-4 mb-3 ml-2 mr-2"
+                  id="360bars"
+                  ref="360bars"
+                  style="width: 550px;height:280px;"
+                ></div>
               </v-flex>
             </v-layout>
           </v-card>
@@ -78,6 +83,7 @@
                 <div
                   class="mt-4 mb-3 ml-2 mr-2"
                   id="360quarterly"
+                  ref="360quarterly"
                   style="width: 550px;height:280px;"
                 ></div>
               </v-flex>
@@ -94,23 +100,42 @@ import axios from "axios";
 import echarts from "echarts";
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    barChart: null,
+    bars: {
+      categories: null,
+      my: null,
+      company: null
+    },
+    lineChart: null,
+    lines: {
+      categories: null,
+      data: null
+    }
+  }),
 
-  async created() {},
+  async created() {
+    const res = await this.$http.get(`api/_360evaluation/profile`);
+
+    const barData = res.data.barData;
+    this.bars.categories = barData.company.map(d => d.question);
+    this.bars.my = barData.my.map(d => d.value);
+    this.bars.company = barData.company.map(d => d.value);
+
+    const linesData = res.data.lineData;
+    this.lines.categories = linesData.categories;
+    this.lines.data = linesData.data
+  },
   mounted() {
     this.renderBars();
     this.renderLines();
   },
   methods: {
     renderBars() {
-      var myChart = echarts.init(document.getElementById("360bars"));
-
       // specify chart configuration item and data
       const option = {
         title: {
           show: false
-          // text: '世界人口总量',
-          // subtext: '数据来自网络'
         },
         legend: { show: false },
         tooltip: {
@@ -131,39 +156,22 @@ export default {
         },
         xAxis: {
           type: "category",
-          data: ["Q1", "Q2", "Q3", "Q4", "Q5"],
           axisLine: { lineStyle: { color: "#E8EFF7" } },
           axisLabel: { color: "#3C88B5" }
         },
         yAxis: {
           type: "value",
           boundaryGap: [0, 0.01],
+          max: 5,
           splitLine: { lineStyle: { color: "#E8EFF7" } },
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: { color: "#3C88B5", showMinLabel: false }
         },
-        series: [
-          {
-            name: "My Current",
-            type: "bar",
-            data: [4.1, 4.0, 3.8, 4.1, 3.7],
-            color: "#3DB3ED",
-            barWidth: 10
-          },
-          {
-            name: "Median",
-            type: "bar",
-            data: [4, 4.3, 4.1, 4.0, 3.7],
-            color: "#E8EFF7",
-            barWidth: 10,
-            label: {
-              color: "#3C88B5"
-            }
-          }
-        ]
       };
 
+      const myChart = echarts.init(this.$refs["360bars"]);
+      this.barChart = myChart;
       // use configuration item and data specified to show chart
       myChart.setOption(option);
     },
@@ -176,59 +184,83 @@ export default {
           top: 10,
           containLabel: true
         },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data:[]
+        },
         xAxis: {
           type: "category",
-          data: ["II 2018", "III 2018", "IV 2018", "I 2019"],
           axisLine: { lineStyle: { color: "#E8EFF7" } },
           axisLabel: { color: "#3C88B5" }
         },
         yAxis: {
           type: "value",
-
+          max: 5,
+          // scale: true,
+          // boundaryGap: ['20%', '20%'],
           splitLine: { lineStyle: { color: "#E8EFF7" } },
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: { color: "#3C88B5", showMinLabel: false }
         },
-        series: [
-          {
-            stack: "Q1",
-            data: [, 3.9, 4, 4],
-            type: "line",
-            smooth: true
-          },
-          {
-            stack: "Q2",
-            data: [, 3.8, 3.9, 3.7],
-            type: "line",
-            smooth: true
-          },
-          {
-            stack: "Q3",
-            data: [, 3.6, 3.5, 3.8],
-            type: "line",
-            smooth: true
-          },
-          {
-            stack: "Q4",
-            data: [, 3.8, 4.1, 4.2],
-            type: "line",
-            smooth: true
-          },
-          {
-            stack: "Q5",
-            data: [, 4.3, 3.9, 3.7],
-            type: "line",
-            smooth: true
-          }
-        ]
       };
-      var myChart = echarts.init(document.getElementById("360quarterly"));
 
+      var myChart = echarts.init(this.$refs["360quarterly"]);
+      this.lineChart = myChart;
       myChart.setOption(option);
+    }
+  },
+  watch: {
+    bars: {
+      deep: true,
+      handler() {
+        const option = {
+          xAxis: {
+            data: this.bars.categories,
+          },
+          series: [
+            {
+              name: "My Current",
+              type: "bar",
+              data: this.bars.my,
+              color: "#3DB3ED",
+              barWidth: 10
+            },
+            {
+              name: "Median",
+              type: "bar",
+              data: this.bars.company,
+              color: "#E8EFF7",
+              barWidth: 10,
+              label: {
+                color: "#3C88B5"
+              }
+            }
+          ]
+        }
+        this.barChart.setOption(option)
+      }
     },
-    add(id) {},
-    async save() {}
+    lines: {
+      deep: true,
+      handler() {
+        const option = {
+          xAxis: {
+            data: this.lines.categories,
+          },
+          series: this.lines.data.map(d => ({
+            // stack: d.question,
+            name: d.question,
+            data: d.values,
+            type: "line",
+            // smooth: true
+          }))
+        };
+        this.lineChart.setOption(option);
+      }
+    }
   }
 };
 </script>
