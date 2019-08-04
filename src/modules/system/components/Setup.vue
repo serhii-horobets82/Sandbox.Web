@@ -46,6 +46,16 @@
         >{{$t('System.Setup.reset')}}</v-btn>
       </v-flex>
     </v-layout>
+
+    <v-layout row wrap class="mt-4">
+      <v-flex xs12>
+        <h2>Re-create the 360 feedback data</h2>
+      </v-flex>
+      <v-flex xs12>
+        <v-btn color="primary" @click="recreate360Data()">RECREATE</v-btn>
+        {{recreate360Message}}
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -62,7 +72,8 @@ export default {
       selectedConfig: "DefaultConfig",
       configList: [],
       dialog: false,
-      confirmDialog: false
+      confirmDialog: false,
+      recreate360Message: null,
     };
   },
   created() {
@@ -103,7 +114,15 @@ export default {
           toast.error(err);
           this.dialog = false;
         });
-    }
+    },
+
+    async recreate360Data() {
+      if (confirm('This is going to drop the existing data from your DB and fill with pseudo-random feedbacks. Proceed?')) {
+        this.recreate360Message = 'Wait for it...';
+        await this.$http.post(`api/setup/seed-360-feedback`);
+        this.recreate360Message = 'Done!';
+      }
+    },
   }
 };
 </script>
