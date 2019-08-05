@@ -1,13 +1,21 @@
 <template>
-  <v-container>
+  <v-container style="max-width: 800px;">
     <v-layout>
-      <v-flex>
+      <v-flex v-if="project">
         <h2 v-if="$route.params.id != 0" class="red--text">EDIT IS NOT WORKING PROPERLY!!!!</h2>
-        <h2 v-if="$route.params.id == 0">Create Team</h2>
-        <h2 v-else>Edit team (ID: {{$route.params.id}})</h2>
+
+        <div class="title font-weight-bold" v-if="$route.params.id == 0">
+          Project: {{ project.name }} - Create Team
+        </div>
+        <div class="title font-weight-bold" v-else>
+          Project: {{ project.name }} - Edit team {{ team.name }}
+        </div>
       </v-flex>
 
     </v-layout>
+
+    <v-layout row wrap class="mt-3">
+      <v-flex xs12>
 
       <v-form>
         <!-- {{team}} -->
@@ -22,11 +30,14 @@
           color="primary"
           item-text="nameTemp"
           item-value="id"
-          label="Manager"
+          label="Manager (default: inherited from Project)"
           v-model="team.employeeRelationManager[i].managerId"
         ></v-autocomplete>
 
-        <h3>Team members:</h3>
+        <h3>
+          Team members:
+          <v-btn @click="addTeamMembers()"><v-icon>add</v-icon>Add</v-btn>
+        </h3>
         <v-list>
           <v-list-tile
             v-for="(item, i) in team.employeeRelationEmployee"
@@ -60,16 +71,15 @@
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
-
-        <v-btn @click="addTeamMembers()"><v-icon>add</v-icon>Add</v-btn>
       </v-form>
+      </v-flex>
+    </v-layout>
 
     <v-dialog
       v-model="dialog"
-      max-width="800"
+      max-width="600"
       scrollable
     >
-
       <v-card>
         <v-card-title class="headline">
           <v-layout row align-center class="dialog-header">
@@ -87,18 +97,6 @@
         </v-card-title>
 
         <v-card-text>
-          <!-- <v-card v-for="item in employeesFiltered"
-              :key="item.id">
-            <v-card-title>
-              <v-layout>
-                <v-flex xs5>123</v-flex>
-                <v-flex xs5>123</v-flex>
-                <v-flex xs2>
-                  <v-btn>add</v-btn>
-                </v-flex>
-              </v-layout>
-            </v-card-title>
-          </v-card> -->
           <v-list>
             <v-list-tile
               v-for="item in employeesFiltered"
@@ -118,22 +116,6 @@
             </v-list-tile>
           </v-list>
 
-          <!-- <v-card v-for="item in employeesFiltered" :key="item.id">
-            <v-card-title class="headline">
-              {{item.nameTemp}}
-            </v-card-title>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="green darken-1"
-                flat="flat"
-                @click="addRole(role)"
-              >
-                Add
-              </v-btn>
-            </v-card-actions>
-          </v-card> -->
           </v-card-text>
 
         <v-divider></v-divider>
@@ -169,32 +151,6 @@
           </v-card-title>
 
           <v-card-text>
-            <!-- <v-card v-for="item in employeesFiltered"
-                :key="item.id">
-              <v-card-title>
-                <v-layout>
-                  <v-flex xs5>123</v-flex>
-                  <v-flex xs5>123</v-flex>
-                  <v-flex xs2>
-                    <v-btn>add</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-card-title>
-            </v-card> -->
-            <!-- <v-list>
-              <v-list-tile
-                v-for="item in employeesFiltered"
-                :key="item.id"
-                avatar
-              >
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ item.nameTemp }}</v-list-tile-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-icon color="success" @click="addEmployee(item)">add</v-icon>
-                </v-list-tile-action>
-              </v-list-tile>
-            </v-list> -->
 
               <v-card v-for="item in positions" :key="item.id">
                 <v-card-title class="headline">
@@ -218,23 +174,29 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-<!-- {{team}} -->
-      <v-divider></v-divider>
 
-      <v-btn color="success" @click="saveTeam()">Save</v-btn>
-      <v-btn :to="{name:'projects'}">Back</v-btn>
+      <v-divider class="my-3"></v-divider>
+
+      <v-layout row wrap>
+        <!-- <v-flex xs12> -->
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="saveTeam()">Save</v-btn>
+          <v-btn :to="{name:'projects'}">Back</v-btn>
+        <!-- </v-flex> -->
+      </v-layout>
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
+import toast from '@/services/toast'
 
 export default {
   data() {
     return {
       dialog: false,
       filter: '',
-
+      project: null,
       positionsDialog: false,
 
       team: {},
@@ -255,6 +217,7 @@ export default {
 
     const id = +this.$route.params.id;
     const projectId = +this.$route.params.projectId;
+    this.project = await this.$http.get(`api/projects/${projectId}`).then(d => d.data);
 
     if (id !== 0) {
       const response = await axios.get(this.$backendUrl + 'api/teams/' + this.$route.params.id)
@@ -319,7 +282,7 @@ export default {
       this.team.employeeRelationEmployee.push({
         id: 0,
         employeeId: employee.id,
-        projectId: this.team.projectId,
+        // projectId: this.team.projectId,
         teamId: this.team.id
       })
     },
@@ -330,31 +293,35 @@ export default {
         projectId: this.team.projectId,
         employeeRelations: []
       }
-      this.team.employeeRelationManager.forEach(m => data.employeeRelations.push({
-        id: m.id,
-        managerId: m.managerId,
-        // employeeId
-        // teamId // is EF smart enough to populate this?
-        projectId: this.team.projectId,
-        positionId: m.positionId
-      }))
+      this.team.employeeRelationManager.forEach(m => {
+        if (m.managerId) {
+          data.employeeRelations.push({
+            id: m.id,
+            managerId: m.managerId,
+            // employeeId
+            // teamId // is EF smart enough to populate this?
+            // projectId: this.project.id,
+            positionId: m.positionId
+          });
+        }
+      });
 
       this.team.employeeRelationEmployee.forEach(m => data.employeeRelations.push({
         id: m.id,
         // managerId: m.managerId,
         employeeId: m.employeeId,
         // teamId // is EF smart enough to populate this?
-        projectId: this.team.projectId,
+        // projectId: this.project.id,
         positionId: m.positionId
       }))
-      data.employeeRelations.forEach(r => r.projectId = this.team.projectId)
+      data.employeeRelations.forEach(r => r.projectId = this.project.id)
 
       if (data.id) {
         await axios.put(this.$backendUrl + 'api/teams/' + data.id, data)
       } else {
         await axios.post(this.$backendUrl + 'api/teams', data)
       }
-
+      toast.success(`Project ${this.project.name}: Team ${data.name} saved successfully!`);
       this.$router.push({name: 'projects'});
       // console.log('Going to save this:', data)
     },

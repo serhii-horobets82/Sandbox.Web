@@ -7,7 +7,8 @@
     :right="true"
     v-model="active"
     class="application"
-    @click="dismiss">
+    @click="dismiss"
+    >
 
     <v-icon
       dark
@@ -16,7 +17,9 @@
       {{ icon }}
     </v-icon>
 
-    {{ text }}
+    <span style="color: white !important;">
+      {{ text }}
+    </span>
 
   </v-snackbar>
 
@@ -31,7 +34,7 @@ export default {
       text: '',
       icon: '',
       color: 'info',
-      timeout: 3000,
+      timeout: 5000,
       dismissible: true,
     };
   },

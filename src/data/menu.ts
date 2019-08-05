@@ -46,11 +46,30 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "Projects",
+    icon: "receipt",
+    router: "/administration/project",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "System settings",
     icon: "settings_applications",
     router: "/system",
     authRequired: true,
     sysAdminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+
+  {
+    title: "Projects",
+    icon: "receipt",
+    router: "/organization/project",
+    authRequired: true,
+    managerRoleRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },
