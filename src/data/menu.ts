@@ -74,6 +74,15 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "360 Analytics",
+    icon: "insert_chart_outlined",
+    router: "/evaluation/360-analytics",
+    authRequired: true,
+    managerRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "Salary Review Plan",
     icon: "local_atm",
     router: "/salary",

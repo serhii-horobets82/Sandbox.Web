@@ -22,10 +22,10 @@
           <template v-slot:items="props" v-slot:headers="head">
             <td>{{ props.item.id }}</td>
             <td class="text-xs-right">{{ props.item.name }} {{ props.item.surname }}</td>
-            <td>{{ props.item[0] }}</td>
-            <td>{{ props.item[1] }}</td>
-            <td>{{ props.item[2] }}</td>
-            <td>{{ props.item[3] }}</td>
+            <td><v-icon v-if="props.item[0]" :color="props.item[0].color">{{ props.item[0].icon }}</v-icon></td>
+            <td><v-icon v-if="props.item[1]" :color="props.item[1].color">{{ props.item[1].icon }}</v-icon></td>
+            <td><v-icon v-if="props.item[2]" :color="props.item[2].color">{{ props.item[2].icon }}</v-icon></td>
+            <td><v-icon v-if="props.item[3]" :color="props.item[3].color">{{ props.item[3].icon }}</v-icon></td>
             <!-- <td class="text-xs-right">{{ analytics[head[5]] }}</td>
             <td class="text-xs-right">{{ props.item.carbs }}</td> -->
           </template>
@@ -65,7 +65,17 @@ export default {
       const row = {id: e.id, name: e.name, surname: e.surname};
       Object.keys(resAnalytics.data).reverse().forEach((r, i) => {
         console.log(r,resAnalytics.data[r], e.id, resAnalytics.data[r][e.id])
-        row[i] = resAnalytics.data[r][e.id];
+        // row[i] = resAnalytics.data[r][e.id];
+        const d = resAnalytics.data[r][e.id];
+        if (d){
+          row[i] = d[0]
+            ? {icon: 'sentiment_very_satisfied', color: 'green'}
+            : d[1]
+              ? {icon: 'sentiment_very_dissatisfied', color: 'red'}
+              : d[2]
+                ? {icon: 'sentiment_satisfied', color: 'yellow'}
+                : null;
+        }
       })
       return row;
     });
