@@ -4,12 +4,25 @@
       <v-flex>
         <!-- 360 Team Review -->
         <h2 class="headline mb-3">360 Team Review</h2>
+
+      </v-flex>
+      <v-flex>
+        <v-select
+          :items="periods"
+          v-model="period"
+          label="Periods"
+          item-text="text"
+          item-value="value"
+          @change="reloadData()"
+        ></v-select>
       </v-flex>
     </v-layout>
 
     <v-layout row wrap class="mb-4">
-      <v-flex xs3 v-for="item in projects" :key="item.id">
-        <v-card @click="load(item.id)" class="mr-2 px-4 py-3" :elevation="1">
+      <v-flex xs3 v-for="item in projects" :key="'project-' + item.id">
+        <v-card @click="load(item)"
+          class="mr-2 px-4 py-3" :class="{'selected-project': selectedProjectId}"
+          :elevation="1">
           <!-- <span class="body-2">
             {{item.name}}
           </span>
@@ -18,7 +31,7 @@
           </span> -->
           <h4>{{item.name}}</h4>
           <span>
-            {{item.team.length}} Teams
+            {{item.teams.length}} Teams
           </span>
           <!-- <v-card-title>
             {{item.name}}
@@ -28,11 +41,57 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap v-for="team in teams" :key="team.id">
+    <v-layout row wrap v-for="team in teams" :key="'team-' + team.id">
       <v-flex xs12>
         <h4 class="mb-3 mt-2">{{team.name}}</h4>
       </v-flex>
       <v-flex xs12>
+        <v-layout row wrap>
+          <v-flex xs4>Employee whom evaluating</v-flex>
+          <v-flex xs4>Evaluated</v-flex>
+          <v-flex xs4>Not Evaluated</v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12>
+        <v-layout row wrap
+          v-for="row in byTeam[team.id]" :key="'row-' + row.employeeId"
+          class="ma-3">
+          <v-flex xs4>
+            <v-avatar
+              size="24"
+              color="green"
+            >
+              <span class="white--text">{{employeeById[row.employeeId].name.toUpperCase()[0]}}</span>
+            </v-avatar>
+
+            {{employeeById[row.employeeId].name}} {{employeeById[row.employeeId].surname}}
+          </v-flex>
+          <v-flex xs4>
+            <v-avatar
+              v-for="id in row.evaluatedIds" :key="row.employeeId +'-evaluated-' + id"
+              size="24"
+              color="green"
+            >
+              <span class="white--text" :title="employeeById[id].name+' '+employeeById[id].surname">
+                {{employeeById[id].name.toUpperCase()[0]}}
+              </span>
+            </v-avatar>
+          </v-flex>
+          <v-flex xs4>
+            <v-avatar
+              v-for="id in row.notEvaluatedIds" :key="row.employeeId +'-notevaluated-' + id"
+              size="24"
+              color="green"
+            >
+              <span class="white--text" :title="employeeById[id].name+' '+employeeById[id].surname">
+                {{employeeById[id].name.toUpperCase()[0]}}
+              </span>
+            </v-avatar>
+          </v-flex>
+
+        </v-layout>
+      </v-flex>
+      <!-- <v-flex xs12>
         <v-layout row wrap>
           <v-flex xs4 v-for="employeeRel in byTeam[team.id]" :key="employeeRel.id">
             <v-card class="mr-3 mb-3 ">
@@ -75,7 +134,7 @@
             </v-card>
           </v-flex>
         </v-layout>
-      </v-flex>
+      </v-flex> -->
     </v-layout>
   </v-container>
 </template>
@@ -85,33 +144,55 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    filter: 1,
+    periods: null,
+    period: null,
+    employeeById: null,
     projects: [],
+    selectedProjectId: null,
     projectEmployees: [],
-    byTeam: [],
+    byTeam: {},
     teams: [],
   }),
 
   async created(){
-    const proj = await axios.get(this.$backendUrl + `api/projects${this.filter === 1 ? '?only-mine' : ''}`);
-    this.projects = proj.data;
+    this.periods = await this.$http.get(`api/_360evaluation/periods`).then(_ => _.data);
+    this.period = this.periods[0].value;
+    this.projects = await this.$http.get(`api/projects/my-basic`).then(_ => _.data);
+    const employees = await this.$http.get(`api/Employees`).then(_ => _.data);
+    this.employeeById = this.toDictionary(employees, e => e.id);
   },
 
   methods: {
-    async load(id){
-      const res = await axios.get(this.$backendUrl + `api/_360evaluation/by-project/${id}`);
+    async load(project){
+      this.selectedProjectId = project.id;
+      this.teams = project.teams;
+      const res = await axios.get(this.$backendUrl + `api/_360evaluation/by-project/${project.id}?periodStart=${this.period}`);
       const byTeam = {};
-      const teams = [];
-      res.data.forEach(e => {
-        if (!byTeam[e.teamId]) {
-          byTeam[e.teamId] = []
-          teams.push(e.team);
-        }
-        byTeam[e.teamId].push(e);
+      // // const teams = [];
+      // res.data.forEach(e => {
+      //   if (!byTeam[e.teamId]) {
+      //     byTeam[e.teamId] = []
+      //     // teams.push(e.team);
+      //   }
+      //   byTeam[e.teamId].push(e);
+      // })
+      this.byTeam = res.data;
+      // // this.teams = teams;
+      // // this.projectEmployees = res.data;
+    },
+    async reloadData(){
+      if (this.selectedProjectId){
+        await this.load(this.projects.filter(p => p.id == this.selectedProjectId)[0]);
+      }
+    },
+    toDictionary(array, lambda) {
+      const dict = {};
+      array.forEach(a => {
+        try {
+          dict[lambda(a)] = a;
+        } catch {}
       })
-      this.byTeam = byTeam;
-      this.teams = teams;
-      this.projectEmployees = res.data;
+      return dict;
     },
     add(id) {
 
