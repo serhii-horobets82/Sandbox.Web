@@ -1,12 +1,12 @@
 import axios from "axios"
 
 interface IRole {
-    name: string;
-    roleId: number;
+    type: string;
+    id: number;
 }
 
 export async function getRoles(): Promise<IRole[]> {
-    return await axios.get("api/ecfRoles").then(response => response.data);
+    return await axios.get("api/employees/roles").then(response => response.data);
 }
 
 export async function invite(user: { email: string, role: string }): Promise<void> {

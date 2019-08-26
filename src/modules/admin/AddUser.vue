@@ -35,8 +35,8 @@
         <v-flex xs4>
           <v-select
             :items="roles"
-            item-text="name"
-            item-value="roleId"
+            item-text="type"
+            item-value="id"
             label="Role"
             v-model="newInvite.role"
             :rules="[requiredRule]"
@@ -96,7 +96,7 @@ export default {
     mapSuccess() {
       this.invites.push({
         ...this.newInvite,
-        role: this.roles.find(x => x.roleId === this.newInvite.role).name
+        role: this.roles.find(x => x.id === this.newInvite.role).type
       })
       this.newInvite = { email: "", valid: true }
       this.$refs.newuser.reset()
