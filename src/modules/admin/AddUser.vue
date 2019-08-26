@@ -74,26 +74,22 @@ export default {
       }
 
       this.isLoading = true
-      let inviteResult = { status: "Failed" }
 
       try {
-        inviteResult = await invite(this.newInvite)
-      } catch(e) {
-        console.error(e)
+        await invite(this.newInvite)
+      } catch (e) {
+        const statusCode = e.response.status
+        switch (statusCode) {
+          case 409:
+            return this.mapExists()
+          default:
+            return this.mapFail()
+        }
+      } finally {
+        this.isLoading = false
       }
 
-      this.isLoading = false
-      const status = inviteResult.status.toLowerCase();
-
-      if (status === "alreadyexists") {
-        return this.mapExists()
-      }
-
-      if (status === "sent") {
-        return this.mapSuccess()
-      }
-
-      this.mapFail()
+      this.mapSuccess()
     },
     emailRule: emailRule("Email is invalid"),
     requiredRule: requiredRule("Select role"),

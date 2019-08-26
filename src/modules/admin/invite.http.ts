@@ -5,17 +5,10 @@ interface IRole {
     roleId: number;
 }
 
-type InviteStatus = 'Failed'| 'Sent' | 'AlreadyExists'
-
-interface IInviteResult {
-    email: string;
-    status: InviteStatus;
-}
-
 export async function getRoles(): Promise<IRole[]> {
-    return await axios.get("api/roles").then(response => response.data);
+    return await axios.get("api/ecfRoles").then(response => response.data);
 }
 
-export async function invite(user: { email: string, role: string }): Promise<IInviteResult> {
+export async function invite(user: { email: string, role: string }): Promise<void> {
     return await axios.post("api/invite", user).then(response => response.data);
 }
