@@ -12,12 +12,12 @@
               outline
               prepend-inner-icon="person"
               name="userName"
-              :label="$t('Register.userName')"
               type="text"
-              :rules="[requireRule]"
-              hide-details
               required
               v-model="credentials.userName"
+              :rules="[requireRule]"
+              :label="$t('Register.userName')"
+              :counter="50"
             ></v-text-field>
             <v-text-field
               id="password"
@@ -25,12 +25,13 @@
               outline
               prepend-inner-icon="lock"
               name="password"
-              :label="$t('Register.password')"
+              type="password"
               v-model="credentials.password"
-              hide-details
               required
               :rules="[requireRule]"
-              type="password"
+              :counter="16"
+              :label="$t('Register.password')"
+
             ></v-text-field>
             <v-text-field
               id="confirm-password"
@@ -38,20 +39,16 @@
               outline
               prepend-inner-icon="lock"
               name="confirm-password"
-              :label="$t('Register.confirm-password')"
-              v-model="credentials.confirmPassword"
-              hide-details
-              required
-              :rules="[requireRule]"
               type="password"
+              v-model="credentials.confirmPassword"
+              required
+              :label="$t('Register.confirm-password')"
+              :counter="16"
+              :rules="[requireRule]"
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              color="primary"
-              block
-              @click="tryRegister"
-            >{{ $t('Register.register')}}</v-btn>
+            <v-btn color="primary" block @click="tryRegister">{{ $t('Register.register')}}</v-btn>
           </v-card-actions>
           <v-alert :value="isError" type="error">{{ errorMessage }}</v-alert>
         </v-form>
