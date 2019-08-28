@@ -89,7 +89,7 @@ router.beforeEach((to: Route, from: Route, next: any) => {
 
     // check profile existance (case with manual page refresh)
     if (!profile && !isLoading) {
-      store.dispatch("user/userRequest").then(()=>{
+      store.dispatch("user/userRequest").then(() => {
         next(to);
       });
       return;
@@ -119,6 +119,7 @@ router.beforeEach((to: Route, from: Route, next: any) => {
   } else {
     // skip auth to prevent loop
     if (to.path === "/auth") next();
+    else if (to.path != null && to.path.startsWith('/register')) { next(); }
     else {
       next({ path: "/auth", query: { redirect: to.fullPath } });
       NProgress.done();

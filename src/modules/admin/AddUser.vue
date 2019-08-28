@@ -61,14 +61,14 @@ export default {
   data() {
     return {
       invites: [],
-      newInvite: { email: "qwe@qwe.ua", valid: false, role: -1 },
+      newInvite: { email: undefined, valid: false, role: undefined },
       roles: [],
       isLoading: false
     }
   },
   methods: {
     async invite() {
-      const form = this.$refs.newuser.validate()
+      this.$refs.newuser.validate();
       if (!this.newInvite.valid) {
         return
       }
