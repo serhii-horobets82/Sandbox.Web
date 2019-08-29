@@ -76,6 +76,7 @@
               <span class="column" v-text="header.text" />
             </template>
             <template slot="items" slot-scope="props">
+              <td> <v-icon v-if="!props.item.isActive">block</v-icon></td>
               <td>{{ props.item.id }}</td>
               <td>{{ props.item.emloyeeId }}</td>
               <td>{{ props.item.emloyeeType }}</td>
@@ -113,6 +114,7 @@ export default {
         rowsPerPage: 25
       },
       headers: [
+        { text: "Status", value: "isActive", width: "5px" },
         { text: "Id", value: "id" },
         { text: "Employee id", value: "employeeId" },
         { text: "Employee type", value: "employeeType" },

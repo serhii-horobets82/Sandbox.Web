@@ -1,6 +1,8 @@
 {
     "welcome": "Start your journey",
     "userName": "Name",
+    "firstName": "First name",
+    "lastName": "Last Name",
     "password": "Password",
     "confirm-password": "Confirm the password",
     "register": "Register"
