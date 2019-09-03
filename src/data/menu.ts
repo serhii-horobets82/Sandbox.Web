@@ -46,9 +46,36 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "Employees",
+    icon: "receipt",
+    router: "/administration/employees",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "Projects",
     icon: "receipt",
     router: "/administration/project",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "360 Questionarie",
+    icon: "receipt",
+    router: "/administration/360-questionarie",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "Positions Grade",
+    icon: "receipt",
+    router: "/administration/positions-grade",
     authRequired: true,
     adminRoleRequired: true,
     autoHide: true,

@@ -69,3 +69,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.v-toolbar__content {
+  background-color: white;
+  margin-left: 3px;
+}
+</style>
