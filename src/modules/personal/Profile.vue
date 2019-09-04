@@ -1,7 +1,7 @@
 <template>
-  <v-container class="text pt-2">
+  <v-container class="text">
     <v-layout row wrap align-start>
-      <v-flex xs2>
+      <!-- <v-flex xs2>
         <v-list subheader two-line v-if="isAuthenticated && profile" class="accent">
           <v-list-tile>
             <v-list-tile-content>
@@ -16,7 +16,7 @@
       </v-flex>
       <v-flex xs10 class="pt-4">
         <span class="title">Lorem ipsun dolor sit ame lorem ipsum dolor sit ame dolor</span>
-      </v-flex>
+      </v-flex> -->
 
       <v-flex xs8 class="pr-2">
         <Certifications></Certifications>

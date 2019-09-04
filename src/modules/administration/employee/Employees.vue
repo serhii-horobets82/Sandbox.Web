@@ -10,7 +10,7 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-btn color="primary" :to="{name:'employeeEdit', params:{id: 0}}">Create</v-btn>
+      <v-btn color="primary" :to="{name:'administration-employeeEdit', params:{id: 0}}">Create</v-btn>
     </v-layout>
 
     <v-data-table
@@ -27,7 +27,7 @@
         <td class="text-xs-right">{{ props.item.isManager }}</td>
         <td class="text-xs-right">
 
-          <v-btn icon :to="{name: 'employeeEdit', params: {id: props.item.id}}">
+          <v-btn icon :to="{name: 'administration-employeeEdit', params: {id: props.item.id}}">
             <v-icon small>edit</v-icon>
           </v-btn>
           <!-- <v-btn>Delete</v-btn> -->

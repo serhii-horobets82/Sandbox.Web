@@ -9,6 +9,8 @@ import OrganizationStructure from './OrganizationStructure.vue'
 import NotificationsTest from './NotificationsTest.vue';
 import WelcomeChecklist from './WelcomeChecklist.vue'
 import Projects from './Projects.vue'
+import CompanyStrategy from './CompanyStrategy.vue';
+import _360ScheduleSetup from './360/360ScheduleSetup.vue';
 
 const routes: RouteConfig[] = [{
   path: '/administration',
@@ -57,6 +59,16 @@ const routes: RouteConfig[] = [{
       component: OrganizationStructure
     },
 
+    {
+      path: 'company-strategy',
+      name: 'company-strategy',
+      component: CompanyStrategy
+    },
+    {
+      path: '360-schedule-setup',
+      name: '360-schedule-setup',
+      component: _360ScheduleSetup
+    },
     {
       path: 'notifications-test',
       name: 'notifications-test',

@@ -185,7 +185,7 @@
 
 <script>
 import axios from 'axios';
-import moment from 'moment';
+import { mapGetters } from "vuex";
 
 export default {
   data: () => ({
@@ -226,7 +226,7 @@ export default {
   },
   methods: {
     async like(idea) {
-      const currentEmployeeId = 2;
+      const currentEmployeeId = this.profile.employeeId;
       const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
       if (like.length) {
         const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
@@ -241,7 +241,7 @@ export default {
   },
   computed: {
     ideasFiltered() {
-      const currentEmployeeId = 2;
+      const currentEmployeeId = this.profile.employeeId;
       switch(this.tabsModel){
         case 0:
           return this.ideas;
@@ -256,7 +256,8 @@ export default {
         default:
           return this.ideas;
       }
-    }
+    },
+    ...mapGetters("user", ["profile"])
   }
 };
 </script>
