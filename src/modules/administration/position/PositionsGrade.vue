@@ -10,7 +10,7 @@
                 <v-icon color="primary">info</v-icon>
               </v-btn>
             </template>
-            <span>
+            <span style="color: white;">
               Here you can configure Employee Roles with grades and recommended skills set. <br>
               Each Employee should be assigned to an organization role (e.g. Developer, QA, Manager, etc.) <br>
               Project positions should be created in alignment with the Role grades (e.g. Junior Developer, Middle QA, etc.) <br>

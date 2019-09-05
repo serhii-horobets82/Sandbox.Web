@@ -85,7 +85,7 @@
             :disabled="!projectDialog.name"
             color="primary"
           >Create</v-btn>
-          <v-btn @click="assignManagerDialog.open = false">Close</v-btn>
+          <v-btn @click="projectDialog.open = false">Close</v-btn>
         </v-card-actions>
         </v-card>
       </v-dialog>

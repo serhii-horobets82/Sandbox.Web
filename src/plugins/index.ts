@@ -5,3 +5,4 @@ import "./theme";
 import "./vuetify";
 import "./oauth";
 import "./chartlist";
+import "./application-insights";

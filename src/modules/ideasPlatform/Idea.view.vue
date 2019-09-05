@@ -126,7 +126,6 @@
 
 <script>
 import axios from 'axios'
-import moment from 'moment'
 import toast from '@/services/toast'
 import Comment from './Comment.vue';
 

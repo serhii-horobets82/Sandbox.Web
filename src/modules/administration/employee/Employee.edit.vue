@@ -39,7 +39,7 @@
         </v-btn>
 
         <v-btn
-          :to="{name: 'employees'}"
+          :to="{name: 'administration-employees'}"
         >
           Cancel
         </v-btn>
@@ -89,7 +89,7 @@ export default {
       }
 
       toast.success(`Employee has been ${employee.id ? 'created': 'saved'}.`)
-      this.$router.push({name: 'employees'})
+      this.$router.push({name: 'administration-employees'})
     }
   }
 }

@@ -98,6 +98,12 @@
 <script>
 import axios from "axios";
 import echarts from "echarts";
+// reduce echarts size from 629KB to 227KB
+// import echarts from 'echarts/lib/echarts'
+// import 'echarts/lib/chart/bar'
+// import 'echarts/lib/chart/line'
+// import 'echarts/lib/component/tooltip'
+// import 'echarts/lib/component/title'
 
 export default {
   data: () => ({

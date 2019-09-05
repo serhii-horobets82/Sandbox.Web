@@ -21,10 +21,10 @@
                 <v-card flat style="min-height: 62px; line-height: 62px;">
                   <v-tabs  slider-color="#3DB3ED" :height="62" v-model="tabsModel" >
                     <v-tab ripple key="1">
-                      My Ideas
+                      Most Popular
                     </v-tab>
                     <v-tab ripple key="2">
-                      Most Popular
+                      My Ideas
                     </v-tab>
                     <v-tab ripple key="3">
                       I liked
@@ -180,6 +180,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from "vuex";
 
 export default {
   data: () => ({
@@ -204,7 +205,7 @@ export default {
 
   methods: {
     async like(idea) {
-      const currentEmployeeId = 2;
+      const currentEmployeeId = this.profile.employeeId;
       const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
       if (like.length) {
         const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
@@ -226,20 +227,21 @@ export default {
 
   computed: {
     ideasFiltered() {
-      const currentEmployeeId = 2;
+      const currentEmployeeId = this.profile.employeeId;
       if (this.ideas == null) return [];
       switch(this.tabsModel){
         case 0:
-          return this.ideas.filter(i => i.createdById == currentEmployeeId);
-        case 1:
           return this.ideas;
+        case 1:
+          return this.ideas.filter(i => i.createdById == currentEmployeeId);
         case 2:
           return this.ideas.filter(i => i.ideaLike.some(l => l.employeeId == currentEmployeeId));
         default:
           return this.ideas;
       }
-    }
-  }
+    },
+    ...mapGetters("user", ["profile"])
+  },
 }
 </script>
 

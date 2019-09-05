@@ -45,11 +45,6 @@ const routes: RouteConfig[] = [
         path: "summary",
         component: Summary
       },
-      {
-        name: "personal-idea-platform",
-        path: "idea-platform",
-        component: IdeaPlatform
-      }
     ]
   }
 ];

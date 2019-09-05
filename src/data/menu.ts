@@ -46,9 +46,63 @@ const Menu: Array<NavigationItem> = [
     group: NavigationGroup.Personal
   },
   {
+    title: "Employees",
+    icon: "receipt",
+    router: "/administration/employees",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
     title: "Projects",
     icon: "receipt",
     router: "/administration/project",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "360 Questionarie",
+    icon: "receipt",
+    router: "/administration/360-questionarie",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "Positions Grade",
+    icon: "receipt",
+    router: "/administration/positions-grade",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "Company Strategy",
+    icon: "receipt",
+    router: "/administration/company-strategy",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "360 Schedule",
+    icon: "receipt",
+    router: "/administration/360-schedule-setup",
+    authRequired: true,
+    adminRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "Organization Structure",
+    icon: "receipt",
+    router: "/administration/organization-structure",
     authRequired: true,
     adminRoleRequired: true,
     autoHide: true,
@@ -68,6 +122,15 @@ const Menu: Array<NavigationItem> = [
     title: "Projects",
     icon: "receipt",
     router: "/organization/project",
+    authRequired: true,
+    managerRoleRequired: true,
+    autoHide: true,
+    group: NavigationGroup.Personal
+  },
+  {
+    title: "360 Team Review",
+    icon: "insert_chart_outlined",
+    router: "/evaluation/360-team-view",
     authRequired: true,
     managerRoleRequired: true,
     autoHide: true,
@@ -110,7 +173,7 @@ const Menu: Array<NavigationItem> = [
   {
     title: "360",
     icon: "local_play",
-    router: "/evaluation/360-team-view",
+    router: "/personal/i-evaluate",
     group: NavigationGroup.Main
   },
   { title: "PDP", icon: "book", router: "/personal/pdp", group: NavigationGroup.Main },

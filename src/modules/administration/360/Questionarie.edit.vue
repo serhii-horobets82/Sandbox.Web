@@ -1,5 +1,14 @@
 <template>
-  <v-container>
+  <v-container fluid>
+    <v-layout row class="pb-3">
+      <v-flex xs12>
+        <v-layout row wrap>
+          <div class="title font-weight-bold" style="line-height: 48px !important;">360 Feedback Questionarie</div>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+      <v-container grid-list-md fluid class="pa-0">
+
     <v-layout row wrap>
       <v-flex xs4>
 
@@ -60,28 +69,29 @@
         </v-dialog>
       </v-flex>
 
-      <v-flex xs8>
-        <v-card v-if="selectedQuestionId">
-          <v-card flat class="pa-2">
+      <v-flex xs8 v-if="selectedQuestionId">
+        <!-- <v-card v-if="selectedQuestionId"> -->
+          <v-card flat class="pa-2 mb-2">
             <v-icon color="green darken-1">sentiment_very_satisfied</v-icon>
             <v-textarea label="Statements" v-model="questionsByMark[1].question"></v-textarea>
           </v-card>
-          <v-card flat class="pa-2">
+          <v-card flat class="pa-2 mb-2">
             <v-icon color="yellow darken-1">sentiment_satisfied</v-icon>
             <v-textarea label="Statements" v-model="questionsByMark[3].question"></v-textarea>
           </v-card>
-          <v-card flat class="pa-2">
+          <v-card flat class="pa-2 mb-2">
             <v-icon color="red">sentiment_very_dissatisfied</v-icon>
             <v-textarea label="Statements" v-model="questionsByMark[5].question"></v-textarea>
           </v-card>
 
-          <v-card flat>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="saveQuestionStatements()">Save</v-btn>
-          </v-card>
-        </v-card>
+          <!-- <v-card flat> -->
+            <v-btn color="primary" @click="saveQuestionStatements()" block >Save</v-btn>
+          <!-- </v-card> -->
+        <!-- </v-card> -->
       </v-flex>
+
     </v-layout>
+      </v-container>
   </v-container>
 </template>
 
