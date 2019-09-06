@@ -16,13 +16,18 @@
         ></v-select>
       </v-flex>
     </v-layout> -->
-    <v-layout>
-      <v-flex>
-        <h1>360</h1>
+    <v-layout wrap row>
+      <v-flex xs12>
+        <div class="title font-weight-bold" style="line-height: 48px !important;">360</div>
+      </v-flex>
+      <v-flex xs12>
+        Last evaluation period started: -- <br>
+        <span>Evaluation period closed: -- </span> <br>
+        <span> Currently in progress...</span>
       </v-flex>
     </v-layout>
 
-    <v-layout>
+    <v-layout class="mt-2">
       <v-flex xs4 class="pr-4">
         <v-card>
           <v-layout row class="pt-1 pb-1">
@@ -48,7 +53,7 @@
         <v-card>
           <v-list>
             <v-list-tile
-              v-for="e in employeesFiltered" :key="e.id"
+              v-for="e in employeesFiltered" :key="`evaluation-${e.evaluationId}`"
               @click="!e.evaluation.endDate && selectEmployeeFor360(e)"
               :class="{
                 'grey lighten-3': selectedEmployee && e.id === selectedEmployee.id,
@@ -77,13 +82,13 @@
 
       </v-flex>
 
-      <v-flex xs8>
+      <v-flex xs8 v-if="selectedEmployee">
         <v-card>
         <v-layout row class="text-xs-center">
-          <v-flex v-for="(q, idx) in questionarie" :key="q.id">
+          <v-flex v-for="(q, idx) in questionarie" :key="`questionarie-${q.id}`">
             <!-- <v-divider vertical></v-divider> -->
             <v-card :class="`green lighten-${currentQuestionIndex == idx ? 2 : 4} pa-3`">
-              {{q.text}}
+              {{q.name}}
             </v-card>
           </v-flex>
         </v-layout>
@@ -96,7 +101,7 @@
           <v-flex xs4 class="text-xs-center">
             <v-card flat class="pt-2 pb-2 pl-5 pr-5 blue--text" color="blue lighten-5">
               <h3>{{selectedEmployee.name}}</h3>
-              <span>User type</span>
+              <span>User role</span>
             </v-card>
           </v-flex>
         </v-layout>
@@ -104,9 +109,14 @@
         <v-layout row wrap v-if="currentQuestions">
           <v-flex xs12 class="pa-3" v-if="currentQuestions && !feedbackCommentsDialog.open" >
 
-            <v-flex xs12 v-for="i of [1,2,3,4,5]" :key="i">
-              <v-card class="mb-3" tile :hover="true" :class="{'blue lighten-4': currentQuestionFeedback.feedbackMarkId === i}"  @click="setFeedback(i)">
-                <v-card-text style="white-space: pre;">{{ i % 2 == 1 ? currentQuestions[i].question : "Demonstrates behaviors described above and below" }}</v-card-text>
+            <v-flex xs12 v-for="statements in currentQuestions" :key="`question-statement-${statements.id}`">
+              <v-card class="mb-3" tile :hover="true"
+                :class="{'blue lighten-4': currentQuestionFeedback.questionStatementsId === statements.id}"
+                @click="setFeedback(statements)"
+              >
+                <v-card-text style="white-space: pre;">
+                  {{statements.text}}
+                </v-card-text>
               </v-card>
             </v-flex>
 
@@ -157,7 +167,7 @@
               </v-btn>
               <v-btn class="primary ma-0" block large
                 v-else
-                :disabled="!currentQuestionFeedback.feedbackMarkId"
+                :disabled="!currentQuestionFeedback.questionStatementsId"
                 @click="nextQuestion()"
                 >
                 Next
@@ -278,7 +288,7 @@ export default {
     // testEmployeeId: null,
     employees: [],
     selectedEmployee: null,
-    questionarie: [],
+    questionarie: null,
     // currentQuestionId: 0,
     currentQuestionIndex: 0,
     currentQuestionFeedback: null,
@@ -305,13 +315,13 @@ export default {
     // this.testEmployees = res.data;
 
     // const res = await axios.get(this.$backendUrl + `api/questionarie`);
-    const res = await axios.get(this.$backendUrl + `api/EmployeeEvaluations/i-evaluate-360`);
-      this.employees = res.data.map(e => ({
-        id: e.evaluation.employee.id,
-        name: e.evaluation.employee.nameTemp,
-        evaluationId: e.id,
-        evaluation: e
-      }));
+    const res = await this.$http.get(`api/EmployeeEvaluations/i-evaluate-360`);
+    this.employees = res.data.map(e => ({
+      id: e.evaluation.employee.id,
+      name: e.evaluation.employee.nameTemp,
+      evaluationId: e.id,
+      evaluation: e
+    }));
   },
 
   methods: {
@@ -327,7 +337,7 @@ export default {
 
 
     setFeedback(mark){
-      this.currentQuestionFeedback.feedbackMarkId = mark;
+      this.currentQuestionFeedback.questionStatementsId = mark.id;
     },
     nextQuestion() {
       if (this.currentQuestionIndex === (this.questionarie.length - 1)) {
@@ -347,12 +357,18 @@ export default {
     },
     async submitFeedback() {
       const data = {
-        feedbacks: this.questionFeedbacks,
+        feedbacks: this.questionFeedbacks.map(f =>
+          ({
+            _360questionnarieStatementId: f.questionStatementsId,
+            evaluationId: this.selectedEmployee.evaluationId
+          })
+        ),
         startDoing: this.feedbackCommentsDialog.startDoing,
         stopDoing: this.feedbackCommentsDialog.stopDoing,
         otherComments: this.feedbackCommentsDialog.otherComments
       }
-      const res360 = await axios.post(this.$backendUrl + `api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, data);
+      const res360 = await this.$http.post(`api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`, data);
+      this.selectedEmployee.evaluation.endDate = res360.data.endDate
       this.selectedEmployee = null;
 
       toast.success(`Feedback has been saved.`)
@@ -372,8 +388,7 @@ export default {
       this.questionFeedbacks = [];
 
       this.selectedEmployee = employee;
-      const res = await axios.get(this.$backendUrl + `api/_360evaluation/employee/${employee.id}/evaluator`);
-      this.questionarie = res.data;
+      this.questionarie = await this.$http.get(`api/_360evaluation/employee/${employee.id}/evaluator`).then(_ => _.data);
 
       this.newQuestionFeedback();
       // this.currentQuestionId = this.questionarie[0].id;
@@ -382,10 +397,9 @@ export default {
     // private
     newQuestionFeedback(){
       this.currentQuestionFeedback = {
-        evaluationId: this.selectedEmployee.evaluationId,
-        questionId: this.questionarie[this.currentQuestionIndex].id,
-        feedbackMarkId: 0,
-        comment: null
+        // evaluationId: this.selectedEmployee.evaluationId,
+        // questionId: this.questionarie[this.currentQuestionIndex].id,
+        questionStatementsId: 0
       }
     }
   },
@@ -397,17 +411,9 @@ export default {
 
       // const q = this.questionarie.filter(r => r.id == this.currentQuestionId)[0];
       const q = this.questionarie[this.currentQuestionIndex];
-      if (!q) return null;
-      const qByMark = {}
-      q._360questionToMark.forEach(qm => {
-        qByMark[qm.markId] = {
-          id: qm.id,
-          markId: qm.markId,
-          question: qm._360question[0].question
-        }
-      })
 
-      return qByMark;
+      if (!q) return null;
+      return q._360questionnarieStatement;
     },
     employeesFiltered(){
       if (this.filter) {
