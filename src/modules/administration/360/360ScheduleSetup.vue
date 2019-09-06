@@ -6,24 +6,46 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap class="mt-2">
+    <v-layout row wrap class="mt-2" v-if="settings">
       <v-flex xs12>
-        Frequency: once in a quarter
+        Frequency: once in
+        <v-text-field
+          v-model="settings.periodMonths"
+          class="centered-input"
+          style="width: 60px; display: inline-block; "
+        ></v-text-field>
+        month(s)
       </v-flex>
       <v-flex xs12>
-        Evaluation period: 1 month
+        Evaluation period:
+        <v-text-field
+          v-model="settings.evaluationWindowMonths"
+          class="centered-input"
+          style="width: 60px; display: inline-block;"
+        ></v-text-field>
+        month(s)
       </v-flex>
       <v-flex xs12>
-        Start date: 01
+        Start date:
+        <v-text-field
+          v-model="settings.startDate"
+          class="centered-input"
+          style="width: 100px; display: inline-block;"
+        ></v-text-field>
       </v-flex>
       <v-flex xs12 class="pt-3">
-        Resulting evaluation schedule:
+        <!-- Resulting evaluation schedule: TODO...
         <ul>
           <li>01/01/2019</li>
           <li>01/04/2019</li>
           <li>01/07/2019</li>
           <li>01/10/2019</li>
-        </ul>
+        </ul> -->
+      </v-flex>
+      <v-flex xs12>
+        <!-- TODO: fix -->
+        <v-btn color="primary" :disabled="true">Save</v-btn>
+        Save is temporary disabled.
       </v-flex>
     </v-layout>
 
@@ -36,11 +58,14 @@ import toast from '@/services/toast'
 export default {
   data: () => ({
     loading: true,
+    settings: null,
   }),
 
   async created(){
     this.loading = true;
-    // this.projects = await this.$http.get(`api/projects/basic`).then(r => r.data);
+    const settings = await this.$http.get(`api/_360evaluation/schedule-settings`).then(r => r.data);
+    settings.startDate = settings.startDate.split('T')[0];
+    this.settings = settings;
     this.loading = false;
   },
 
@@ -51,6 +76,9 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" >
+.centered-input input {
+  text-align: center
+}
 </style>
 
