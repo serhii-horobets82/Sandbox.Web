@@ -32,7 +32,7 @@
                     {{ question.name }}
                   </v-list-tile-title>
                   <v-list-tile-action>
-                    <v-btn icon flat @click="editQuestion(question)">
+                    <v-btn icon flat @click.stop="editQuestion(question)">
                         <v-icon small>create</v-icon>
                       </v-btn>
                     <!-- <v-icon small @click="editQuestion(question)">create</v-icon> -->
@@ -55,7 +55,7 @@
             </v-card-title>
 
             <v-card-text>
-              <v-text-field label="Question" v-model="dialog.questionEdit.name">
+              <v-text-field label="Question" ref="dialogQuestionEditName" v-model="dialog.questionEdit.name">
 
               </v-text-field>
             </v-card-text>
@@ -88,11 +88,13 @@
 
 <script>
 import axios from 'axios'
+import toast from '@/services/toast'
+
 export default {
   data: () => ({
     groups: [
-      {'type': 'General', isForManager: false},
-      {'type': 'Additional for Manager', isForManager: true},
+      {'type': 'General Questions', isForManager: false},
+      {'type': 'Additional Questions for Manager', isForManager: true},
     ],
     questionsByGroupId: {},
     dialog: {
@@ -120,11 +122,13 @@ export default {
         {id: 0, name: null, isForManager: group.isForManager});
 
       this.dialog.open = true;
+      this.$nextTick(this.$refs.dialogQuestionEditName.focus)
     },
     editQuestion(question){
       this.dialog.questionEdit = {...question};
       this.dialog.ref = question;
       this.dialog.open = true;
+      this.$nextTick(this.$refs.dialogQuestionEditName.focus)
     },
 
     async saveQuestion(){
@@ -134,9 +138,11 @@ export default {
       if (data.id) {
         await this.$http.put(`api/_360questionarie/${data.id}`, data);
         this.dialog.ref.name = data.name;
+        toast.success(`Question has changed name to ${data.name}.`)
       } else {
         const res = await this.$http.post(`api/_360questionarie`, data);
         this.questionsByGroupId[data.isForManager].push(res.data)
+        toast.success(`Question ${res.name} added.`)
       }
       this.dialog.open = false;
     },
@@ -152,6 +158,7 @@ export default {
 
     async saveQuestionStatements(){
       const res = await this.$http.post(`api/_360questionarie/${this.selectedQuestionId}/questions`, this.statements);
+      toast.success(`Question statements saved successfully.`)
     }
   }
 }
