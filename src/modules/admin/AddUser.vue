@@ -22,14 +22,24 @@
     <v-form ref="newuser" v-model="newInvite.valid" :lazy-validation="false">
       <v-layout row class="pb-3">
         <v-flex xs4>
-          <v-text-field
+          <!-- return this weith removing storokha mode -->
+          <!-- <v-text-field
             class="purple-input"
             label="User email"
             :rules="[emailRule]"
             v-model="newInvite.email"
             :disabled="isLoading"
             :counter="50"
+          /> -->
+
+            <v-text-field
+            class="purple-input"
+            label="User email"
+            v-model="newInvite.email"
+            :disabled="isLoading"
+            :counter="50"
           />
+
         </v-flex>
         <v-flex xs1></v-flex>
         <v-flex xs4>
