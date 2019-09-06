@@ -13,23 +13,23 @@
       <v-flex xs4>
 
         <v-list two-line subheader >
-          <div v-for="group in groups"  :key="group.id">
+          <div v-for="group in groups" :key="group.type">
           <!-- <template v-for="group in groups"> -->
             <v-subheader>
-              {{ group.type}}
+              {{ group.type }}
               <v-spacer></v-spacer>
-              <v-btn icon flat small class="ma-0 right" color="success" @click="addQuestion(group.id)">
+              <v-btn icon flat small class="ma-0 right" color="success" @click="addQuestion(group)">
                 <v-icon>add</v-icon>
               </v-btn>
             </v-subheader>
 
               <v-list-tile
-                v-for="question in questionsByGroupId[group.id]" :key="question.id"
+                v-for="question in questionsByGroupId[group.isForManager]" :key="question.id"
                 @click="selectQuestion(question.id)"
                 :class="selectedQuestionId == question.id ? 'blue--text text--darken-1' : ''"
               >
                 <v-list-tile-title class="ml-4">
-                    {{ question.text }}
+                    {{ question.name }}
                   </v-list-tile-title>
                   <v-list-tile-action>
                     <v-btn icon flat @click="editQuestion(question)">
@@ -55,14 +55,14 @@
             </v-card-title>
 
             <v-card-text>
-              <v-text-field label="Question" v-model="dialog.questionEdit.text">
+              <v-text-field label="Question" v-model="dialog.questionEdit.name">
 
               </v-text-field>
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="saveQuestion()" :disabled="!dialog.questionEdit.text">Save</v-btn>
+              <v-btn color="primary" @click="saveQuestion()" :disabled="!dialog.questionEdit.name">Save</v-btn>
               <v-btn @click="closeDialog()">Cancel</v-btn>
             </v-card-actions>
           </v-card>
@@ -70,26 +70,17 @@
       </v-flex>
 
       <v-flex xs8 v-if="selectedQuestionId">
-        <!-- <v-card v-if="selectedQuestionId"> -->
-          <v-card flat class="pa-2 mb-2">
-            <v-icon color="green darken-1">sentiment_very_satisfied</v-icon>
-            <v-textarea label="Statements" v-model="questionsByMark[1].question"></v-textarea>
-          </v-card>
-          <v-card flat class="pa-2 mb-2">
-            <v-icon color="yellow darken-1">sentiment_satisfied</v-icon>
-            <v-textarea label="Statements" v-model="questionsByMark[3].question"></v-textarea>
-          </v-card>
-          <v-card flat class="pa-2 mb-2">
-            <v-icon color="red">sentiment_very_dissatisfied</v-icon>
-            <v-textarea label="Statements" v-model="questionsByMark[5].question"></v-textarea>
-          </v-card>
-
-          <!-- <v-card flat> -->
-            <v-btn color="primary" @click="saveQuestionStatements()" block >Save</v-btn>
-          <!-- </v-card> -->
-        <!-- </v-card> -->
+        <v-card
+          flat class="pa-2 mb-2"
+          v-for="statement in statements" :key="statement.id"
+        >
+          <v-textarea :label="`Statements for mark ${statement.mark}`" v-model="statement.text"></v-textarea>
+        </v-card>
+        <v-btn color="primary" @click="saveQuestionStatements()" block >Save</v-btn>
       </v-flex>
-
+      <v-flex xs8 v-else>
+        Click on the Question on the left to edit the statements.
+      </v-flex>
     </v-layout>
       </v-container>
   </v-container>
@@ -100,6 +91,8 @@ import axios from 'axios'
 export default {
   data: () => ({
     groups: [
+      {'type': 'General', isForManager: false},
+      {'type': 'Additional for Manager', isForManager: true},
     ],
     questionsByGroupId: {},
     dialog: {
@@ -108,31 +101,23 @@ export default {
       ref: {},
     },
     selectedQuestionId: 0,
-    questionsByMark: {
-      1: {question:null},
-      3: {question:null},
-      5: {question:null},
-    },
-    questionsResponse: []
+    statements: null
   }),
 
   async created(){
-    const res = await axios.get(this.$backendUrl + 'api/_360questionarie/groups')
-    this.groups = res.data
-
-    const resQuestionarie = await axios.get(this.$backendUrl + 'api/_360questionarie')
-    const qById = {};
-    this.groups.forEach(g => qById[g.id] = [])
-    resQuestionarie.data.forEach(q => qById[q._360feedbackGroupId].push(q))
-    this.questionsByGroupId = qById;
+    const resQuestionarie = await this.$http.get(`api/_360questionarie`).then(_ => _.data);
+    // false for General, true for Manager
+    const qByGroup = { false: [], true: [] };
+    resQuestionarie.forEach(q => qByGroup[q.isForManager].push(q))
+    this.questionsByGroupId = qByGroup;
   },
 
   methods: {
-    addQuestion(id) {
-      this.dialog.questionEdit = Object.assign({}, this.dialog.questionEdit, {id: 0, text: null, _360feedbackGroupId: id})
-      // this.dialog.questionEdit.id = 0;
-      // this.dialog.questionEdit.text = null;
-      // this.dialog.questionEdit._360feedbackGroupId = id;
+    addQuestion(group) {
+      this.dialog.questionEdit = Object.assign(
+        {},
+        this.dialog.questionEdit,
+        {id: 0, name: null, isForManager: group.isForManager});
 
       this.dialog.open = true;
     },
@@ -147,11 +132,11 @@ export default {
         ...this.dialog.questionEdit
       }
       if (data.id) {
-        await axios.put(this.$backendUrl + 'api/_360questionarie/' + data.id, data);
-        this.dialog.ref.text = data.text;
+        await this.$http.put(`api/_360questionarie/${data.id}`, data);
+        this.dialog.ref.name = data.name;
       } else {
-        const res = await axios.post(this.$backendUrl + 'api/_360questionarie', data);
-        this.questionsByGroupId[data._360feedbackGroupId].push(res.data)
+        const res = await this.$http.post(`api/_360questionarie`, data);
+        this.questionsByGroupId[data.isForManager].push(res.data)
       }
       this.dialog.open = false;
     },
@@ -161,61 +146,12 @@ export default {
 
     async selectQuestion(id) {
       this.selectedQuestionId = id;
-      const res = await axios.get(this.$backendUrl + `api/_360questionarie/${id}/questions`);
-
-      console.log(res.data)
-
-      const result = {
-        1: {question:null},
-        3: {question:null},
-        5: {question:null},
-      }
-      res.data.forEach(d => {
-        const t = {
-          question: d._360question.length ? d._360question[0].question : null,
-          questionToMarkId: d.id
-        }
-        result[d.markId] = t;
-      })
-
-      this.questionsByMark = result;
-      return ;
-
-      // if (!res.data.length){
-      //   const data = {
-      //     1: {_360question: []},
-      //     3: {_360question: []},
-      //     5: {_360question: []},
-      //   }
-      //   this.questionsByMark = data;
-      //   return ;
-      // }
-      // // current implementation expect single aggregated statement per mark
-      // const data = {}
-      // data[1] = getOne(res.data, 1);
-      // data[3] = getOne(res.data, 3);
-      // data[5] = getOne(res.data, 5);
-      // this.questionsByMark = data;
-
-      // function getOne(qs, mark){
-      //   const result = qs.find(d => d.markId == mark);
-      //   if (result) {
-      //     const q = result;
-      //     return q;
-      //   }
-      //   return {_360question: []};
-      // }
+      const res = await this.$http.get(`api/_360questionarie/${id}/questions`).then(_ => _.data);
+      this.statements = res;
     },
 
     async saveQuestionStatements(){
-      const data = []
-
-      data.push(this.questionsByMark[1])
-      data.push(this.questionsByMark[3])
-      data.push(this.questionsByMark[5])
-      console.log(data)
-
-      const res = await axios.post(this.$backendUrl + `api/_360questionarie/${this.selectedQuestionId}/questions`, data);
+      const res = await this.$http.post(`api/_360questionarie/${this.selectedQuestionId}/questions`, this.statements);
     }
   }
 }
