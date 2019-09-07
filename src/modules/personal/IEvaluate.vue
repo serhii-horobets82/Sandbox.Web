@@ -21,9 +21,9 @@
         <div class="title font-weight-bold" style="line-height: 48px !important;">360</div>
       </v-flex>
       <v-flex xs12>
-        Last evaluation period started: -- <br>
-        <span>Evaluation period closed: -- </span> <br>
-        <span> Currently in progress...</span>
+        Last evaluation period started: {{lastPeriod.startDate.split('T')[0]}}
+        <div v-if="lastPeriod.isClosed">Evaluation period closed: {{lastPeriod.endDate.split('T')[0]}} </div>
+        <div v-else>Currently in progress. Ending: {{lastPeriod.endDate.split('T')[0]}}</div>
       </v-flex>
     </v-layout>
 
@@ -323,6 +323,7 @@ import toast from '@/services/toast'
 
 export default {
   data: () => ({
+    lastPeriod: null,
     filter: '',
     // testEmployees: [],
     // testEmployeeId: null,
@@ -353,8 +354,7 @@ export default {
   }),
 
   async created(){
-    // const res = await axios.get(this.$backendUrl + `api/employees`);
-    // this.testEmployees = res.data;
+    this.lastPeriod = await this.$http.get(`api/_360evaluation/last-period`).then(_ => _.data);
 
     // const res = await axios.get(this.$backendUrl + `api/questionarie`);
     const res = await this.$http.get(`api/EmployeeEvaluations/i-evaluate-360`);

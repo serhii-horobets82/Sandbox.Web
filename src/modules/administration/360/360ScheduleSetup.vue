@@ -43,9 +43,25 @@
         </ul> -->
       </v-flex>
       <v-flex xs12>
-        <!-- TODO: fix -->
-        <v-btn color="primary" :disabled="true">Save</v-btn>
-        Save is temporary disabled.
+        <v-btn color="primary" @click="save()">Save</v-btn>
+      </v-flex>
+    </v-layout>
+
+    <v-layout row wrap class="pt-5">
+      <v-flex xs12>
+        <!-- TODO: remove -->
+        !!!DEMO!!! Start evaluation period manually
+      </v-flex>
+      <v-flex xs12>
+        Start evaluation date:
+        <v-text-field
+          v-model="startEvaluationDate"
+          class="centered-input"
+          style="width: 100px; display: inline-block;"
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12>
+        <v-btn color="primary" @click="startManually()">Start</v-btn>
       </v-flex>
     </v-layout>
 
@@ -59,18 +75,27 @@ export default {
   data: () => ({
     loading: true,
     settings: null,
+    startEvaluationDate: null
   }),
 
   async created(){
     this.loading = true;
     const settings = await this.$http.get(`api/_360evaluation/schedule-settings`).then(r => r.data);
+    this.loading = false;
     settings.startDate = settings.startDate.split('T')[0];
     this.settings = settings;
-    this.loading = false;
+    this.startEvaluationDate = this.settings.startDate;
   },
 
   methods: {
-
+    async save(){
+      await this.$http.post(`api/_360evaluation/schedule-settings`, this.settings);
+      toast.success(`Updated 360 schedule settings.`)
+    },
+    async startManually(){
+      const result = await this.$http.post(`api/_360evaluation/start/${this.startEvaluationDate}`).then(_ => _.data)
+      toast.success(`360 Evaluation started successfully.`)
+    }
   }
 }
 

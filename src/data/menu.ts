@@ -68,7 +68,7 @@ const Menu: Array<NavigationItem> = [
     icon: "receipt",
     router: "/administration/360-questionarie",
     authRequired: true,
-    adminRoleRequired: true,
+    hrRoleRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },
@@ -86,7 +86,7 @@ const Menu: Array<NavigationItem> = [
     icon: "receipt",
     router: "/administration/company-strategy",
     authRequired: true,
-    adminRoleRequired: true,
+    hrRoleRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },
@@ -95,7 +95,7 @@ const Menu: Array<NavigationItem> = [
     icon: "receipt",
     router: "/administration/360-schedule-setup",
     authRequired: true,
-    adminRoleRequired: true,
+    hrRoleRequired: true,
     autoHide: true,
     group: NavigationGroup.Personal
   },
