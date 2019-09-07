@@ -54,9 +54,9 @@
           <v-list>
             <v-list-tile
               v-for="e in employeesFiltered" :key="`evaluation-${e.evaluationId}`"
-              @click="!e.evaluation.endDate && selectEmployeeFor360(e)"
+              @click="selectEmployeeFor360(e)"
               :class="{
-                'grey lighten-3': selectedEmployee && e.id === selectedEmployee.id,
+                'grey lighten-3': selectedEmployee && e.evaluationId === selectedEmployee.evaluationId,
                 'evaluated': e.evaluation.endDate
               }"
               avatar
@@ -82,7 +82,7 @@
 
       </v-flex>
 
-      <v-flex xs8 v-if="selectedEmployee">
+      <v-flex xs8 v-if="selectedEmployee && evaluationInProgress">
         <v-card>
         <v-layout row class="text-xs-center">
           <v-flex v-for="(q, idx) in questionarie" :key="`questionarie-${q.id}`">
@@ -176,6 +176,46 @@
           </v-flex>
         </v-layout>
         </v-card>
+      </v-flex>
+
+      <v-flex xs8 v-if="selectedEmployee && !evaluationInProgress">
+        <div class="my-3">
+          You evaluated {{selectedEmployee.name}} {{selectedEmployee.surname}}
+          on {{evaluationResults.endDate | formatDateTimeHuman}}
+        </div>
+        <v-card v-for="result in evaluationResults._360evaluationResult" :key="result.id" class="mb-3">
+          <v-card-title class="pb-0">
+            {{result._360questionnarieStatement.questionnarie.name}}
+            <div class="ml-3" style="font-size: 10px;">
+              (Mark: {{result._360questionnarieStatement.mark}})
+            </div>
+          </v-card-title>
+          <v-card-text>
+            <pre>{{result._360questionnarieStatement.text}}</pre>
+          </v-card-text>
+        </v-card>
+        <v-container grid-list-md fluid class="pa-0">
+          <v-layout row wrap>
+            <v-flex xs4>
+              <v-card>
+                <v-card-title class="pb-0">Start doing:</v-card-title>
+                <v-card-text><pre>{{evaluationResults.startDoing || '--'}}</pre></v-card-text>
+              </v-card>
+            </v-flex>
+            <v-flex xs4>
+              <v-card>
+                <v-card-title class="pb-0">Stop doing:</v-card-title>
+                <v-card-text><pre>{{evaluationResults.stopDoing || '--'}}</pre></v-card-text>
+              </v-card>
+            </v-flex>
+            <v-flex xs4>
+              <v-card>
+                <v-card-title class="pb-0">Other:</v-card-title>
+                <v-card-text><pre>{{evaluationResults.otherComments || '--'}}</pre></v-card-text>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-flex>
     </v-layout>
 
@@ -288,6 +328,8 @@ export default {
     // testEmployeeId: null,
     employees: [],
     selectedEmployee: null,
+    evaluationInProgress: false,
+    evaluationResults: null,
     questionarie: null,
     // currentQuestionId: 0,
     currentQuestionIndex: 0,
@@ -384,14 +426,19 @@ export default {
     // },
 
     async selectEmployeeFor360(employee) {
-      this.currentQuestionIndex = 0;
-      this.questionFeedbacks = [];
-
       this.selectedEmployee = employee;
-      this.questionarie = await this.$http.get(`api/_360evaluation/employee/${employee.id}/evaluator`).then(_ => _.data);
+      this.evaluationInProgress = !this.selectedEmployee.evaluation.endDate;
+      if (this.evaluationInProgress) {
+        this.currentQuestionIndex = 0;
+        this.questionFeedbacks = [];
 
-      this.newQuestionFeedback();
-      // this.currentQuestionId = this.questionarie[0].id;
+        this.questionarie = await this.$http.get(`api/_360evaluation/employee/${employee.id}/evaluator`).then(_ => _.data);
+
+        this.newQuestionFeedback();
+      } else {
+        const evaluationResults = await this.$http.get(`api/_360evaluation/feedback/${this.selectedEmployee.evaluationId}`).then(_ => _.data);
+        this.evaluationResults = evaluationResults;
+      }
     },
 
     // private
