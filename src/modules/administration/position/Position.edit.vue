@@ -184,7 +184,7 @@ export default {
   },
 
   async created(){
-    const rolesResponse = await axios.get(this.$backendUrl + 'api/ecfroles');
+    const rolesResponse = await this.$http.get('api/ecfroles');
     this.roles = rolesResponse.data;
   },
 
@@ -203,7 +203,7 @@ export default {
       }
       const data = {...this.position};
       data.positionRole = data.roles.map(r => ({roleId: r.id}));
-      const response = await axios.post(this.$backendUrl + 'api/positions', data)
+      const response = await this.$http.post('api/positions', data)
 
       toast.success(`Position has been created.`)
       this.$router.push({url: ''})
@@ -213,7 +213,7 @@ export default {
         this.positionRolesIds.add(role.id)
         this.position.roles.push(role)
 
-        const res = await axios.get(this.$backendUrl + 'api/ecfroles/' + role.id + '?withCompetences=true')
+        const res = await this.$http.get(`api/ecfroles/${role.id}?withCompetences=true`)
         const competences = []
         for (let c of res.data.ecfRoleCompetence) {
           const item = {
@@ -223,7 +223,7 @@ export default {
             roleLevel: c.competenceLevel
           }
 
-          for (let level of c.competence.ecfCompetenceLevel) {
+          for (let level of c.competence.competenceLevel) {
             item.levels[level.level] = {
               description: level.description,
               level: level.level

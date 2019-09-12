@@ -97,7 +97,7 @@ export default {
         levels: [],
         ecfEvaluationId: ecfEvaluationId
       }
-      const levels = e.competenceNavigation.ecfCompetenceLevel;
+      const levels = e.competenceNavigation.competenceLevel;
       for (let level of levels) {
         c.levels[level.level] = {
           // statusClass: level.level === e.competenceLevel ? 'current' : 'available',
