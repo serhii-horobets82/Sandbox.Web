@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "servers_evoflare1_dev_name": {
+      "value": null
+    },
+    "sites_evoflare_api_dev_name": {
+      "value": null
+    },
+    "servers_evoflare_serverless_dev_name": {
+      "value": null
+    },
+    "components_evoflare_api_dev_name": {
+      "value": null
+    },
+    "storageAccounts_evoflareappdev_name": {
+      "value": null
+    },
+    "serverfarms_NetCore_App_Windows_Dev_name": {
+      "value": null
+    }
+  }
+}
