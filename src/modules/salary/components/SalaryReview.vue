@@ -128,13 +128,13 @@
               <td style="left: 510px; width: 35px;" class="fixed-column"></td>
 
               <td v-for="(salary, index) in props.item.salary" :key="index" class="salary-column">
-                <v-edit-dialog large @save="save(props.item.id, index, salary[0])">
-                  <span class="chip-base">{{salary[0]}}</span>
-                  <span class="chip-bonus">{{salary[1]}}</span>
-                  <span class="chip-total">{{salary[2]}}</span>
+                <v-edit-dialog large @save="save(props.item.id, salary)">
+                  <span class="chip-base">{{salary.basic}}</span>
+                  <span class="chip-bonus">{{salary.bonus}}</span>
+                  <span class="chip-total">{{+salary.basic + +salary.bonus}}</span>
                   <template v-slot:input>
-                    <v-text-field v-model="salary[0]" label="Base"></v-text-field>
-                    <v-text-field v-model="salary[1]" label="Bonus"></v-text-field>
+                    <v-text-field v-model="salary.basic" label="Base"></v-text-field>
+                    <v-text-field v-model="salary.bonus" label="Bonus"></v-text-field>
                   </template>
                 </v-edit-dialog>
               </td>
@@ -165,25 +165,12 @@ const monthNames = [
 
 export default {
   async created() {
-    const res = await axios.get(this.$backendUrl + `api/employees`);
+    const res = await axios.get(this.$backendUrl + `api/salary`);
     this.employees = res.data.map(e => ({
-      peDate: "2010-02-01T00:00:00",
-      salary: [
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1200, 0, 1200],
-        [1200, 0, 1200]
-      ],
       hiringDate: e.hiringDate,
+      peDate: e.peDate,
       name: e.name,
+      salary: e.salary,
       surname: e.surname,
       level: e.employeeType.type,
       id: e.id
@@ -212,8 +199,10 @@ export default {
     employees: []
   }),
   methods: {
-    save(id, index) {
-      console.log("Dialog save", id, index);
+    async save(id, salary) {
+      
+      console.log("Dialog save", id, salary);
+      await axios.patch(this.$backendUrl + `api/salary`, salary);
     },
     getHeaders() {
       const monthColumns = monthNames.map(m => ({ text: m }));
