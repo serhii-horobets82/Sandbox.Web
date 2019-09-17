@@ -127,20 +127,56 @@
               >{{ props.item.peDate | formatDateShort }}</td>
               <td style="left: 510px; width: 35px;" class="fixed-column"></td>
 
-              <td v-for="(salary, index) in props.item.salary" :key="index" class="salary-column">
-                <v-edit-dialog large @save="save(props.item.id, salary)">
-                  <span class="chip-base">{{salary.basic}}</span>
-                  <span class="chip-bonus">{{salary.bonus}}</span>
-                  <span class="chip-total">{{+salary.basic + +salary.bonus}}</span>
-                  <template v-slot:input>
-                    <v-text-field v-model="salary.basic" label="Base"></v-text-field>
-                    <v-text-field v-model="salary.bonus" label="Bonus"></v-text-field>
-                  </template>
-                </v-edit-dialog>
+              <td v-for="(item, index) in props.item.salary" :key="index" class="salary-column">
+                <v-card flat>
+                  <v-card-actions class="pa-0">
+                    <span class="chip-base">{{item.basic}}</span>
+                    <span class="chip-bonus">{{item.bonus}}</span>
+                    <span class="chip-total">{{+item.basic + +item.bonus}}</span>
+                    <v-spacer></v-spacer>
+                    <v-icon small @click="editSalary(props.item, item)">edit</v-icon>
+                  </v-card-actions>
+                </v-card>
               </td>
             </tr>
           </template>
         </v-data-table>
+
+        <v-dialog v-model="dialog" max-width="500px" v-if="editedItem">
+          <v-card>
+            <v-card-title>
+              <span
+                class="headline"
+              >Edit salary ({{editedItem.row.name}} {{editedItem.row.surname}})</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout wrap>
+                  <v-flex xs12 sm6>
+                    <v-text-field
+                      prefix="$"
+                      required
+                      type="number"
+                      :rules="[requiredRule]"
+                      v-model="editedItem.item.basic"
+                      label="Basic"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-text-field prefix="$" v-model="editedItem.item.bonus" label="Bonus"></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+              <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-flex>
     </v-layout>
   </v-container>
@@ -148,20 +184,8 @@
 
 <script>
 import axios from "axios";
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];
+import moment from "moment";
+import { requiredRule } from "@/util/validators"
 
 export default {
   async created() {
@@ -170,23 +194,26 @@ export default {
       hiringDate: e.hiringDate,
       peDate: e.peDate,
       name: e.name,
-      salary: e.salary,
+      salary: this.processSalary(e.salary),
       surname: e.surname,
       level: e.employeeType.type,
       id: e.id
     }));
   },
   data: () => ({
+    dialog: false,
+    editedItem: null,
     sortByColumns: [
       { value: 0, text: "Active Employee" },
       { value: 1, text: "Hiring date" }
     ],
     sortByColumn: 0,
+    maxPeriod: 12,
     showRevenueColumn: 0,
     showRevenueColumns: [{ value: 0, text: "All" }],
     pagination: {
       sortBy: "name",
-      rowsPerPage: 10
+      rowsPerPage: -1
     },
     selected: [],
     headers: [
@@ -199,13 +226,36 @@ export default {
     employees: []
   }),
   methods: {
-    async save(id, salary) {
-      
-      console.log("Dialog save", id, salary);
-      await axios.patch(this.$backendUrl + `api/salary`, salary);
+    requiredRule: requiredRule("Required!"),
+    async save() {
+      await axios.post(this.$backendUrl + `api/salary/${this.row.id}`, salary);
+    },
+    editSalary(row, item) {
+      this.editedItem = { row, item: Object.assign({}, item)};
+      this.dialog = true;
+    },
+    close() {
+      this.dialog = false;
+    },
+    processSalary(initial) {
+      var result = [];
+      for (let i = 0; i < this.maxPeriod; i++) {
+        var elem = Object.assign({}, initial[0]);
+        result.push(elem);
+      }
+      return result;
     },
     getHeaders() {
-      const monthColumns = monthNames.map(m => ({ text: m }));
+      var now = new Date();
+      var startDate = moment().add(-1 * (this.maxPeriod / 2), "months");
+      let monthColumns = [];
+      for (let i = 0; i < this.maxPeriod; i++) {
+        monthColumns.push({
+          text: moment(startDate)
+            .add(i + 1, "month")
+            .format("MMMM YY")
+        });
+      }
       return [...this.headers, ...monthColumns];
     },
     toggleAll() {
@@ -243,20 +293,20 @@ export default {
 .salary-header {
   span {
     font-size: 8px;
-    padding: 10px;
+    padding: 20px;
     opacity: 0.6;
   }
 }
 
 .chip-base, .chip-bonus, .chip-total {
-  margin: 0 5px;
-  padding: 3px 5px;
+  padding: 3px 15px;
   border-radius: 50px;
   font-size: 12px;
+  min-width: 50px;
 }
 
 .chip-bonus {
-  //color: #FFB800;
+  // color: #FFB800;
 }
 
 .chip-total {
