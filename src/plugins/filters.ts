@@ -1,6 +1,7 @@
 import Vue from "vue";
 import moment from "moment";
 import { GENDER } from "@/constants";
+import i18n from  "@/i18n"; 
 
 Vue.filter("formatDate", (value: any) => {
   if (value) {
@@ -17,8 +18,14 @@ Vue.filter("formatDateShort", (value: any) => {
 Vue.filter("formatDateHuman", (value: any) => {
   return value ? moment(value).format("DD MMMM, YYYY") : "";
 });
+
 Vue.filter("formatDateTimeHuman", (value: any) => {
   return value ? moment(value).format("DD MMMM, YYYY hh:mm") : "";
+});
+
+Vue.filter("formatCurrency", (value: any) => {
+  //return value > 0 ? `$${value}` : "";
+  return i18n.n(value, 'currency', 'en');
 });
 
 Vue.filter("formatNumber", (value: number) => {
