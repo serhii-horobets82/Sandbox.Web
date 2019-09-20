@@ -20,9 +20,42 @@
       "problemMatcher": []
     },
     {
-      "label": "heroku: Add remote",
+      "label": "heroku: Set remote(main)",
       "type": "shell",
       "command": "heroku git:remote -a evoflare-web",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Set remote(dev)",
+      "type": "shell",
+      "command": "heroku git:remote -a evoflare-web-dev",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Open (main)",
+      "type": "shell",
+      "command": "heroku open -a evoflare-web",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Open (dev)",
+      "type": "shell",
+      "command": "heroku open -a evoflare-web-dev",
       "presentation": {
         "reveal": "always",
         "panel": "shared",
@@ -41,7 +74,5 @@
       },
       "problemMatcher": []
     }
-
-    
   ]
 }
