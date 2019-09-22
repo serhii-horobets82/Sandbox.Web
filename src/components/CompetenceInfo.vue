@@ -5,7 +5,9 @@
     <v-dialog v-model="open" @keydown.esc="open = false" max-width="800" scrollable>
       <v-card v-if="details">
         <v-card-title>
-          <span class="headline mb-3"> {{details.id.trim()}}. {{details.name}} </span>
+          <span class="headline mb-3">
+            {{details.id}}. {{details.name}} (Area '{{details.competenceArea.name}}' - {{details.competenceArea.description}})
+          </span>
           {{ details.summary }}
         </v-card-title>
         <v-card-text>
@@ -76,11 +78,11 @@ export default {
   methods: {
     async showDetailedInfo(id){
       this.open = true;
-      const res = await axios.get(this.$backendUrl + `api/competences/${id}`);
+      const res = await this.$http.get(`api/competences/${id}`);
       this.details = res.data;
 
       const d = {}
-      res.data.ecfCompetenceLevel.forEach(r => {
+      res.data.competenceLevel.forEach(r => {
         d[r.level] = {
           description: r.description,
           competenceCertificates: r.competenceCertificate

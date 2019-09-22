@@ -51,7 +51,7 @@
                 <v-layout>
                 {{ grade.name }}
                 <v-spacer></v-spacer>
-                <v-btn icon small class="ma-0"><v-icon small>edit</v-icon></v-btn>
+                <v-btn icon small class="ma-0" @click="editGrade(grade)"><v-icon small>edit</v-icon></v-btn>
                 <!-- <v-btn icon small class="ma-0"><v-icon small>clear</v-icon></v-btn> -->
                 </v-layout>
               </v-card-title>
@@ -286,7 +286,7 @@ export default {
   }),
 
   async created(){
-    const res = await axios.get(this.$backendUrl + `api/RoleGrades/role`);
+    const res = await this.$http.get(`api/RoleGrades/role`);
     this.roles = res.data;
   },
 
@@ -299,7 +299,7 @@ export default {
     },
     async loadGradeCompetences(role) {
       if (!this.roleGradeCompetences[role.id]) {
-        const res = await axios.get(this.$backendUrl + `api/RoleGrades/${role.id}/competences`);
+        const res = await this.$http.get(`api/RoleGrades/${role.id}/competences`);
         this.$set(this.roleGradeCompetences, role.id, res.data)
       }
     },
@@ -309,7 +309,7 @@ export default {
         return;
       }
       if (confirm(`Are you sure you want to remove an organization role - ${role.type}?`)) {
-        const res = await axios.delete(this.$backendUrl + `api/RoleGrades/role/${role.id}`);
+        const res = await this.$http.delete(`api/RoleGrades/role/${role.id}`);
         this.roles.splice(this.roles.indexOf(role), 1);
       }
     },
@@ -322,8 +322,8 @@ export default {
     async saveRole() {
       const data = { ...this.roleDialog.role };
       const res = data.id
-        ? await axios.put(this.$backendUrl + `api/RoleGrades/role/${data.id}`, data)
-        : await axios.post(this.$backendUrl + `api/RoleGrades/role`, data);
+        ? await this.$http.put(`api/RoleGrades/role/${data.id}`, data)
+        : await this.$http.post(`api/RoleGrades/role`, data);
 
       this.roleDialog.open = false;
 
@@ -333,6 +333,9 @@ export default {
         this.roles.push(res.data)
       }
     },
+    async editGrade(grade) {
+      alert('Not implemented');
+    },
     async addGrade(){
       const role = this.gradeDialog.role;
       const data = {
@@ -340,7 +343,7 @@ export default {
         employeeTypeId: role.id,
         order: role.roleGrade.length + 1
       }
-      const res = await axios.post(this.$backendUrl + `api/RoleGrades`, data);
+      const res = await this.$http.post(`api/RoleGrades`, data);
 
       this.gradeDialog.name = '';
       this.gradeDialog.open = false;
@@ -353,7 +356,7 @@ export default {
       this.skillsDialog.open = true;
 
       await this.loadGradeCompetences(role);
-      const res = await axios.get(this.$backendUrl + `api/Competences/rows`);
+      const res = await this.$http.get(`api/Competences/rows`);
       this.skillsDialog.allSkills = res.data;
       this.skillsDialog.filteredSkills = this.skillsDialog.allSkills;
 
@@ -393,7 +396,7 @@ export default {
         competenceLevelMark: s.competenceLevel
       }))
 
-      const res = await axios.post(this.$backendUrl + `api/RoleGrades/${this.skillsDialog.role.id}/competences`, data);
+      const res = await this.$http.post(`api/RoleGrades/${this.skillsDialog.role.id}/competences`, data);
 
       const rows = this.getCompetenceRows(this.skillsDialog.role, this.skillsDialog.grade);
       rows.length = 0;

@@ -1,0 +1,1355 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "servers_evoflare1_dev_name": {
+      "defaultValue": "evoflare1-dev",
+      "type": "String"
+    },
+    "sites_evoflare_api_dev_name": {
+      "defaultValue": "evoflare-api-dev",
+      "type": "String"
+    },
+    "servers_evoflare_serverless_dev_name": {
+      "defaultValue": "evoflare-serverless-dev",
+      "type": "String"
+    },
+    "components_evoflare_api_dev_name": {
+      "defaultValue": "evoflare-api-dev",
+      "type": "String"
+    },
+    "storageAccounts_evoflareappdev_name": {
+      "defaultValue": "evoflareappdev",
+      "type": "String"
+    },
+    "serverfarms_NetCore_App_Windows_Dev_name": {
+      "defaultValue": "NetCore-App-Windows-Dev",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "microsoft.insights/components",
+      "apiVersion": "2015-05-01",
+      "name": "[parameters('components_evoflare_api_dev_name')]",
+      "location": "northeurope",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[parameters('servers_evoflare1_dev_name')]",
+      "location": "northeurope",
+      "kind": "v12.0",
+      "properties": {
+        "administratorLogin": "EvoflareDemoDev",
+        "version": "12.0"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[parameters('servers_evoflare_serverless_dev_name')]",
+      "location": "northeurope",
+      "kind": "v12.0",
+      "properties": {
+        "administratorLogin": "evoflare-srvless-dev",
+        "version": "12.0"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-04-01",
+      "name": "[parameters('storageAccounts_evoflareappdev_name')]",
+      "location": "northeurope",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2016-09-01",
+      "name": "[parameters('serverfarms_NetCore_App_Windows_Dev_name')]",
+      "location": "North Europe",
+      "sku": {
+        "name": "F1",
+        "tier": "Free",
+        "size": "F1",
+        "family": "F",
+        "capacity": 0
+      },
+      "kind": "app",
+      "properties": {
+        "name": "[parameters('serverfarms_NetCore_App_Windows_Dev_name')]",
+        "perSiteScaling": false,
+        "reserved": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/CreateIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/CreateIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/DbParameterization')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/DbParameterization')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/DefragmentIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/DefragmentIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/DropIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/DropIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/ForceLastGoodPlan')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/ForceLastGoodPlan')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "auditActionsAndGroups": [],
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "auditActionsAndGroups": [],
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev')]",
+      "location": "northeurope",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "sku": {
+        "name": "GP_S_Gen5_1",
+        "tier": "GeneralPurpose"
+      },
+      "kind": "v12.0,user,vcore,serverless",
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "maxSizeBytes": 5368709120,
+        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "zoneRedundant": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev')]",
+      "location": "northeurope",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "v12.0,user",
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "maxSizeBytes": 104857600,
+        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "zoneRedundant": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/current')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "status": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/current')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "status": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/master/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/encryptionProtector",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/current')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "properties": {
+        "serverKeyName": "ServiceManaged",
+        "serverKeyType": "ServiceManaged"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/encryptionProtector",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/current')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "properties": {
+        "serverKeyName": "ServiceManaged",
+        "serverKeyType": "ServiceManaged"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "auditActionsAndGroups": [],
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "auditActionsAndGroups": [],
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/AlexPC')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "startIpAddress": "79.110.128.236",
+        "endIpAddress": "79.110.128.236"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/AllowAllWindowsAzureIps')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/AllowAllWindowsAzureIps')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/IterNet')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "startIpAddress": "91.213.62.66",
+        "endIpAddress": "91.213.62.66"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/keys",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/ServiceManaged')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "properties": {
+        "serverKeyType": "ServiceManaged"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/keys",
+      "apiVersion": "2015-05-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/ServiceManaged')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "properties": {
+        "serverKeyType": "ServiceManaged"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/securityAlertPolicies",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/securityAlertPolicies",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2019-04-01",
+      "name": "[concat(parameters('storageAccounts_evoflareappdev_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_evoflareappdev_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        },
+        "deleteRetentionPolicy": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "name": "[parameters('sites_evoflare_api_dev_name')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_NetCore_App_Windows_Dev_name'))]"
+      ],
+      "kind": "app",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(parameters('sites_evoflare_api_dev_name'), '.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(parameters('sites_evoflare_api_dev_name'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_NetCore_App_Windows_Dev_name'))]",
+        "reserved": false,
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/web')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "5.6",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": "VS2017",
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": true,
+        "publishingUsername": "$evoflare-api-dev",
+        "scmType": "VSTSRM",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": true,
+        "alwaysOn": false,
+        "appCommandLine": "",
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": false,
+        "customAppPoolIdentityTenantState": false,
+        "loadBalancing": "LeastRequests",
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "autoHealEnabled": false,
+        "vnetName": "",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "clientSecretCertificateThumbprint": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "cors": {
+          "allowedOrigins": [
+            "https://evoflareappdev.z16.web.core.windows.net"
+          ],
+          "supportCredentials": true
+        },
+        "apiDefinition": {
+          "url": "swagger/v1/swagger.json"
+        },
+        "localMySqlEnabled": false,
+        "http20Enabled": false,
+        "minTlsVersion": "1.2",
+        "ftpsState": "AllAllowed",
+        "reservedInstanceCount": 0,
+        "fileChangeAuditEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/0002e7211127443dbc31329220f1c226')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "0002e7211127443dbc31329220f1c226",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"3908bd649785d4394da10184606d7b32688640dc\",\"buildId\":\"260\",\"releaseId\":\"186\",\"buildNumber\":\"20190829.4\",\"releaseName\":\"Release-20\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-08-29T16:18:16.2380666Z",
+        "end_time": "2019-08-29T16:18:16.4880849Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/2632e378a3ea401482906fca1bab15af')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "2632e378a3ea401482906fca1bab15af",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"17c135a64ac7bfc7ddc73a4694b6a479ca356cd1\",\"buildId\":\"269\",\"releaseId\":\"193\",\"buildNumber\":\"20190903.1\",\"releaseName\":\"Release-24\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-03T19:26:06.8796112Z",
+        "end_time": "2019-09-03T19:26:07.0671146Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/66670c983a0649cdb1da297638374c18')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "66670c983a0649cdb1da297638374c18",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"ed38dadfe12de85b01b770cabb839ef95e62902b\",\"buildId\":\"266\",\"releaseId\":\"189\",\"buildNumber\":\"20190831.2\",\"releaseName\":\"Release-23\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-08-31T15:53:54.9199742Z",
+        "end_time": "2019-08-31T15:53:55.1699742Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/7bf10c86def045c798d3d2b99015ba8a')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "7bf10c86def045c798d3d2b99015ba8a",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"4ec451cea24704d180125dc8c666fdf7f56fd29c\",\"buildId\":\"284\",\"releaseId\":\"203\",\"buildNumber\":\"20190907.3\",\"releaseName\":\"Release-29\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-07T13:13:06.5200037Z",
+        "end_time": "2019-09-07T13:13:06.691841Z",
+        "active": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/81c886de53334eae8073ed2268dd8c3e')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "81c886de53334eae8073ed2268dd8c3e",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"ae6f3600396168a32befb4ec3da2fc0016530f03\",\"buildId\":\"264\",\"releaseId\":\"188\",\"buildNumber\":\"20190831.1\",\"releaseName\":\"Release-22\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-08-31T12:59:31.1151377Z",
+        "end_time": "2019-08-31T12:59:31.3338551Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/8377a2df23874f93a9fe0820066eb668')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "8377a2df23874f93a9fe0820066eb668",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"033446f3722330bc8f8db20e5874ab7d563fecec\",\"buildId\":\"262\",\"releaseId\":\"187\",\"buildNumber\":\"20190830.1\",\"releaseName\":\"Release-21\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-08-30T10:32:33.8347988Z",
+        "end_time": "2019-08-30T10:32:34.0378939Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/8a108b9b076a4cf4ad3036d30ed6d868')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "8a108b9b076a4cf4ad3036d30ed6d868",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"bab7834d30f8e522f3513c601697fec64d6eb4a9\",\"buildId\":\"280\",\"releaseId\":\"201\",\"buildNumber\":\"20190907.1\",\"releaseName\":\"Release-27\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-07T11:44:40.3583744Z",
+        "end_time": "2019-09-07T11:44:40.6083807Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/c7537869833e464cbea8e880959665ca')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "c7537869833e464cbea8e880959665ca",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"6bd66ac251d079851123373091420ae075ec9110\",\"buildId\":\"277\",\"releaseId\":\"199\",\"buildNumber\":\"20190906.1\",\"releaseName\":\"Release-26\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-06T22:14:44.0563457Z",
+        "end_time": "2019-09-06T22:14:44.2438106Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/ebf8741ea5894101bea3bf3ba2077957')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "ebf8741ea5894101bea3bf3ba2077957",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"534d589af6b97466f663c48a3f24219d0c3648df\",\"buildId\":\"273\",\"releaseId\":\"196\",\"buildNumber\":\"20190905.1\",\"releaseName\":\"Release-25\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-05T17:10:29.3426239Z",
+        "end_time": "2019-09-05T17:10:29.5613748Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/f0dffa205ecd4288bfccbd6b563e3d0a')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "id": "f0dffa205ecd4288bfccbd6b563e3d0a",
+        "status": 4,
+        "author_email": "N/A",
+        "author": "N/A",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"deployment\",\"commitId\":\"272f022b3d9a908647790d9ae1deab1eeb6cb42d\",\"buildId\":\"282\",\"releaseId\":\"202\",\"buildNumber\":\"20190907.2\",\"releaseName\":\"Release-28\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Evoflare.API\",\"collectionUrl\":\"https://dev.azure.com/the-evaluator/\",\"teamProject\":\"786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"buildProjectUrl\":\"https://dev.azure.com/the-evaluator/786812f7-dcb5-4280-a81d-88c9b410f8d0\",\"repositoryUrl\":\"\",\"branch\":\"master\",\"teamProjectName\":\"Evaluator\",\"slotName\":\"production\"}",
+        "start_time": "2019-09-07T11:45:22.9445114Z",
+        "end_time": "2019-09-07T11:45:23.1788648Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_evoflare_api_dev_name'), '/', parameters('sites_evoflare_api_dev_name'), '.azurewebsites.net')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_evoflare_api_dev_name'))]"
+      ],
+      "properties": {
+        "siteName": "evoflare-api-dev",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/CreateIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/DbParameterization')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/DefragmentIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/DropIndex')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/advisors",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/ForceLastGoodPlan')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "auditingState": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/auditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "retentionDays": 0,
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "isStorageSecondaryKeyInUse": false
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+      "apiVersion": "2018-06-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled",
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAddresses": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "retentionDays": 0
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/current')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "status": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+      "apiVersion": "2014-04-01",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/current')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "status": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare1_dev_name'), '/EvoflareOrg1Dev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare1_dev_name'), 'EvoflareOrg1Dev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare1_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('servers_evoflare_serverless_dev_name'), '/EvoflareDemoDev/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_evoflare_serverless_dev_name'), 'EvoflareDemoDev')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_evoflare_serverless_dev_name'))]"
+      ],
+      "properties": {
+        "recurringScans": {
+          "isEnabled": false,
+          "emailSubscriptionAdmins": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2019-04-01",
+      "name": "[concat(parameters('storageAccounts_evoflareappdev_name'), '/default/$web')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_evoflareappdev_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_evoflareappdev_name'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      }
+    }
+  ]
+}

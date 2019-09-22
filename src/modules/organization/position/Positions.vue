@@ -424,7 +424,7 @@ export default {
           roleLevel: c.competenceLevel
         }
 
-        for (let level of c.competence.ecfCompetenceLevel) {
+        for (let level of c.competence.competenceLevel) {
           item.levels[level.level] = {
             description: level.description,
             level: level.level
