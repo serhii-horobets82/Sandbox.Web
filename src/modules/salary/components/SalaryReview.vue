@@ -87,8 +87,11 @@
                 :class="['column', header.value ? 'sortable fixed-column active' : 'salary-column', header.value === pagination.sortBy ? 'selected ' + (pagination.descending ? 'desc' : 'asc') : '']"
                 @click="changeSort(header.value)"
               >
-                <template v-if="header.value">{{ header.text }}</template>
-                <template v-else>
+                <template v-if="header.value">
+                  {{ header.text }}
+                  <v-icon v-if="header.value" small>fa-sort</v-icon>
+                </template>
+                <template v-else-if="header.text">
                   <div class="month-header">{{ header.text }}</div>
                   <div class="salary-header">
                     <span>Base</span>
@@ -96,7 +99,10 @@
                     <span>Total</span>
                   </div>
                 </template>
-                <v-icon v-if="header.value" small>fa-sort</v-icon>
+                <template v-else>
+                   <div style="width: 500px">
+                  </div>
+                </template>
               </th>
             </tr>
           </template>
@@ -122,25 +128,70 @@
                 class="fixed-column text-lowercase"
               >{{ props.item.level }}</td>
               <td
-                style="left: 420px; width: 90px;"
-                class="fixed-column"
-              >{{ props.item.peDate | formatDateShort }}</td>
-              <td style="left: 510px; width: 35px;" class="fixed-column"></td>
-
-              <td v-for="(salary, index) in props.item.salary" :key="index" class="salary-column">
-                <v-edit-dialog large @save="save(props.item.id, index, salary[0])">
-                  <span class="chip-base">{{salary[0]}}</span>
-                  <span class="chip-bonus">{{salary[1]}}</span>
-                  <span class="chip-total">{{salary[2]}}</span>
-                  <template v-slot:input>
-                    <v-text-field v-model="salary[0]" label="Base"></v-text-field>
-                    <v-text-field v-model="salary[1]" label="Bonus"></v-text-field>
-                  </template>
-                </v-edit-dialog>
+                v-for="(item, index) in props.item.salary"
+                :key="index"
+                style="cursor: pointer"
+                class="salary-column"
+                @click="editSalary(props.item, item)"
+              >
+                <v-layout>
+                  <v-flex align-self-center>
+                    <span class="chip-base">{{item.basic | formatCurrency}}</span>
+                  </v-flex>
+                  <v-flex align-self-center>
+                    <span class="chip-bonus">{{item.bonus | formatCurrency}}</span>
+                  </v-flex>
+                  <v-flex align-self-center>
+                    <span
+                      class="chip-total"
+                    >{{parseFloat(item.basic) + parseFloat(item.bonus) | formatCurrency}}</span>
+                  </v-flex>
+                </v-layout>
               </td>
             </tr>
           </template>
         </v-data-table>
+
+        <v-dialog v-model="dialog" max-width="500px" v-if="editedItem">
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <div
+                  class="headline"
+                >Edit salary ({{editedItem.row.name}} {{editedItem.row.surname}})</div>
+                <div class="body">
+                  Period:
+                  <span class="font-weight-bold">{{editedItem.item.period}}</span>
+                </div>
+              </div>
+            </v-card-title>
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout wrap>
+                  <v-flex xs12 sm6>
+                    <v-text-field
+                      prefix="$"
+                      required
+                      type="number"
+                      :rules="[requiredRule]"
+                      v-model="editedItem.item.basic"
+                      label="Basic"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-text-field prefix="$" v-model="editedItem.item.bonus" label="Bonus"></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+              <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-flex>
     </v-layout>
   </v-container>
@@ -148,76 +199,127 @@
 
 <script>
 import axios from "axios";
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];
+import moment from "moment";
+import toast from "@/services/toast";
+import { requiredRule } from "@/util/validators";
 
 export default {
   async created() {
-    const res = await axios.get(this.$backendUrl + `api/employees`);
-    this.employees = res.data.map(e => ({
-      peDate: "2010-02-01T00:00:00",
-      salary: [
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1000, 0, 1000],
-        [1200, 0, 1200],
-        [1200, 0, 1200],
-        [1200, 0, 1200]
-      ],
-      hiringDate: e.hiringDate,
-      name: e.name,
-      surname: e.surname,
-      level: e.employeeType.type,
-      id: e.id
-    }));
+    await this.getData();
   },
   data: () => ({
+    dialog: false,
+    editedItem: null,
     sortByColumns: [
       { value: 0, text: "Active Employee" },
       { value: 1, text: "Hiring date" }
     ],
     sortByColumn: 0,
+    periodLength: 12,
     showRevenueColumn: 0,
     showRevenueColumns: [{ value: 0, text: "All" }],
     pagination: {
       sortBy: "name",
-      rowsPerPage: 10
+      rowsPerPage: -1
     },
     selected: [],
     headers: [
       { text: "Hiring date", value: "hiringDate", left: 30, width: 90 },
       { text: "Name", value: "name", left: 120, width: 120 },
       { text: "Surname", value: "surname", left: 220, width: 120 },
-      { text: "Level", value: "level", left: 320, width: 120 },
-      { text: "Pe date", value: "peDate", left: 420, width: 125 }
+      { text: "Level", value: "level", left: 320, width: 120 }
     ],
     employees: []
   }),
   methods: {
-    save(id, index) {
-      console.log("Dialog save", id, index);
+    async getData() {
+      const response = await axios.get(this.$backendUrl + `api/salary`);
+      this.employees = response.data.map(e => ({
+        hiringDate: e.hiringDate,
+        peDate: e.peDate,
+        name: e.name,
+        salary: this.processSalary(e.salary),
+        surname: e.surname,
+        level: e.employeeType.type,
+        id: e.id
+      }));
+    },
+    requiredRule: requiredRule("Required !"),
+    async save() {
+      const response = await axios.post(
+        this.$backendUrl + `api/salary/${this.editedItem.row.id}`,
+        this.editedItem.item
+      );
+      if (response.status === 200) {
+        await this.getData();
+        toast.success(`Salary has been updated.`);
+      }
+      this.dialog = false;
+    },
+    editSalary(row, item) {
+      this.editedItem = { row, item: Object.assign({}, item) };
+      this.dialog = true;
+    },
+    close() {
+      this.dialog = false;
+    },
+    processSalary(salaryArray) {
+      var result = [];
+      const periods = this.getPeriods();
+      // put moment field to initial array
+      const salaryArrayExt = salaryArray.map(e => ({
+        ...e,
+        mPeriod: moment(e.period).startOf("month")
+      }));
+      // current period min date
+      let minPeriodDate = periods[0].date;
+
+      // with period dates less then current
+      var sa = salaryArrayExt.filter(item => item.mPeriod <= minPeriodDate);
+      // date to start dispaly
+      var maxDateBeforePeriod = moment.max(sa.map(e => e.mPeriod));
+      var startSalaryElement = salaryArrayExt.find(
+        e => e.mPeriod == maxDateBeforePeriod
+      );
+
+      for (let period of periods) {
+        let id = -1;
+        let bonus = 0;
+        let userPeriodData = salaryArrayExt.find(e =>
+          e.mPeriod.isSame(period.date, "month")
+        );
+        if (userPeriodData) {
+          id = userPeriodData.id;
+          startSalaryElement = userPeriodData;
+          bonus = startSalaryElement.bonus;
+        }
+        if (period.date >= maxDateBeforePeriod)
+          result.push({
+            id,
+            period: period.date.format("YYYY-MM-DD"),
+            basic: startSalaryElement.basic,
+            bonus
+          });
+      }
+      return result;
+    },
+    getPeriods() {
+      let periods = [];
+      // start period to calculate
+      var startDate = moment().add(-1 * (this.periodLength / 2), "months");
+      for (let i = 0; i < this.periodLength; i++) {
+        const date = moment(startDate)
+          .add(i + 1, "month")
+          .startOf("month");
+        periods.push({
+          date,
+          text: date.format("MMMM YY")
+        });
+      }
+      return periods;
     },
     getHeaders() {
-      const monthColumns = monthNames.map(m => ({ text: m }));
-      return [...this.headers, ...monthColumns];
+      return [...this.headers, ...this.getPeriods(), {}];
     },
     toggleAll() {
       if (this.selected.length) this.selected = [];
@@ -254,20 +356,20 @@ export default {
 .salary-header {
   span {
     font-size: 8px;
-    padding: 10px;
+    padding: 20px;
     opacity: 0.6;
   }
 }
 
 .chip-base, .chip-bonus, .chip-total {
-  margin: 0 5px;
-  padding: 3px 5px;
+  padding: 3px 15px;
   border-radius: 50px;
   font-size: 12px;
+  min-width: 50px;
 }
 
 .chip-bonus {
-  //color: #FFB800;
+  // color: #FFB800;
 }
 
 .chip-total {
@@ -311,7 +413,7 @@ export default {
   }
 
   .v-table__overflow {
-    margin-left: 550px;
+    margin-left: 430px;
   }
 
   tbody tr:nth-of-type(even) {
