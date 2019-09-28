@@ -47,9 +47,15 @@
                                   <v-list-tile-sub-title style="line-height: 34px;">
                                     <span @click="like(item)" style="cursor: pointer;">
                                       <svg style="margin-bottom: -1px" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z" fill="#ED3D3D"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                          d="M7.06269 12C19.7927 4.75072 12.4559 -3.67174 7.06269 1.70393C1.66951 -3.67174 -5.68483 4.75072 7.06269 12Z"
+                                          :fill="item.ideaLike.some(l => l.employeeId == employeeId) ? '#ED3D3D' : '#C1D9E8'"/>
                                       </svg>
-                                      <span style="color: #ED3D3D; font-size: 12px;" class="ml-1 mr-3">
+                                      <span
+                                        :style="{color: item.ideaLike.some(l => l.employeeId == employeeId) ? '#ED3D3D' : '#C1D9E8'}"
+                                        style="font-size: 12px;"
+                                        class="ml-1 mr-3"
+                                      >
                                         {{item.ideaLike.length}}
                                       </span>
                                     </span>
@@ -186,6 +192,7 @@ export default {
   data: () => ({
     tabsModel: null,
     tab: null,
+    employeeId: null,
     ideasTab: null,
     ideas: null,
     companyStrategy: [
@@ -196,6 +203,7 @@ export default {
   }),
 
   async created(){
+    this.employeeId = this.profile.employeeId;
     const res = await axios.get(this.$backendUrl + `api/ideas`);
     this.ideas = res.data;
     // const resTags = await axios.get(this.$backendUrl + `api/ideaTags`);

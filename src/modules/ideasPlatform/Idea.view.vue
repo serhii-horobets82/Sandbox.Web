@@ -70,14 +70,22 @@
         <v-divider></v-divider>
 
         <v-layout row wrap class="my-4">
-          <span @click="like(idea)" class="pr-3" style="color: #ED3D3D !important; display: inline-block; ">
+          <span @click="like(idea)" class="pr-3"
+            style="color: #ED3D3D !important; display: inline-block; cursor: pointer"
+          >
             <!-- <svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M10.593 17.4707C27.5664 7.805 17.7839 -3.42495 10.593 3.74261C3.40212 -3.42495 -6.40367 7.805 10.593 17.4707Z" stroke="#ED3D3D"/>
             </svg> -->
             <svg class="mr-1" style="margin-bottom: -3px;" width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M9.59303 16.4707C26.5664 6.805 16.7839 -4.42495 9.59303 2.74261C2.40212 -4.42495 -7.40367 6.805 9.59303 16.4707Z" fill="#ED3D3D"/>
+              <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M9.59303 16.4707C26.5664 6.805 16.7839 -4.42495 9.59303 2.74261C2.40212 -4.42495 -7.40367 6.805 9.59303 16.4707Z"
+              :fill="idea.ideaLike.some(l => l.employeeId == employeeId) ? '#ED3D3D' : '#C1D9E8'"/>
             </svg>
-            {{ idea.ideaLike.length }}
+            <span
+              :style="{color: idea.ideaLike.some(l => l.employeeId == employeeId) ? '#ED3D3D' : '#C1D9E8'}"
+              >
+              {{ idea.ideaLike.length }}
+            </span>
           </span>
 
           <span class="pr-3">
@@ -110,11 +118,12 @@
 
           <v-card flat>
 
-            <span class="mx-4 mt-4 mb-3" style="display: block; font-weight: 600; font-size: 14px;">Comments (save is working, UI update is not for some reason...)</span>
+            <span class="mx-4 mt-4 mb-3" style="display: block; font-weight: 600; font-size: 14px;">
+              Comments (save is working, UI update is not for some reason...)</span>
 
             <v-divider></v-divider>
 
-            <Comment v-for="c in idea.ideaComment" :key="c.id" :comment="c"></Comment>
+            <Comment v-for="c in comments" :key="c.id" :comment="c"></Comment>
           </v-card>
           </v-flex>
         </v-layout>
@@ -126,29 +135,35 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from "vuex";
 import toast from '@/services/toast'
 import Comment from './Comment.vue';
 
 export default {
   components: {Comment},
+
   data: () => ({
     id: null,
     idea: null,
     tagsById: {},
     comment: null,
+    employeeId: 0,
+    comments: null,
   }),
 
   async created(){
+    this.employeeId = this.profile.employeeId;
     this.id = +this.$route.params.id;
-    const res = await axios.get(this.$backendUrl + `api/ideas/${this.id}`);
+    const res = await this.$http.get(`api/ideas/${this.id}`);
     this.idea = Object.assign({}, this.idea, res.data);
-    const resTag = await axios.get(this.$backendUrl + `api/ideaTags`);
+    const resTag = await this.$http.get(`api/ideaTags`);
     this.tagsById = Object.assign({}, this.tagsById, resTag.data.reduce((obj, curr) => {obj[curr.id] = curr.name; return obj;}, {}));
+    this.comments = res.data.ideaComment;
   },
 
   methods: {
     async like(idea) {
-      const currentEmployeeId = 2;
+      const currentEmployeeId = this.employeeId;
       const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
       if (like.length) {
         const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
@@ -162,10 +177,14 @@ export default {
     },
     async enterComment(){
       const comment = {comment: this.comment, ideaId: this.id}
-      const res = await axios.post(this.$backendUrl + `api/IdeaComments`, comment);
-      this.idea.ideaComment.push(res.data);
+      const res = await this.$http.post(`api/IdeaComments`, comment);
+      toast.success(`Your comment has been posted.`)
+      this.comments.push(res.data);
       this.comment = null;
     }
+  },
+  computed: {
+    ...mapGetters("user", ["profile"]),
   }
 }
 </script>

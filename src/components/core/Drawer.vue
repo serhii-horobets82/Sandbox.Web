@@ -54,9 +54,11 @@
         <v-toolbar-title class="ml-3" v-if="isAuthenticated && profile">
           <h4>{{profile.fullName}}</h4>
           <div class="caption text-xs-center">{{profile.email}}</div>
+          <!--
           <v-icon class="bl" color="secondary">star_border</v-icon>
           <span class="display-1 ml-1">{{profile.userScore}}</span>
           <span class="subheading ml-1">{{profile.userPrevScore}}</span>
+          -->
         </v-toolbar-title>
       </v-layout>
     </v-card>
