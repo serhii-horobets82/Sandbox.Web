@@ -60,6 +60,35 @@
         "group": "heroku"
       },
       "problemMatcher": []
-    }
+    },
+    {
+      "label": "Docker: build",
+      "type": "shell",
+      "command": "docker build -f Dockerfile -t evoflare-web .",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "docker"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker(Registry): Tag web image",
+      "type": "shell",
+      "command": "docker image tag evoflare-web localhost:50000/web",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker(Registry): Push web image",
+      "type": "shell",
+      "command": "docker push localhost:50000/web",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker(Registry): Run web image",
+      "type": "shell",
+      "command": "docker run --name evoflare-web -p 8080:80 -d -it localhost:50000/web",
+      "problemMatcher": []
+    },
   ]
 }

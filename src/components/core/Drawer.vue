@@ -71,7 +71,7 @@
                 !item.autoHide ||
                   (item.unauthRequired && !isAuthenticated) ||
                   (item.authRequired &&
-                    isAuthenticated &&  !item.managerRoleRequired && !item.adminRoleRequired && !item.sysAdminRoleRequired) ||
+                    isAuthenticated &&  !item.managerRoleRequired && !item.adminRoleRequired && !item.sysAdminRoleRequired && !item.hrRoleRequired) ||
                   (item.authRequired && isAuthenticated && item.sysAdminRoleRequired && userIsSysAdmin) ||
                   (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
                   (item.authRequired && isAuthenticated && item.hrRoleRequired && userIsHR) ||
