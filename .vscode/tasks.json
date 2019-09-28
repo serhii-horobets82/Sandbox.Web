@@ -2,6 +2,15 @@
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "herokuApp",
+      "type": "pickString",
+      "description": "Heroku app",
+      "options": ["evoflare-web", "evoflare-web-dev", "evoflare-web-dev01", "evoflare-web-dev02"],
+      "default": "evoflare-web-dev"
+    }
+  ],
   "tasks": [
     {
       "type": "npm",
@@ -20,9 +29,9 @@
       "problemMatcher": []
     },
     {
-      "label": "heroku: Set remote(main)",
+      "label": "heroku: Set remote",
       "type": "shell",
-      "command": "heroku git:remote -a evoflare-web",
+      "command": "heroku git:remote -a ${input:herokuApp}",
       "presentation": {
         "reveal": "always",
         "panel": "shared",
@@ -31,31 +40,9 @@
       "problemMatcher": []
     },
     {
-      "label": "heroku: Set remote(dev)",
+      "label": "heroku: Open",
       "type": "shell",
-      "command": "heroku git:remote -a evoflare-web-dev",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "group": "heroku"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "heroku: Open (main)",
-      "type": "shell",
-      "command": "heroku open -a evoflare-web",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "group": "heroku"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "heroku: Open (dev)",
-      "type": "shell",
-      "command": "heroku open -a evoflare-web-dev",
+      "command": "heroku open -a ${input:herokuApp}",
       "presentation": {
         "reveal": "always",
         "panel": "shared",
