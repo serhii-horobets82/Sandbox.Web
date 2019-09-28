@@ -52,6 +52,7 @@
 <script>
 import axios from 'axios';
 import Vue from 'vue';
+import toast from '@/services/toast'
 
 export default {
   name: 'Comment',
@@ -72,6 +73,7 @@ export default {
       const res = await axios.post(this.$backendUrl + `api/IdeaComments`, data);
       // this.comment.inverseParentComment = Vue.observable(this.comment.inverseParentComment);
       this.comment.inverseParentComment.push(res.data);
+      toast.success(`Your comment has been posted.`)
       this.start = false;
       this.text = null;
     }
