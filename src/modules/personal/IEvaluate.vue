@@ -20,10 +20,13 @@
       <v-flex xs12>
         <div class="title font-weight-bold" style="line-height: 48px !important;">360</div>
       </v-flex>
-      <v-flex xs12>
+      <v-flex xs12 v-if="lastPeriod && !lastPeriod.notConfigured">
         Last evaluation period started: {{lastPeriod.startDate.split('T')[0]}}
         <div v-if="lastPeriod.isClosed">Evaluation period closed: {{lastPeriod.endDate.split('T')[0]}} </div>
         <div v-else>Currently in progress. Ending: {{lastPeriod.endDate.split('T')[0]}}</div>
+      </v-flex>
+      <v-flex xs12 v-if="lastPeriod && lastPeriod.notConfigured">
+        <div>The 360 evaluation periods are not configured yet. You will receive notification when evaluation period starts.</div>
       </v-flex>
     </v-layout>
 
@@ -51,7 +54,7 @@
         </v-card>
 
         <v-card>
-          <v-list>
+          <v-list v-if="employees && employees.length">
             <v-list-tile
               v-for="e in employeesFiltered" :key="`evaluation-${e.evaluationId}`"
               @click="selectEmployeeFor360(e)"
@@ -78,6 +81,9 @@
               </v-list-tile-action>
             </v-list-tile>
           </v-list>
+          <div v-else class="pa-3">
+            No peers to evaluate
+          </div>
         </v-card>
 
       </v-flex>
