@@ -64,32 +64,24 @@
     </v-card>
     <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
       <v-layout tag="v-list" column class="left-menu mt-3">
-        <template v-for="(item, index) in [...mainNavigation, ...personalNavigation]" v-if="profile">
-          <template>
-            <template
-              v-if="
-                !item.autoHide ||
-                  (item.unauthRequired && !isAuthenticated) ||
-                  (item.authRequired &&
-                    isAuthenticated &&  !item.managerRoleRequired && !item.adminRoleRequired && !item.sysAdminRoleRequired) ||
-                  (item.authRequired && isAuthenticated && item.sysAdminRoleRequired && userIsSysAdmin) ||
-                  (item.authRequired && isAuthenticated && item.adminRoleRequired && userIsAdmin) ||
-                  (item.authRequired && isAuthenticated && item.hrRoleRequired && userIsHR) ||
-                  (item.authRequired && isAuthenticated && item.managerRoleRequired && userIsManager)"
-            >
-              <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
-                <v-list-tile-action>
-                  <v-icon medium class="material-icons-outlined">{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    <span class="body-2 font-weight-bold">{{ item.title }}</span>
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+        <div v-if="profile">
+          <template v-for="(item, index) in links">
+            <template>
+              <template v-if="isNavigationVisible(item)">
+                <v-list-tile class="left-menu__icons" :key="index" :to="item.router">
+                  <v-list-tile-action>
+                    <v-icon medium class="material-icons-outlined">{{ item.icon }}</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      <span class="body-2 font-weight-bold">{{ item.title }}</span>
+                    </v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </template>
             </template>
           </template>
-        </template>
+        </div>
       </v-layout>
     </vue-perfect-scrollbar>1
   </v-navigation-drawer>
@@ -99,25 +91,27 @@ import { Component, Vue } from "vue-property-decorator";
 import { mapGetters, mapState } from "vuex";
 import { EventBus } from "@/event-bus";
 import { getCommonAvatar } from "@/util";
-import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
+import { NavigationItem, NavigationGroup, Role, AccessDescriptor, RoleMatrix } from "@/models/navigation.interface";
 import { UserProfile } from "@/modules/user/types";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Menu from "@/data/menu";
 
 @Component({
   computed: {
+    roles: function () { return createRoles(this as any); },
     ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
     ...mapGetters("user", {
       profile: "profile",
       userIsSysAdmin: "userIsSysAdmin",
-      userIsAdmin : "userIsAdmin",
-      userIsManager : "userIsManager",
-      userIsHR : "userIsHR"
+      userIsAdmin: "userIsAdmin",
+      userIsManager: "userIsManager",
+      userIsHR: "userIsHR",
     })
   },
   methods: {
-    getCommonAvatar
+    getCommonAvatar,
+    isNavigationVisible(item: NavigationItem) { return isAccessible((this as any).roles, item.accessedBy); }
   },
   components: {
     VuePerfectScrollbar
@@ -127,18 +121,24 @@ export default class AppDrawer extends Vue {
   links: Array<NavigationItem> = Menu;
   userIsSysAdmin!: boolean;
   userIsAdmin!: boolean;
-
-  get mainNavigation(): Array<NavigationItem> {
-    if(this.userIsSysAdmin || this.userIsAdmin) return [];
-    return this.links.filter(i => i.group === NavigationGroup.Main);
-  }
-
-  get personalNavigation(): Array<NavigationItem> {
-    return this.links.filter(i => i.group === NavigationGroup.Personal);
-  }
   scrollSettings: any = {
     maxScrollbarLength: 160
   };
+}
+
+const isAccessible = (roles: Role[], accessDescriptor: Role[]): boolean => {
+  return roles.some(x => accessDescriptor.includes(x));
+}
+
+const createRoles = (roleMatrix: RoleMatrix): Role[] => {
+  const result: Role[] = [];
+  if (roleMatrix.userIsManager) { result.push('manager'); }
+  if (roleMatrix.userIsSysAdmin) { result.push('sysadmin'); }
+  if (roleMatrix.userIsAdmin) { result.push('admin'); }
+  if (roleMatrix.userIsHR) { result.push('hr'); }
+
+  if (!result.length) { result.push('default'); }
+  return result;
 }
 </script>
 
