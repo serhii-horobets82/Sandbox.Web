@@ -7,8 +7,26 @@
       "id": "herokuApp",
       "type": "pickString",
       "description": "Heroku app",
-      "options": ["evoflare-web", "evoflare-web-dev", "evoflare-web-dev01", "evoflare-web-dev02"],
+      "options": [
+        "evoflare-web",
+        "evoflare-web-dev",
+        "evoflare-web-dev01",
+        "evoflare-web-dev02"
+      ],
       "default": "evoflare-web-dev"
+    },
+    {
+      "id": "herokuUser",
+      "type": "pickString",
+      "description": "Heroku user",
+      "options": [
+        "dev01.evoflare@gmail.com",
+        "dev02.evoflare@gmail.com",
+        "dev03.evoflare@gmail.com",
+        "dev04.evoflare@gmail.com",
+        "dev05.evoflare@gmail.com"
+      ],
+      "default": "dev01.evoflare@gmail.com"
     }
   ],
   "tasks": [
@@ -62,6 +80,17 @@
       "problemMatcher": []
     },
     {
+      "label": "heroku: Login",
+      "type": "shell",
+      "command": "echo Use Email:dev01.evoflare@gmail.com Password:AZoKoHr2tX78;heroku login -i;heroku container:login;heroku apps;",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Docker: build",
       "type": "shell",
       "command": "docker build -f Dockerfile -t evoflare-web .",
@@ -89,6 +118,6 @@
       "type": "shell",
       "command": "docker run --name evoflare-web -p 8080:80 -d -it localhost:50000/web",
       "problemMatcher": []
-    },
+    }
   ]
 }
