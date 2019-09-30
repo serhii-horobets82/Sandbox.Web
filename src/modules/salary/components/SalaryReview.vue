@@ -135,11 +135,17 @@
               >
                 <v-layout>
                   <v-flex align-self-center>
-                    <div class="chip-base">{{item.basic | formatCurrency}}</div>
-                    <v-icon class="pl-3" size="14" v-if="item.id > 0">create</v-icon>
+                    <div class="chip-base py-0 my-0">{{item.basic | formatCurrency}}</div>
+                    <v-icon
+                      style="vertical-align: baseline;margin: auto; width: 100%;"
+                      size="10"
+                      v-if="item.id > 0"
+                    >create</v-icon>
                   </v-flex>
                   <v-flex align-self-center>
-                    <span :class="['chip-bonus ', item.id > 0 && item.bonus > 0 ? 'active' : '']">{{item.bonus | formatCurrency}}</span>
+                    <span
+                      :class="['chip-bonus ', item.id > 0 && item.bonus > 0 ? 'active' : '']"
+                    >{{item.bonus | formatCurrency}}</span>
                   </v-flex>
                   <v-flex align-self-center>
                     <span
@@ -269,8 +275,7 @@ export default {
       if (this.permissions.find(e => e.action === PERMISSION.Edit)) {
         this.editedItem = { row, item: Object.assign({}, item) };
         this.dialog = true;
-      }
-      else {
+      } else {
         toast.error(`you don't have permission to edit record`);
       }
     },
@@ -287,14 +292,17 @@ export default {
       }));
       // current period min date
       let minPeriodDate = periods[0].date;
+      let maxPeriodDate = periods[11].date;
 
       // with period dates less then current
       var sa = salaryArrayExt.filter(item => item.mPeriod <= minPeriodDate);
       // date to start dispaly
       var maxDateBeforePeriod = moment.max(sa.map(e => e.mPeriod));
+
       var startSalaryElement = salaryArrayExt.find(
         e => e.mPeriod == maxDateBeforePeriod
       );
+      if (!startSalaryElement) startSalaryElement = salaryArrayExt[0];
 
       for (let period of periods) {
         let id = -1;
@@ -307,13 +315,13 @@ export default {
           startSalaryElement = userPeriodData;
           bonus = startSalaryElement.bonus;
         }
-        if (period.date >= maxDateBeforePeriod)
-          result.push({
-            id,
-            period: period.date.format("YYYY-MM-DD"),
-            basic: startSalaryElement.basic,
-            bonus
-          });
+        //if (period.date >= maxDateBeforePeriod)
+        result.push({
+          id,
+          period: period.date.format("YYYY-MM-DD"),
+          basic: startSalaryElement.basic,
+          bonus
+        });
       }
       return result;
     },
@@ -330,7 +338,7 @@ export default {
           text: date.format("MMMM YY")
         });
       }
-      console.log(periods);
+
       return periods;
     },
     getHeaders() {
@@ -389,7 +397,7 @@ export default {
 }
 
 .chip-base.active {
-    color: green;
+  color: green;
 }
 
 .chip-total {
