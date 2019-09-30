@@ -51,7 +51,6 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "@/event-bus";
-import { NavigationItem, NavigationGroup } from "@/models/navigation.interface";
 import { UserProfile } from "@/modules/user/types";
 import Menu from "@/data/menu";
 import { toggleFullScreen } from "@/util";
@@ -60,7 +59,7 @@ import { EVENTS } from "@/constants/index";
 export default {
   computed: {
     ...mapGetters("chat", ["chatInfo"]),
-    ...mapGetters("user", ["profile", "userIsAdmin", "userIsManager"])
+     ...mapGetters("user", ["profile"])
   },
   methods: {
     handleFullScreen() {

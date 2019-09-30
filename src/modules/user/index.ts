@@ -9,13 +9,10 @@ import {GlobalState} from "@/types/global";
 export const getDefaultState = () => {
   return {
     profile: undefined,
-    userIsSysAdmin: false,
-    userIsAdmin: false,
-    userIsManager: false,
-    userIsHR: false,
     isError: false,
     isLoading: false,
-    status: ""
+    status: "",
+    accessDescriptor: {}
   };
 };
 

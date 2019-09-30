@@ -91,27 +91,23 @@ import { Component, Vue } from "vue-property-decorator";
 import { mapGetters, mapState } from "vuex";
 import { EventBus } from "@/event-bus";
 import { getCommonAvatar } from "@/util";
-import { NavigationItem, NavigationGroup, Role, AccessDescriptor, RoleMatrix } from "@/models/navigation.interface";
-import { UserProfile } from "@/modules/user/types";
+import { NavigationItem } from "@/models/navigation.interface";
+import { UserProfile, AccessDescriptor } from "@/modules/user/types";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Menu from "@/data/menu";
 
 @Component({
   computed: {
-    roles: function () { return createRoles(this as any); },
     ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
     ...mapGetters("user", {
       profile: "profile",
-      userIsSysAdmin: "userIsSysAdmin",
-      userIsAdmin: "userIsAdmin",
-      userIsManager: "userIsManager",
-      userIsHR: "userIsHR",
+      accessDescriptor: "accessDescriptor",
     })
   },
   methods: {
     getCommonAvatar,
-    isNavigationVisible(item: NavigationItem) { return isAccessible((this as any).roles, item.accessedBy); }
+    isNavigationVisible(item: NavigationItem) { return isAccessible(item.name, (this as any).accessDescriptor); }
   },
   components: {
     VuePerfectScrollbar
@@ -119,27 +115,16 @@ import Menu from "@/data/menu";
 })
 export default class AppDrawer extends Vue {
   links: Array<NavigationItem> = Menu;
-  userIsSysAdmin!: boolean;
-  userIsAdmin!: boolean;
   scrollSettings: any = {
     maxScrollbarLength: 160
   };
 }
 
-const isAccessible = (roles: Role[], accessDescriptor: Role[]): boolean => {
-  return roles.some(x => accessDescriptor.includes(x));
+const isAccessible = (menuItemName: string, accessContext: { [key: string]: AccessDescriptor }): boolean => {
+  if (accessContext == null || accessContext[menuItemName] == null) { return false; }
+  return accessContext[menuItemName].isActive;
 }
 
-const createRoles = (roleMatrix: RoleMatrix): Role[] => {
-  const result: Role[] = [];
-  if (roleMatrix.userIsManager) { result.push('manager'); }
-  if (roleMatrix.userIsSysAdmin) { result.push('sysadmin'); }
-  if (roleMatrix.userIsAdmin) { result.push('admin'); }
-  if (roleMatrix.userIsHR) { result.push('hr'); }
-
-  if (!result.length) { result.push('default'); }
-  return result;
-}
 </script>
 
 <style lang="stylus">

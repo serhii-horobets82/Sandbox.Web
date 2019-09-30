@@ -10,16 +10,19 @@ export interface UserProfile {
   userScore: number;
   userPrevScore?: number;
   totalProgress?: number;
+  accessDescriptor?: { [key: string]: AccessDescriptor };
 }
 
 // Vuex state for user profile
 export interface UserProfileState {
   profile?: UserProfile;
-  userIsSysAdmin: boolean;
-  userIsAdmin: boolean;
-  userIsManager: boolean;
-  userIsHR: boolean;
   status?: string;
   isError: boolean;
   isLoading: boolean;
+  accessDescriptor?: { [key: string]: AccessDescriptor };
+}
+
+export interface AccessDescriptor {
+  name: string;
+  isActive: boolean;
 }
