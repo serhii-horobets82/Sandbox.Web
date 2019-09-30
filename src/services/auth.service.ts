@@ -18,7 +18,7 @@ class AuthService extends BaseService {
   public login(credentials: Credentials): Observable<Token> {
     return new Observable(observer => {
       axios
-        .post(`${this.api}api/auth/login`, credentials)
+        .post(`api/auth/login`, credentials)
         .then(response => {
           observer.next(response.data as Token);
           observer.complete();
@@ -32,7 +32,7 @@ class AuthService extends BaseService {
   public facebookLogin(accessToken: string): Observable<Token> {
     return new Observable(observer => {
       axios
-        .post(`${this.api}api/externalauth/facebook`, { accessToken })
+        .post(`api/externalauth/facebook`, { accessToken })
         .then(response => {
           observer.next(response.data as Token);
           observer.complete();
