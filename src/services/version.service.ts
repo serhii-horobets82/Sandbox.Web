@@ -18,7 +18,7 @@ class VersionService extends BaseService {
   public getVersion(): Observable<VersionInfo> {
     return new Observable(observer => {
       axios
-        .get(`${this.api}api/version`)
+        .get(`api/version`)
         .then(response => {
           observer.next(response.data as VersionInfo);
           observer.complete();
@@ -32,7 +32,7 @@ class VersionService extends BaseService {
   public getDemoUsers(): Observable<Credentials[]> {
     return new Observable(observer => {
       axios
-        .get(`${this.api}api/demo/users`)
+        .get(`api/demo/users`)
         .then(response => {
           let data = response.data.map((e : any) => {e.userName = e.email; return e;})
           observer.next(data as Credentials[]);
