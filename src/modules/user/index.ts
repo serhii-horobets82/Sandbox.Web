@@ -12,7 +12,8 @@ export const getDefaultState = () => {
     isError: false,
     isLoading: false,
     status: "",
-    accessDescriptor: {}
+    accessDescriptor: {},
+    permissions: []
   };
 };
 

@@ -16,6 +16,13 @@ export const EVENTS = {
 };
 
 
+export const PERMISSION = {
+  Add : "add",
+  Delete : "delete",
+  Edit : "edit",
+  View : "view",
+}
+
 export enum GENDER {
   Unknown = 0,
   Male = 1, 

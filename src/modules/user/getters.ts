@@ -5,5 +5,6 @@ import { GlobalState } from "@/types/global";
 export const getters: GetterTree<UserProfileState, GlobalState> = {
   state: state => state,
   profile: state => state.profile,
-  accessDescriptor: state => state.accessDescriptor
+  accessDescriptor: state => state.accessDescriptor,
+  permissions: state => state.permissions
 };

@@ -100,8 +100,7 @@
                   </div>
                 </template>
                 <template v-else>
-                   <div style="width: 500px">
-                  </div>
+                  <div style="width: 500px"></div>
                 </template>
               </th>
             </tr>
@@ -136,10 +135,11 @@
               >
                 <v-layout>
                   <v-flex align-self-center>
-                    <span class="chip-base">{{item.basic | formatCurrency}}</span>
+                    <div class="chip-base">{{item.basic | formatCurrency}}</div>
+                    <v-icon class="pl-3" size="14" v-if="item.id > 0">create</v-icon>
                   </v-flex>
                   <v-flex align-self-center>
-                    <span class="chip-bonus">{{item.bonus | formatCurrency}}</span>
+                    <span :class="['chip-bonus ', item.id > 0 && item.bonus > 0 ? 'active' : '']">{{item.bonus | formatCurrency}}</span>
                   </v-flex>
                   <v-flex align-self-center>
                     <span
@@ -199,11 +199,20 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
+import { moduleInfo } from "../store";
 import moment from "moment";
 import toast from "@/services/toast";
+import { PERMISSION } from "@/constants";
 import { requiredRule } from "@/util/validators";
 
 export default {
+  computed: {
+    ...mapState({
+      permissions: state =>
+        state.user.permissions.filter(e => e.moduleId === moduleInfo.moduleId)
+    })
+  },
   async created() {
     await this.getData();
   },
@@ -257,8 +266,13 @@ export default {
       this.dialog = false;
     },
     editSalary(row, item) {
-      this.editedItem = { row, item: Object.assign({}, item) };
-      this.dialog = true;
+      if (this.permissions.find(e => e.action === PERMISSION.Edit)) {
+        this.editedItem = { row, item: Object.assign({}, item) };
+        this.dialog = true;
+      }
+      else {
+        toast.error(`you don't have permission to edit record`);
+      }
     },
     close() {
       this.dialog = false;
@@ -316,6 +330,7 @@ export default {
           text: date.format("MMMM YY")
         });
       }
+      console.log(periods);
       return periods;
     },
     getHeaders() {
@@ -368,8 +383,13 @@ export default {
   min-width: 50px;
 }
 
-.chip-bonus {
-  // color: #FFB800;
+.chip-bonus.active {
+  background-color: rgba(255, 207, 85, 0.15);
+  color: #FFB800;
+}
+
+.chip-base.active {
+    color: green;
 }
 
 .chip-total {

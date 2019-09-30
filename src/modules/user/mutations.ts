@@ -28,6 +28,7 @@ export const mutations: MutationTree<UserProfileState> = {
     // check roles
     if (payload.roles) {
       state.accessDescriptor = payload.accessDescriptor;
+      state.permissions = payload.permissions;
     }
     state.isError = false;
     state.isLoading = false;

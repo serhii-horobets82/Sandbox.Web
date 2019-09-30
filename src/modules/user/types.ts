@@ -11,6 +11,7 @@ export interface UserProfile {
   userPrevScore?: number;
   totalProgress?: number;
   accessDescriptor?: { [key: string]: AccessDescriptor };
+  permissions?: Array<Permission>;
 }
 
 // Vuex state for user profile
@@ -20,9 +21,15 @@ export interface UserProfileState {
   isError: boolean;
   isLoading: boolean;
   accessDescriptor?: { [key: string]: AccessDescriptor };
+  permissions?: Array<Permission>;
 }
 
 export interface AccessDescriptor {
   name: string;
   isActive: boolean;
+}
+
+export interface Permission {
+  moduleId: string;
+  action: string;
 }
