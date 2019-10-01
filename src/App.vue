@@ -97,7 +97,6 @@ export default {
   computed: {
     ...mapState(["miniDrawer"]),
     ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("user", ["userIsAdmin", "userIsManager", "userIsHR"])
   },
   methods: {
     openThemeSettings() {

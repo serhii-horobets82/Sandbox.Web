@@ -27,10 +27,8 @@ export const mutations: MutationTree<UserProfileState> = {
     };
     // check roles
     if (payload.roles) {
-      state.userIsSysAdmin = payload.roles.includes(ROLES.SysAdmin);
-      state.userIsAdmin = payload.roles.includes(ROLES.Admin);
-      state.userIsManager = payload.roles.includes(ROLES.Manager);
-      state.userIsHR = payload.roles.includes(ROLES.HR);
+      state.accessDescriptor = payload.accessDescriptor;
+      state.permissions = payload.permissions;
     }
     state.isError = false;
     state.isLoading = false;

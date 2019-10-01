@@ -81,10 +81,6 @@ router.beforeEach((to: Route, from: Route, next: any) => {
     const {
       profile,
       isLoading,
-      userIsSysAdmin,
-      userIsAdmin,
-      userIsManager,
-      userIsHR
     } = store.getters["user/state"];
 
     // check profile existance (case with manual page refresh)
@@ -95,12 +91,14 @@ router.beforeEach((to: Route, from: Route, next: any) => {
       return;
     }
 
+    const role = profile.roles != null && profile.roles.length ? profile.roles[0] : '';
+    const userIsAdmin = role === 'Admin';
+    const userIsSysAdmin = role === 'SysAdmin';
+
     // override default route
     if (to.path === "/") {
       if (userIsSysAdmin) next({ path: "/system" });
       else if (userIsAdmin) next({ path: "/admin" });
-      else if (userIsHR) next({ path: "/personal/profile" });
-      else if (userIsManager) next({ path: "/personal/profile" });
       else next({ path: "/personal/profile" });
       NProgress.done();
     }

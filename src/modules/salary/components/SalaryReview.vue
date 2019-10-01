@@ -100,8 +100,7 @@
                   </div>
                 </template>
                 <template v-else>
-                   <div style="width: 500px">
-                  </div>
+                  <div style="width: 500px"></div>
                 </template>
               </th>
             </tr>
@@ -136,10 +135,17 @@
               >
                 <v-layout>
                   <v-flex align-self-center>
-                    <span class="chip-base">{{item.basic | formatCurrency}}</span>
+                    <div class="chip-base py-0 my-0">{{item.basic | formatCurrency}}</div>
+                    <v-icon
+                      style="vertical-align: baseline;margin: auto; width: 100%;"
+                      size="10"
+                      v-if="item.id > 0"
+                    >create</v-icon>
                   </v-flex>
                   <v-flex align-self-center>
-                    <span class="chip-bonus">{{item.bonus | formatCurrency}}</span>
+                    <span
+                      :class="['chip-bonus ', item.id > 0 && item.bonus > 0 ? 'active' : '']"
+                    >{{item.bonus | formatCurrency}}</span>
                   </v-flex>
                   <v-flex align-self-center>
                     <span
@@ -199,11 +205,20 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
+import { moduleInfo } from "../store";
 import moment from "moment";
 import toast from "@/services/toast";
+import { PERMISSION } from "@/constants";
 import { requiredRule } from "@/util/validators";
 
 export default {
+  computed: {
+    ...mapState({
+      permissions: state =>
+        state.user.permissions.filter(e => e.moduleId === moduleInfo.moduleId)
+    })
+  },
   async created() {
     await this.getData();
   },
@@ -257,8 +272,12 @@ export default {
       this.dialog = false;
     },
     editSalary(row, item) {
-      this.editedItem = { row, item: Object.assign({}, item) };
-      this.dialog = true;
+      if (this.permissions.find(e => e.action === PERMISSION.Edit)) {
+        this.editedItem = { row, item: Object.assign({}, item) };
+        this.dialog = true;
+      } else {
+        toast.error(`you don't have permission to edit record`);
+      }
     },
     close() {
       this.dialog = false;
@@ -273,14 +292,17 @@ export default {
       }));
       // current period min date
       let minPeriodDate = periods[0].date;
+      let maxPeriodDate = periods[11].date;
 
       // with period dates less then current
       var sa = salaryArrayExt.filter(item => item.mPeriod <= minPeriodDate);
       // date to start dispaly
       var maxDateBeforePeriod = moment.max(sa.map(e => e.mPeriod));
+
       var startSalaryElement = salaryArrayExt.find(
         e => e.mPeriod == maxDateBeforePeriod
       );
+      if (!startSalaryElement) startSalaryElement = salaryArrayExt[0];
 
       for (let period of periods) {
         let id = -1;
@@ -293,13 +315,13 @@ export default {
           startSalaryElement = userPeriodData;
           bonus = startSalaryElement.bonus;
         }
-        if (period.date >= maxDateBeforePeriod)
-          result.push({
-            id,
-            period: period.date.format("YYYY-MM-DD"),
-            basic: startSalaryElement.basic,
-            bonus
-          });
+        //if (period.date >= maxDateBeforePeriod)
+        result.push({
+          id,
+          period: period.date.format("YYYY-MM-DD"),
+          basic: startSalaryElement.basic,
+          bonus
+        });
       }
       return result;
     },
@@ -316,6 +338,7 @@ export default {
           text: date.format("MMMM YY")
         });
       }
+
       return periods;
     },
     getHeaders() {
@@ -368,8 +391,13 @@ export default {
   min-width: 50px;
 }
 
-.chip-bonus {
-  // color: #FFB800;
+.chip-bonus.active {
+  background-color: rgba(255, 207, 85, 0.15);
+  color: #FFB800;
+}
+
+.chip-base.active {
+  color: green;
 }
 
 .chip-total {

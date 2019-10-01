@@ -5,3 +5,14 @@ export interface GlobalState {
   image?: string;
   chat?: any;
 }
+
+export interface ModuleInfo {
+  moduleId: string;
+  actions?: Array<string>;
+}
+
+export interface ModuleState {
+  status?: string;
+  isError: boolean;
+  isLoading: boolean;
+}
