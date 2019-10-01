@@ -48,7 +48,7 @@ export default {
   }),
 
   async created() {
-    const res = await axios.get(this.$backendUrl + `api/Certificates/profile`);
+    const res = await this.$http.get(`api/Certificates/profile`);
     this.certificates = [res.data[0], res.data[1]];
   },
 

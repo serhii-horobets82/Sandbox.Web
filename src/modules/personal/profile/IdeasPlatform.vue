@@ -204,7 +204,7 @@ export default {
 
   async created(){
     this.employeeId = this.profile.employeeId;
-    const res = await axios.get(this.$backendUrl + `api/ideas`);
+    const res = await this.$http.get(`api/ideas`);
     this.ideas = res.data;
     // const resTags = await axios.get(this.$backendUrl + `api/ideaTags`);
     // const byId = resTags.data.reduce((obj, curr) => {obj[curr.id] = curr.name; return obj;}, {})
@@ -216,12 +216,12 @@ export default {
       const currentEmployeeId = this.profile.employeeId;
       const like = idea.ideaLike.filter(l => l.employeeId == currentEmployeeId);
       if (like.length) {
-        const res = await axios.delete(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        const res = await this.$http.delete(`api/Ideas/${idea.id}/like`);
         idea.ideaLike.splice(idea.ideaLike.indexOf(like[0]), 1);
       } else {
         const newLike = {id: 0, ideaId: idea.id, employeeId: currentEmployeeId};
         idea.ideaLike.push(newLike);
-        const res = await axios.post(this.$backendUrl + `api/Ideas/${idea.id}/like`);
+        const res = await this.$http.post(`api/Ideas/${idea.id}/like`);
         newLike.id = res.data.id;
       }
     },
