@@ -6,3 +6,12 @@ export interface VersionInfo {
   name: string;
   organization: string;
 }
+
+export interface DatabaseInstance {
+  id: string;
+  name?: string;
+  domainPrefix?: string;
+  connectionStringName?: string;
+  connectionStringEnvironmentName?: string;
+  type?: string;
+}

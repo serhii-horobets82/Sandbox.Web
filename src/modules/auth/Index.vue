@@ -81,7 +81,7 @@
               >
                 <v-icon>{{ social.icon }}</v-icon>
               </v-btn>
-            </v-card-actions> -->
+            </v-card-actions>-->
             <v-alert :value="isError" type="error">{{ errorMessage }}</v-alert>
           </v-form>
         </v-card>
@@ -94,6 +94,20 @@
         <div class="tertiary--text">{{versionInfo.database}}</div>
         <div class="tertiary--text">{{versionInfo.databaseType}}</div>
         <div class="tertiary--text">{{versionInfo.organization}}</div>
+        <v-menu offset-y max-height="450">
+          <template #activator="data">
+            <v-btn :disabled="demoDatabases.length === 0" v-on="data.on">Switch database</v-btn>
+          </template>
+          <v-list dense>
+            <v-list-tile
+              v-for="(item, index) in demoDatabases"
+              :key="index"
+              @click="switchDatabase(item)"
+            >
+              <v-list-tile-title>{{ item.name }} ({{ item.type }})</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </div>
     </v-content>
   </v-app>
@@ -104,7 +118,7 @@ import { getMapTypeToRole } from "@/util";
 import { Component, Vue } from "vue-property-decorator";
 import { Credentials } from "@/models/credentials.interface";
 import { versionService } from "@/services/version.service";
-import { VersionInfo } from "@/models/version.interface";
+import { VersionInfo, DatabaseInstance } from "@/models/version.interface";
 
 @Component({
   methods: {
@@ -122,6 +136,7 @@ export default class LoginForm extends Vue {
   private errorMessage: string = "";
   private credentials = {} as Credentials;
   private demoUsersCredentilas = [] as Credentials[];
+  private demoDatabases = [] as DatabaseInstance[];
 
   private socials: any = [
     {
@@ -156,13 +171,25 @@ export default class LoginForm extends Vue {
     }
   ];
   created() {
+    this.getVersion();
+    this.getDemoUsers();
+
+    versionService.getDatabases().subscribe(
+      data => {
+        this.demoDatabases = [{ id : "", name: "Default" }, ...data];
+      },
+      error => {}
+    );
+  }
+  getVersion() {
     versionService.getVersion().subscribe(
       data => {
         this.versionInfo = data;
       },
       error => {}
     );
-
+  }
+  getDemoUsers() {
     versionService.getDemoUsers().subscribe(
       data => {
         this.demoUsersCredentilas = data;
@@ -170,7 +197,6 @@ export default class LoginForm extends Vue {
       error => {}
     );
   }
-
   // rule for require field
   requireRule(value: string) {
     return !!value || this.$t("Auth.requireField");
@@ -212,6 +238,12 @@ export default class LoginForm extends Vue {
     this.credentials = credentials;
   }
 
+  switchDatabase(database: DatabaseInstance) {
+    localStorage.setItem("x-server-id", database.id);
+    this.getVersion();
+    this.getDemoUsers();
+  }
+
   // get valid form object
   get form() {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -224,7 +256,7 @@ export default class LoginForm extends Vue {
         .dispatch("auth/authRequest", this.credentials)
         .then(() => {
           // read profile before redirect
-          return  this.$store.dispatch("user/userRequest");
+          return this.$store.dispatch("user/userRequest");
         })
         .then(() => {
           let { redirect } = this.$route.query;

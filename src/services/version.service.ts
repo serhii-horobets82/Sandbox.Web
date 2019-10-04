@@ -1,7 +1,7 @@
 import axios from "axios";
 import {BaseService} from "./base.service";
 import {Observable} from "rxjs";
-import {VersionInfo} from "@/models/version.interface";
+import {VersionInfo, DatabaseInstance} from "@/models/version.interface";
 import {Credentials} from "@/models/credentials.interface";
 
 class VersionService extends BaseService {
@@ -36,6 +36,20 @@ class VersionService extends BaseService {
         .then(response => {
           let data = response.data.map((e : any) => {e.userName = e.email; return e;})
           observer.next(data as Credentials[]);
+          observer.complete();
+        })
+        .catch(error => {
+          observer.error(error);
+        });
+    });
+  }
+
+  public getDatabases(): Observable<DatabaseInstance[]> {
+    return new Observable(observer => {
+      axios
+        .get(`api/demo/databases`)
+        .then(response => {
+          observer.next(response.data as DatabaseInstance[]);
           observer.complete();
         })
         .catch(error => {

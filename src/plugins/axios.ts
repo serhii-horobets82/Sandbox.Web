@@ -11,7 +11,10 @@ import toast from "@/services/toast";
 axios.interceptors.request.use(
   (config: any) => {
     const token = store.getters["auth/authToken"];
-
+    const serverId = localStorage.getItem("x-server-id");
+    if(serverId) {
+      config.headers["X-Server-ID"] = serverId;
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token.authToken}`;
     }
