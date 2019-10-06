@@ -51,10 +51,10 @@
                     @click="setDemoCredential(item)"
                   >
                     <v-list-tile-title>
-                      <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
-                        <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
+                      <v-avatar :color="getRoleMarker(item.roles).color" size="20px" class="mr-2">
+                        <span class="white--text">{{getRoleMarker(item.roles).label}}</span>
                       </v-avatar>
-                      {{ item.name }} {{ item.surname }} ({{ getMapTypeToRole(item.type).role }})
+                      {{ item.name }} {{ item.surname }} ({{ getRoleMarker(item.roles).role }})
                     </v-list-tile-title>
                   </v-list-tile>
                 </v-list>
@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import { getMapTypeToRole } from "@/util";
+import { getRoleMarker } from "@/util";
 import { Component, Vue } from "vue-property-decorator";
 import { Credentials } from "@/models/credentials.interface";
 import { versionService } from "@/services/version.service";
@@ -122,7 +122,7 @@ import { VersionInfo, DatabaseInstance } from "@/models/version.interface";
 
 @Component({
   methods: {
-    getMapTypeToRole
+    getRoleMarker
   }
 })
 export default class LoginForm extends Vue {
