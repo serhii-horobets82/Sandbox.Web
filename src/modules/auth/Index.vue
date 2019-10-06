@@ -176,7 +176,7 @@ export default class LoginForm extends Vue {
 
     versionService.getDatabases().subscribe(
       data => {
-        this.demoDatabases = [{ id : "", name: "Default" }, ...data];
+        this.demoDatabases = data;
       },
       error => {}
     );

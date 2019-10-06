@@ -26,10 +26,10 @@
           <v-icon v-if="item.id == profile.employeeId" color="primary">done</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-title>
-          <v-avatar :color="getMapTypeToRole(item.type).color" size="20px" class="mr-2">
-            <span class="white--text">{{getMapTypeToRole(item.type).label}}</span>
+          <v-avatar :color="getRoleMarker(item.roles).color" size="20px" class="mr-2">
+            <span class="white--text">{{getRoleMarker(item.roles).label}}</span>
           </v-avatar>
-          {{ item.name }} {{ item.surname }} ({{item.typeName}})
+          {{ item.name }} {{ item.surname }} ({{ getRoleMarker(item.roles).role }})
         </v-list-tile-title>
       </v-list-tile>
     </v-list>
@@ -38,7 +38,7 @@
 
 <script>
 import axios from "axios";
-import { getMapTypeToRole } from "@/util";
+import { getRoleMarker } from "@/util";
 import { mapGetters } from "vuex";
 
 export default {
@@ -46,7 +46,7 @@ export default {
     employees: null
   }),
   methods: {
-    getMapTypeToRole,
+    getRoleMarker,
     async showEmployeeSelection() {
       const res = await axios.get(this.$backendUrl + `api/demo/users`);
       this.employees = res.data;

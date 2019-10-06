@@ -39,11 +39,15 @@ export function getMapTypeToRole(type: number) {
 }
 
 export function getRoleMarker(roles: Array<string>) {
-  if (roles.some(e => e == ROLES.SysAdmin)) return { role: ROLES.SysAdmin, label: "S", color: "red" };
-  else if (roles.some(e => e == ROLES.Admin)) return { role: ROLES.Admin, label: "A", color: "teal" };
-  else if (roles.some(e => e == ROLES.Manager)) return { role: ROLES.Manager, label: "M", color: "purple" };
-  else if (roles.some(e => e == ROLES.HR)) return { role: ROLES.HR, label: "H", color: "indigo" };
-
+  if (roles) {
+    if (roles.some(e => e == ROLES.SysAdmin))
+      return { role: ROLES.SysAdmin, label: "S", color: "red" };
+    else if (roles.some(e => e == ROLES.Admin))
+      return { role: ROLES.Admin, label: "A", color: "teal" };
+    else if (roles.some(e => e == ROLES.Manager))
+      return { role: ROLES.Manager, label: "M", color: "purple" };
+    else if (roles.some(e => e == ROLES.HR)) return { role: ROLES.HR, label: "H", color: "indigo" };
+  }
   return { role: ROLES.User, label: "U", color: "green" };
 }
 

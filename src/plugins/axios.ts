@@ -12,7 +12,7 @@ axios.interceptors.request.use(
   (config: any) => {
     const token = store.getters["auth/authToken"];
     const serverId = localStorage.getItem("x-server-id");
-    if(serverId) {
+    if (serverId) {
       config.headers["X-Server-ID"] = serverId;
     }
     if (token) {
@@ -31,14 +31,16 @@ axios.interceptors.response.use(
     return response;
   },
   function(error) {
-    if (401 === error.response.status) {
+    const { status, data } = error.response;
+    if (401 === status) {
       toast.error("Session expired");
       EventBus.$emit(EVENTS.REDIRECT_TO_LOGIN);
-      return Promise.reject(error);
     } else {
-      toast.error(error);
-      return Promise.reject(error);
+      if (data && data.object === "error") {
+        toast.error(data.message);
+      } else toast.error(error);
     }
+    return Promise.reject(error);
   }
 );
 
