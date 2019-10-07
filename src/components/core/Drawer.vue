@@ -44,7 +44,7 @@
                 </v-btn>
               </template>
               <v-avatar :size="miniDrawer ? 50 : 150" @click.stop="$router.push('/profile')">
-                <img :src="getCommonAvatar(profile)" :alt="profile.fullName" v-if="profile" />
+                <img :src="profile.pictureUrl" :alt="profile.fullName" v-if="profile" />
               </v-avatar>
             </v-badge>
           </v-progress-circular>

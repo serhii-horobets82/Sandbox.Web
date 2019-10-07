@@ -171,22 +171,26 @@ export default class LoginForm extends Vue {
     }
   ];
   created() {
-    this.getVersion();
-    this.getDemoUsers();
+    this.fetchData();
 
     versionService.getDatabases().subscribe(
       data => {
         this.demoDatabases = data;
       },
+
       error => {}
     );
   }
-  getVersion() {
+  fetchData() {
+    this.demoUsersCredentilas = [] as Credentials[];
     versionService.getVersion().subscribe(
       data => {
         this.versionInfo = data;
       },
-      error => {}
+      error => {},
+      () => {
+        this.getDemoUsers();
+      }
     );
   }
   getDemoUsers() {
@@ -240,8 +244,7 @@ export default class LoginForm extends Vue {
 
   switchDatabase(database: DatabaseInstance) {
     localStorage.setItem("x-server-id", database.id);
-    this.getVersion();
-    this.getDemoUsers();
+    this.fetchData();
   }
 
   // get valid form object
