@@ -23,7 +23,9 @@ else
     echo "Building app"
     echo "npm version $(npm --version)"
     npm install
-    npm run build
+    npm audit fix
+    npm update caniuse-lite browserslist
+    # npm run build
 
     echo ""
     echo "Building docker image"
@@ -33,4 +35,8 @@ else
     # TODO remove
     docker image tag evoflare-web evoflare.docker:50000/web
     docker push evoflare.docker:50000/web
+    
+    # docker hub
+    docker tag evoflare.docker:50000/web evoflare/web
+    docker push evoflare/web
 fi

@@ -26,3 +26,8 @@ Vue.prototype.$appTitle = process.env.VUE_APP_TITLE;
 
 // set base url
 axios.defaults.baseURL = Vue.prototype.$backendUrl;
+
+if (process.env.NODE_ENV === "production") {
+  Vue.prototype.$backendUrl = window.location.origin + "/";
+  axios.defaults.baseURL = window.location.origin + "/";
+}
