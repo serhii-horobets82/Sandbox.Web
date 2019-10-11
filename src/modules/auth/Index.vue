@@ -90,10 +90,13 @@
 
     <v-content>
       <div class="version">
-        <div class="tertiary--text">{{versionInfo.version}}</div>
-        <div class="tertiary--text">{{versionInfo.database}}</div>
-        <div class="tertiary--text">{{versionInfo.databaseType}}</div>
-        <div class="tertiary--text">{{versionInfo.organization}}</div>
+        <div v-if="versionInfo.version" class="tertiary--text">v {{versionInfo.version}}</div>
+        <div v-if="versionInfo.database" class="tertiary--text">DB: {{versionInfo.database}}</div>
+        <div
+          v-if="versionInfo.organization"
+          class="tertiary--text"
+        >{{versionInfo.organization}} ({{versionInfo.databaseType}})</div>
+
         <v-menu offset-y max-height="450">
           <template #activator="data">
             <v-btn :disabled="demoDatabases.length === 0" v-on="data.on">Switch database</v-btn>
@@ -104,11 +107,34 @@
               :key="index"
               @click="switchDatabase(item)"
             >
+              <v-list-tile-action>
+                <v-icon
+                  v-if="currentInstance && item.id === currentInstance.id"
+                  color="primary"
+                >done</v-icon>
+              </v-list-tile-action>
               <v-list-tile-title>{{ item.name }} ({{ item.type }})</v-list-tile-title>
+              <v-list-tile-action>
+                <v-btn class="ml-4" icon title="Recreate database" @click="initDatabase(item)">
+                  <v-icon>add</v-icon>
+                </v-btn>
+              </v-list-tile-action>
             </v-list-tile>
           </v-list>
         </v-menu>
+        <div
+          v-if="currentInstance"
+          class="black--text"
+        >Current instance: {{currentInstance.name}} ({{currentInstance.type}})</div>
       </div>
+      <v-dialog v-model="progressDialog" width="300">
+        <v-card dark color="primary">
+          <v-card-text>
+            <div style="color:white">In progress ...</div>
+            <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-content>
   </v-app>
 </template>
@@ -118,7 +144,12 @@ import { getRoleMarker } from "@/util";
 import { Component, Vue } from "vue-property-decorator";
 import { Credentials } from "@/models/credentials.interface";
 import { versionService } from "@/services/version.service";
-import { VersionInfo, DatabaseInstance } from "@/models/version.interface";
+import { randomInt } from "@/util";
+import {
+  VersionInfo,
+  DatabaseInstance,
+  DatabaseSetupParams
+} from "@/models/version.interface";
 
 @Component({
   methods: {
@@ -127,8 +158,10 @@ import { VersionInfo, DatabaseInstance } from "@/models/version.interface";
 })
 export default class LoginForm extends Vue {
   private valid: boolean = true;
+  private progressDialog: boolean = false;
   private isError: boolean = false;
   private rememberMe: boolean = false;
+  private currentInstance: DatabaseInstance = {} as DatabaseInstance;
 
   private versionInfo = {} as VersionInfo;
 
@@ -176,6 +209,10 @@ export default class LoginForm extends Vue {
     versionService.getDatabases().subscribe(
       data => {
         this.demoDatabases = data;
+        let instanceId = localStorage.getItem("x-server-id");
+        this.currentInstance = data.find(
+          s => s.id === instanceId
+        ) as DatabaseInstance;
       },
 
       error => {}
@@ -187,7 +224,9 @@ export default class LoginForm extends Vue {
       data => {
         this.versionInfo = data;
       },
-      error => {},
+      error => {
+        this.versionInfo = {} as VersionInfo;
+      },
       () => {
         this.getDemoUsers();
       }
@@ -243,8 +282,38 @@ export default class LoginForm extends Vue {
   }
 
   switchDatabase(database: DatabaseInstance) {
+    this.currentInstance = database;
     localStorage.setItem("x-server-id", database.id);
     this.fetchData();
+  }
+
+  initDatabase(database: DatabaseInstance) {
+    const data: DatabaseSetupParams = {
+      id: "DefaultConfig",
+      forceRecreate: true,
+      adminEmail: "admin@example.com",
+      organizationDomain: database.domainPrefix || "example.com",
+      organizationName: database.name,
+      randomData: {
+        users: randomInt(0, 30),
+        managers: randomInt(0, 5),
+        hrs: randomInt(0, 3)
+      }
+    };
+    this.progressDialog = true;
+    versionService.initDatabase(data).subscribe(
+      data => {
+        this.versionInfo = data;
+      },
+      error => {
+        this.versionInfo = {} as VersionInfo;
+        this.progressDialog = false;
+      },
+      () => {
+        this.getDemoUsers();
+        this.progressDialog = false;
+      }
+    );
   }
 
   // get valid form object
