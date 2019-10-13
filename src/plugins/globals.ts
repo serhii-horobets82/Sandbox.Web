@@ -1,7 +1,7 @@
 import Vue from "vue";
 import axios from "axios";
 import config from "../config/default.json";
-import { ChatManager, TokenProvider } from "@pusher/chatkit-client";
+//import { ChatManager, TokenProvider } from "@pusher/chatkit-client";
 
 // use global config from file
 Vue.prototype.$config = config;
@@ -27,7 +27,9 @@ Vue.prototype.$appTitle = process.env.VUE_APP_TITLE;
 // set base url
 axios.defaults.baseURL = Vue.prototype.$backendUrl;
 
-if (process.env.NODE_ENV === "production") {
+console.log('process.env', process.env);
+
+if (process.env.NODE_ENV === "production" && process.env.BASE_URL_AS_ORIGIN) {
   Vue.prototype.$backendUrl = window.location.origin + "/";
   axios.defaults.baseURL = window.location.origin + "/";
 }

@@ -22,9 +22,9 @@ else
     echo ""
     echo "Building app"
     echo "npm version $(npm --version)"
-    npm install
-    npm audit fix
-    npm update caniuse-lite browserslist
+    # npm install
+    # npm audit fix
+    npm run build-docker
     # npm run build
 
     echo ""
