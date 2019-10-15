@@ -99,7 +99,7 @@
 
         <v-menu offset-y max-height="450">
           <template #activator="data">
-            <v-btn :disabled="demoDatabases.length === 0" v-on="data.on">Switch database</v-btn>
+            <v-btn :disabled="demoDatabases.length === 0 || domainMatched" v-on="data.on">Switch database</v-btn>
           </template>
           <v-list dense>
             <v-list-tile
@@ -123,7 +123,7 @@
           </v-list>
         </v-menu>
         <div
-          v-if="currentInstance"
+          v-if="currentInstance && currentInstance.id"
           class="black--text"
         >Current instance: {{currentInstance.name}} ({{currentInstance.type}})</div>
       </div>
@@ -158,6 +158,7 @@ import {
 })
 export default class LoginForm extends Vue {
   private valid: boolean = true;
+  private domainMatched: boolean = false;
   private progressDialog: boolean = false;
   private isError: boolean = false;
   private rememberMe: boolean = false;
@@ -209,10 +210,20 @@ export default class LoginForm extends Vue {
     versionService.getDatabases().subscribe(
       data => {
         this.demoDatabases = data;
-        let instanceId = localStorage.getItem("x-server-id");
+        // first find by hostname
         this.currentInstance = data.find(
-          s => s.id === instanceId
+          s => s.domainPrefix === location.hostname
         ) as DatabaseInstance;
+        // use only this instance
+        if (this.currentInstance) {
+          this.domainMatched = true;
+          localStorage.setItem("x-server-id", this.currentInstance.id);
+        } else {
+          let instanceId = localStorage.getItem("x-server-id");
+          this.currentInstance = data.find(
+            s => s.id === instanceId
+          ) as DatabaseInstance;
+        }
       },
 
       error => {}

@@ -12,7 +12,10 @@
         "evoflare-web-dev",
         "evoflare-web-dev01",
         "evoflare-web-dev02",
-        "evoflare-app-web"
+        "evoflare-app-web",
+        "intel-evoflare",
+        "hp-evoflare",
+        "whirlpool-evoflare",
       ],
       "default": "evoflare-web-dev"
     },
@@ -39,7 +42,20 @@
     {
       "label": "heroku: Set env",
       "type": "shell",
-      "command": "heroku config:set VUE_APP_ROOT_API=https://evoflare-api.herokuapp.com/",
+      "command": "heroku config:set VUE_APP_ROOT_API=https://api-base-evoflare.herokuapp.com/",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "heroku"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "heroku: Create app",
+      "type": "shell",
+      "command": [
+        "heroku create ${input:herokuApp};",
+      ],
       "presentation": {
         "reveal": "always",
         "panel": "shared",
